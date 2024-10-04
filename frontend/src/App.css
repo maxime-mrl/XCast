@@ -1,0 +1,57 @@
+/* -------------------------------------------------------------------------- */
+/*                                  RESET CSS                                 */
+/* -------------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  vertical-align: baseline;
+  line-height: 1;
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+textarea {
+  resize: none;
+}
+
+a {
+  color: unset;
+  text-decoration: none;
+}
+
+input::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/*                               GLOBAL VARIABLE                              */
+/* -------------------------------------------------------------------------- */
+:root {
+
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               GENERAL STYLING                              */
+/* -------------------------------------------------------------------------- */
+
