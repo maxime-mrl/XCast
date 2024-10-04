@@ -1,0 +1,5 @@
+.home > * {
+    position: fixed;
+    display: block;
+    z-index: 3;
+}

@@ -1,11 +1,13 @@
 import React from "react";
-import { Map } from "../../containers/index.ts";
+
+import "./Home.css"
+import { Forecast, Settings } from "../../containers/index.ts";
 
 export default function Home() {
     return (
-        <>
-            <h1>Hello World</h1>
-            <Map></Map>
-        </>
+        <div className="home">
+            <Settings />
+            <Forecast />
+        </div>
     )
 }

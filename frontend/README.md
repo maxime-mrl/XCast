@@ -1,3 +1,3 @@
-# Boilerplate for typescript react projects
+# XCcast weather app for paragliders
 
 readme soontm

@@ -1,8 +1,13 @@
 {
-  "name": "react-typescript-boiler",
+  "name": "XCcast-frontend",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-brands-svg-icons": "^6.6.0",
+    "@fortawesome/free-regular-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@loadable/component": "^5.16.4",
     "@reduxjs/toolkit": "^2.2.7",
     "@types/react": "^18.3.9",

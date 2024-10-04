@@ -1,0 +1,25 @@
+#settings-btn {
+    right: 0;
+
+}
+
+.settingsContainer {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    background-color: var(--bg);
+    width: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: 200ms;
+    right: 0;
+    padding: 1em;
+    padding-top: 3em;
+}
+
+.settingsContainer.active {
+    visibility: visible;
+    opacity: 1;
+    width: 20em;
+    width: min(20em, 75%);
+}
