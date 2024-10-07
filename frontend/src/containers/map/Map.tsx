@@ -1,31 +1,49 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import "leaflet/dist/leaflet.css"
 import "leaflet/dist/leaflet.js"
-import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet'
+import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet'
 
 import './Map.css'
 import Datactx from '../../context/DataContext.tsx'
+import L, { LatLng } from 'leaflet'
 
 export default function Map() {
+  const { forecast:[position]} = useContext(Datactx) as { forecast: [LatLng, (arg:any) => {}] };
   return (
         <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true} zoomControl={false}>
             <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='Tiles &copy; Esri &mdash; Source: Esri, Esri Japan, Esri China (Hong Kong), Esri (Thailand), DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, METI, TomTom'
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
             />
             <ClickHandler />
+            
+            {position && 
+              <Marker position={position} icon={L.icon({
+                iconUrl: "/images/marker.png", // Path to your custom marker icon
+                iconSize: [38, 57], // Size of the icon
+                iconAnchor: [19, 57], // Point where the icon should be anchored (left point or center)
+              })}>
+              </Marker>
+            }
         </MapContainer>
   )
 }
 
 
 function ClickHandler() {
-  const { forecast:[,setIsOpen] } = useContext(Datactx) as { forecast: [Boolean, (arg:any) => {}] };
-  useMapEvents({
-    click: (e) => {
-      setIsOpen(e.latlng)
-    }
-  });
+  const { forecast:[position, setPosition] } = useContext(Datactx) as { forecast: [false | LatLng, (arg:any) => {}] };
+  const memoryPos = useRef(false as false | LatLng);
+  const map = useMapEvents({});
+
+  // listen for clicks
+  map.addEventListener("click", e => setPosition(e.latlng));
+
+  // update map sizing with or without forecast
+  useEffect(() => {
+    map.invalidateSize();
+    if (!memoryPos.current && position) map.panTo(position);
+    memoryPos.current = position;
+  }, [position, map])
 
   return null;
 }

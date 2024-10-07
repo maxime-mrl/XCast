@@ -1,10 +1,5 @@
 .leaflet-container {
-    position: fixed;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    height: 100dvh;
-    width: 100vw;
-    width: 100dw;
+    width: 100%;
+    flex-shrink: 1;
+    height: 100%;
 }

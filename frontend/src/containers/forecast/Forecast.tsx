@@ -4,21 +4,20 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Datactx from "../../context/DataContext.tsx";
 
 import './Forecast.css'
+import { LatLng } from 'leaflet';
 
 export default function Forecast() {
-  const { forecast:[isOpen, setIsOpen] } = useContext(Datactx) as { forecast: [{lat?: number, lng?: number} | false, (arg:any) => {}] };
-  console.log(isOpen)
-  
+  const { forecast:[position, setPosition] } = useContext(Datactx) as { forecast: [LatLng | false, (arg:any) => {}] };
 
   return (
     <>
-      <div className={`forecastContainer ${isOpen ? "active" : ""}`}>
-        <button className="burger-btn" id='forecast-btn' onClick={() => setIsOpen(false)}>
+      <div className={`forecastContainer ${position ? "active" : ""}`}>
+        <button className="burger-btn" id='forecast-btn' onClick={() => setPosition(false)}>
           <FontAwesomeIcon icon={faXmark} />
         </button>
-        {isOpen && isOpen.lng && isOpen.lat ?
+        {position && position.lng && position.lat ?
           <div className="loc">
-            <p>Latitude: {isOpen.lat} Longitude: {isOpen.lng}</p>
+            <p>Latitude: {position.lat} Longitude: {position.lng}</p>
           </div>
           :
           <></>

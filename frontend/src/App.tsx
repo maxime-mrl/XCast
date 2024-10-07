@@ -5,7 +5,6 @@ import { DataProvider } from "./context/DataContext.tsx";
 import { Home } from "./pages/index.ts";
 
 import "./App.css";
-import { Map } from "./containers/index.ts";
 
 export default function App() {
   return (
@@ -15,7 +14,6 @@ export default function App() {
             <Route path="/" element={ <Home /> } />
             <Route path="*" element={ <Navigate to="/" /> } />
           </Routes>
-          <Map />
       </Router>
     </DataProvider>
   );

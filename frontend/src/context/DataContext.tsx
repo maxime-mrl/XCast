@@ -4,12 +4,12 @@ const Datactx = createContext({});
 
 export function DataProvider({ children }) {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const [isForecastOpen, setIsForecastOpen] = useState(false);
+    const [position, setPosition] = useState(false);
 
     return (
         <Datactx.Provider value={{
             settings: [ isSettingsOpen, setIsSettingsOpen ],
-            forecast: [ isForecastOpen, setIsForecastOpen ],
+            forecast: [ position, setPosition ],
         }}>
             {children}
         </Datactx.Provider>
