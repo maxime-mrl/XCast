@@ -1,8 +1,8 @@
 import loadable from '@loadable/component';
-const Map = loadable(() => import('./map/Map.tsx'));
-const Settings = loadable(() => import('./settings/Settings.tsx'));
-const Forecast = loadable(() => import('./forecast/Forecast.tsx'));
-const TimeSelector = loadable(() => import('./timeSelector/TimeSelector.tsx'));
+const Map = loadable(() => import('./map/Map'));
+const Settings = loadable(() => import('./settings/Settings'));
+const Forecast = loadable(() => import('./forecast/Forecast'));
+const TimeSelector = loadable(() => import('./timeSelector/TimeSelector'));
 
 export {
     Map,

@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import { DataProvider } from "./context/DataContext.tsx";
+import { DataProvider } from "./context/DataContext";
 
-import { Home } from "./pages/index.ts";
+import { Home } from "./pages/index"
 
 import "./App.css";
 

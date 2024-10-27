@@ -1,12 +1,11 @@
-import React, { useContext } from 'react'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
-import Datactx from "../../context/DataContext.tsx";
+import { useDataContext } from "../../context/DataContext";
 
 import './Settings.css'
 
 export default function Settings() {
-  const { settings:[isOpen, setIsOpen] } = useContext(Datactx) as { settings: [Boolean, (prevstate?) => {}] };
+  const { settings:[isOpen, setIsOpen] } = useDataContext();
   
   const toggleSettings = () => setIsOpen((prevState: Boolean) => !prevState)
 

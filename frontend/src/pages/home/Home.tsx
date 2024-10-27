@@ -1,7 +1,7 @@
 import React from "react";
 
 import "./Home.css"
-import { Forecast, Map, Settings, TimeSelector } from "../../containers/index.ts";
+import { Forecast, Map, Settings, TimeSelector } from "../../containers/index";
 
 export default function Home() {
     return (

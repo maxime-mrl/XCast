@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es6",                               // Set JavaScript target to ES6
+    "lib": ["dom", "dom.iterable", "esnext"],      // Include libraries needed for React and modern JS
+    "typeRoots": ["./node_modules/@types", "./types"], // add custom types declaration
+    "allowJs": true,                               // Allow JavaScript files alongside TypeScript files
+    "skipLibCheck": true,                          // Skip checking types of all declaration files for faster builds
+    "esModuleInterop": true,                       // Better compatibility with ES modules
+    "allowSyntheticDefaultImports": true,          // Enable default imports from modules with no default
+    "strict": true,                                // Enable strict type-checking for better safety
+    "forceConsistentCasingInFileNames": true,      // Enforce case-sensitive imports
+    "module": "esnext",                            // Use ESNext module resolution for dynamic imports
+    "moduleResolution": "node",                    // Use Node's module resolution algorithm
+    "resolveJsonModule": true,                     // Allow importing JSON files
+    "isolatedModules": true,                       // Ensure each file can be transpiled independently
+    "jsx": "react-jsx"                             // Enable the new JSX runtime with React 17+
+  },
+  "include": ["src", "types"],                              // Include the src directory
+  "exclude": ["node_modules", "build"]             // Exclude unnecessary folders
+}

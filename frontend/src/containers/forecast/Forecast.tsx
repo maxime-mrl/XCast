@@ -1,13 +1,11 @@
-import React, { useContext } from 'react'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import Datactx from "../../context/DataContext.tsx";
+import { useDataContext } from "../../context/DataContext";
 
 import './Forecast.css'
-import { LatLng } from 'leaflet';
 
 export default function Forecast() {
-  const { forecast:[position, setPosition] } = useContext(Datactx) as { forecast: [LatLng | false, (arg:any) => {}] };
+  const { forecast:[position, setPosition] } = useDataContext();
 
   return (
     <>
