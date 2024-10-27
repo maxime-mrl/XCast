@@ -1,6 +1,6 @@
 import loadable from '@loadable/component';
-// const Test = loadable(() => import('./test/Test.tsx'));
+const GeotiffLayer = loadable(() => import('./geoTiffLayer/GeoTiffLayer'));
 
 export {
-    // Test
+    GeotiffLayer
 }

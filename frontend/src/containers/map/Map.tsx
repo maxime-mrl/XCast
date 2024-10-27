@@ -7,6 +7,7 @@ import "leaflet-geotiff-2/src/leaflet-geotiff"
 import './Map.css'
 import { useDataContext } from '../../context/DataContext'
 import L, { LatLng } from 'leaflet'
+import { GeotiffLayer } from '../../components/index'
 
 export default function Map() {
   const { forecast:[position]} = useDataContext();
@@ -17,6 +18,7 @@ export default function Map() {
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
             />
 
+            <GeotiffLayer url={"https://stuartmatthews.github.io/leaflet-geotiff/tif/wind_speed.tif"} />
 
             <ClickHandler />
             
