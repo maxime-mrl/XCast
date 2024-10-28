@@ -18,7 +18,7 @@ export default function Map() {
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
             />
 
-            <GeotiffLayer url={"https://stuartmatthews.github.io/leaflet-geotiff/tif/wind_speed.tif"} />
+            <GeotiffLayer url={`${process.env.REACT_APP_API_URL}map/arome/wspd.tif`} />
 
             <ClickHandler />
             

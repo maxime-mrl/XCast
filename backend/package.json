@@ -2,10 +2,9 @@
   "name": "xccast-backend",
   "version": "1.0.0",
   "description": "backend for XCcast app",
-  "type": "module",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node index.ts"
+    "start": "nodemon"
   },
   "author": "Maxime Morel",
   "license": "ISC",
@@ -17,6 +16,8 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0"
+    "@types/express": "^5.0.0",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2"
   }
 }

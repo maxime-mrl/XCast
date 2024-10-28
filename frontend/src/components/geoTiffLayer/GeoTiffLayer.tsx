@@ -22,7 +22,6 @@ export default function GeoTiffLayer({ url }: {url: string}) {
       });
       // Add the layer to the map
       geoTiffLayer.addTo(map);
-      console.log(map)
       // Cleanup
       return () => { map.removeLayer(geoTiffLayer) };
     }, [map, url]);

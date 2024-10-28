@@ -1,8 +1,9 @@
-import("dotenv").then(dotenv => dotenv.config())
+import dotenv from 'dotenv'; 
+dotenv.config();
 import express from "express";
 import cors from "cors";
-import db from "./config/db.js";
-import router from "./routes/index.js";
+import db from "./config/db";
+import router from "./routes";
 
 const port = process.env.PORT;
 const app = express();
