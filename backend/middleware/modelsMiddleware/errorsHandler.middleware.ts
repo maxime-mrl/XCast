@@ -1,4 +1,4 @@
-export default (err, _doc, next) => { // detect and handle specific errors thrown by models
+export default (err:any, _doc:unknown, next:() => {}) => { // detect and handle specific errors thrown by models
     // having some sort of model middleware is the best (and sometimes only) way to get some good looking error messages from the model
     if (!err) return next(); // if no error life is good
     // else we need to handle it
@@ -6,8 +6,8 @@ export default (err, _doc, next) => { // detect and handle specific errors throw
         err = new Error(`This ${Object.keys(err.keyPattern)} is arleady used`);
         err.status = 200;
     }
-    if (err.errors && err.errors[Object.keys(err.errors)]) {
-        const error = err.errors[Object.keys(err.errors)];
+    if (err.errors && err.errors[Object.keys(err.errors)[0]]) {
+        const error = err.errors[Object.keys(err.errors)[0]];
         if (error.kind === 'minlength') { // input too short
             err = new Error(`Your ${error.path} ${error.value} is too short! It must be at least ${error.properties.minlength} characters long.`);
             err.status = 400;

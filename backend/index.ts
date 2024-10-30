@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import db from "./config/db";
 import router from "./routes";
+import errorsMiddleware from './middleware/errors.middleware';
 
 const port = process.env.PORT;
 const app = express();
@@ -16,6 +17,8 @@ app.use(cors({
     origin: '*'
 }));
 app.use("/", router);
+// handle errors
+app.use(errorsMiddleware);
 
 // start the server
 db.connect()
