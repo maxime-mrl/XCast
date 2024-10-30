@@ -5,9 +5,9 @@ import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet'
 import "leaflet-geotiff-2/src/leaflet-geotiff"
 
 import './Map.css'
-import { useDataContext } from '../../context/DataContext'
+import { useDataContext } from '@context'
 import L, { LatLng } from 'leaflet'
-import { GeotiffLayer } from '../../components/index'
+import { GeotiffLayer } from '@components'
 
 export default function Map() {
   const { forecast:[position]} = useDataContext();
@@ -18,7 +18,7 @@ export default function Map() {
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
             />
 
-            <GeotiffLayer url={`${process.env.REACT_APP_API_URL}/map/arome/wspd.tif`} />
+            <GeotiffLayer url={`${process.env.REACT_APP_API_URL}/map/arome/2024-10-30T03_00Z/wspd.tif`} />
 
             <ClickHandler />
             

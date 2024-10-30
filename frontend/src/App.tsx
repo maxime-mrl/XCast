@@ -1,8 +1,7 @@
-import React from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import { DataProvider } from "./context/DataContext";
+import { DataProvider } from "@context";
 
-import { Home } from "./pages/index"
+import { Home } from "@pages"
 
 import "./App.css";
 

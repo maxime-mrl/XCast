@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import fs from "fs"
 import path from "path"
-import rootPath from "../rootPath";
+import rootPath from "@rootPath";
 
 const mapsPath = path.join(rootPath, "public", "map"); // map data location
 

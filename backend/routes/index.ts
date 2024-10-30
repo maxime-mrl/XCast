@@ -1,7 +1,7 @@
 import path from "path";
 import express from "express";
 const router = express.Router();
-import rootPath from "../rootPath";
+import rootPath from "@rootPath";
 import mapRoutes from "./api/map.routes";
 
 /* ----------------------------------- API ---------------------------------- */

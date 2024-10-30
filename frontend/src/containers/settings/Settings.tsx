@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useDataContext } from "../../context/DataContext";
+import { useDataContext } from "@context";
 
 import './Settings.css'
 

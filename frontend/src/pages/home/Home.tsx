@@ -1,7 +1,5 @@
-import React from "react";
-
 import "./Home.css"
-import { Forecast, Map, Settings, TimeSelector } from "../../containers/index";
+import { Forecast, Map, Settings, TimeSelector } from "@containers";
 
 export default function Home() {
     return (

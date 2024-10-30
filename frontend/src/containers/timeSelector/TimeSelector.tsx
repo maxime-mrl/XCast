@@ -1,8 +1,7 @@
-import React from 'react'
-
-import './TimeSelector.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight, faAnglesLeft, faAnglesRight } from '@fortawesome/free-solid-svg-icons'
+
+import './TimeSelector.css'
 
 export default function TimeSelector() {
   return (

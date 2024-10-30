@@ -4,21 +4,20 @@
       "target": "ES6",
       /* Modules */
       "moduleResolution": "Node",
-      "outDir": "./dist",
-      "removeComments": true,
       "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
-  
+      "removeComments": true,
+      "outDir": "./dist",
+      "baseUrl": ".",
+      "paths": {
+        "@*": ["./*"]
+      },
+      
       /* Type Checking */
       "strict": true,
-  
+      "forceConsistentCasingInFileNames": true,
+      
       /* Completeness */
-      "skipLibCheck": true,
-      // builds
-      "baseUrl": ".",
-    },
-    "exclude": [
-      "./examples/*"
-    ]
+      "skipLibCheck": true
+    }
   }
   
