@@ -1,48 +1,48 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleLeft, faAngleRight, faAnglesLeft, faAnglesRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleLeft, faAngleRight, faAnglesLeft, faAnglesRight } from '@fortawesome/free-solid-svg-icons';
 
-import './TimeSelector.css'
+import './TimeSelector.css';
+import { useEffect, useState } from 'react';
+import { useMapStore } from 'src/store/useMapStore';
+
+const days = [
+  "dim",
+  "lun",
+  "mar",
+  "mer",
+  "jeu",
+  "ven",
+  "sam",
+]
 
 export default function TimeSelector() {
+  const userSettings = useMapStore.use.userSettings();
+  const updateTime = useMapStore.use.updateTime();
+  const [date, setDate] = useState("");
+  useEffect(() => {
+    if (userSettings.time) {
+      const forecastDate = new Date(userSettings.time.replace("_", ":"));
+      const hours = forecastDate.getHours() < 10 ? `0${forecastDate.getHours()}` : forecastDate.getHours();
+      const minutes = forecastDate.getMinutes() < 10 ? `0${forecastDate.getMinutes()}` : forecastDate.getMinutes();
+      setDate(`${days[forecastDate.getDay()]}. ${hours}:${minutes}`);
+    }
+  }, [userSettings.time])
   return (
-    // <div className='time-selector'>
-    //   <div className="day">
-    //       <button><FontAwesomeIcon icon={faChevronLeft}/></button>
-    //       <p>Day</p>
-    //       <button><FontAwesomeIcon icon={faChevronRight}/></button>
-    //   </div>
-    //   <div className="hours">
-    //     <p>-1</p>
-    //     <p>00h</p>
-    //     <p>+1</p>
-    //   </div>
-    // </div>
+    // 
     <div className='time-selector'>
       <div className="infos">
-        DAY. 0 -- 00h00
+        {date}
       </div>
       <div className="selector">
         <div className="prev">
-          <button><FontAwesomeIcon icon={faAnglesLeft}/></button>
-          <button><FontAwesomeIcon icon={faAngleLeft}/></button>
+          <button onClick={() => updateTime({days:-1})}><FontAwesomeIcon icon={faAnglesLeft}/></button>
+          <button onClick={() => updateTime({hours:-1})}><FontAwesomeIcon icon={faAngleLeft}/></button>
         </div>
         <div className='next'>
-          <button><FontAwesomeIcon icon={faAngleRight}/></button>
-          <button><FontAwesomeIcon icon={faAnglesRight}/></button>
+          <button onClick={() => updateTime({hours:1})}><FontAwesomeIcon icon={faAngleRight}/></button>
+          <button onClick={() => updateTime({days:1})}><FontAwesomeIcon icon={faAnglesRight}/></button>
         </div>
       </div>
     </div>
-    // <div className='time-selector'>
-    //   <div className="day">
-    //       <FontAwesomeIcon icon={faChevronLeft}/>
-    //       <p>Day</p>
-    //       <FontAwesomeIcon icon={faChevronRight}/>
-    //   </div>
-    //   <div className="hours">
-    //     <p>-1</p>
-    //     <p>00h</p>
-    //     <p>+1</p>
-    //   </div>
-    // </div>
   )
 }
