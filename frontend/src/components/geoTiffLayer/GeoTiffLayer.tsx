@@ -7,10 +7,9 @@ import L from "leaflet";
 import "leaflet-geotiff-2";
 
 import "leaflet-geotiff-2/dist/leaflet-geotiff-vector-arrows";
-import "leaflet-geotiff-2/dist/leaflet-geotiff-plotty";
 
 import "./GeoTiffLayer.css"
-
+import Renderer from "./Renderer";
 export default function GeoTiffLayer({ url, renderer }: {url: string, renderer: "arrows" | "rgb"}) {
   const map = useMap();
   useEffect(() => {
@@ -18,11 +17,7 @@ export default function GeoTiffLayer({ url, renderer }: {url: string, renderer: 
     const geoTiffLayer = new L.LeafletGeotiff(url, {
       renderer: renderer === "arrows" ?
         L.LeafletGeotiff.vectorArrows({ arrowSize: 20, }) :
-        L.LeafletGeotiff.plotty({
-          displayMin: 0,
-          displayMax: 255,
-          colorScale: "rainbow",
-        }),
+        new Renderer(),
       onError: (er:any) => {
         isError = true;
         console.log(`error: ${er}`)

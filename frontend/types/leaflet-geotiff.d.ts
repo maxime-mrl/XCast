@@ -14,6 +14,15 @@ declare module "leaflet" {
     getValueAtLatLng(lat: number, lon: number): number;
   }
 
+  // Base renderer class that other renderers extend
+  class LeafletGeotiffRenderer extends L.Class {
+    constructor(options?: LeafletGeotiffRendererOptions);
+    
+    setParent(parent: LeafletGeotiff): void;
+    
+    render(raster: any, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, args: any): void;
+  }
+
   interface LeafletGeotiffOptions extends GridLayerOptions {
     renderer: LeafletGeotiffRenderer;
     useWorker?: boolean;
@@ -32,6 +41,13 @@ declare module "leaflet" {
     clearBeforeMove?: boolean;
 
     colorScale?: string;
+  }
+
+  interface LeafletGeotiffRendererOptions {
+    displayMin?: number;
+    displayMax?: number;
+    colorScale?: string;
+    noDataValue?: number;
   }
 
   interface PlottyOptions {
