@@ -20,7 +20,7 @@ export function getCapabilities(_req:Request, res:Response) {
         const dataset = fs.readdirSync(path.join(rootPath, "public", "map", model, availableTimes[0]))
         // add model with time and available data
         models.set(model, {
-            availableTimes,
+            availableTimes: availableTimes.map(time => time.replace("_", ":")), // replace _ to correspond to valid time
             dataset,
         });
     });

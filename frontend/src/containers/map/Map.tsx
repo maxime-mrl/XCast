@@ -8,17 +8,24 @@ import './Map.css'
 import { useDataContext } from '@context'
 import L, { LatLng } from 'leaflet'
 import { GeotiffLayer } from '@components'
+import { useMapStore } from '@store/useMapStore'
 
 export default function Map() {
   const { forecast:[position]} = useDataContext();
+  const userSettings = useMapStore.use.userSettings();
+
   return (
-        <MapContainer center={[35, -78]} zoom={7} scrollWheelZoom={true} zoomControl={false}>
+        <MapContainer center={[-31, 148]} zoom={7} scrollWheelZoom={true} zoomControl={false}>
             <TileLayer
                 attribution='Tiles &copy; Esri &mdash; Source: Esri, Esri Japan, Esri China (Hong Kong), Esri (Thailand), DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, METI, TomTom'
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
             />
-
-            <GeotiffLayer url={`${process.env.REACT_APP_API_URL}/map/arome/2024-10-30T03_00Z/wspd.tif`} />
+            { userSettings.model && userSettings.selected && userSettings.time &&
+            <>
+              <GeotiffLayer renderer={"rgb"}url={`${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/wspd.tif`} />
+              <GeotiffLayer renderer={"arrows"}url={`${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/${userSettings.selected}`} />
+            </>
+            }
 
             <ClickHandler />
             

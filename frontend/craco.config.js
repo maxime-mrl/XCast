@@ -7,6 +7,7 @@ module.exports = {
       "@containers": path.resolve(__dirname, "src/containers"),
       "@pages": path.resolve(__dirname, "src/pages"),
       "@context": path.resolve(__dirname, "src/context/DataContext"),
+      "@store": path.resolve(__dirname, "src/store"),
     }
   }
 };

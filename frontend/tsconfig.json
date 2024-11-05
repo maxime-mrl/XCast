@@ -17,8 +17,9 @@
     "paths": {
       "@components": ["./src/components"],
       "@containers": ["./src/containers"],
-      "@context": ["./src/context/DataContext"],
       "@pages": ["./src/pages"],
+      "@context": ["./src/context/DataContext"],
+      "@store/*": ["./src/store/*"],
     },
     
     

@@ -8,6 +8,10 @@ declare module "leaflet" {
     static plotty(options: PlottyOptions): LeafletGeotiffRenderer;
     static vectorArrows(options: VectorArrowsOptions): LeafletGeotiffRenderer;
     static rgb(options: RGBOptions): LeafletGeotiffRenderer;
+
+    getMinMax(): {min: null | number, max: null | number};
+    getBounds(): LatLng;
+    getValueAtLatLng(lat: number, lon: number): number;
   }
 
   interface LeafletGeotiffOptions extends GridLayerOptions {

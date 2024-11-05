@@ -3,15 +3,17 @@ import RequestServices from "./requestService";
 import { createSelectors } from "./createSelector";
 const authService = new RequestServices("api/map");
 
+type mapCapabilitiesData = {
+    [key: string]: {
+        availableTimes: string[],
+        dataset: string[]
+    }
+}
+
 interface MapStore {
     mapCapabilities: null | {
         availableModels: string[],
-        data: {
-            [key: string]: {
-                availableTimes: string[],
-                dataset: string[]
-            }
-        }
+        data: mapCapabilitiesData
     },
     userSettings: {
         model: string | null,
@@ -22,7 +24,7 @@ interface MapStore {
     status: string,
     message: string,
     getCapabilities: () => Promise<void>,
-    updateSettings: (newSettings:MapStore["userSettings"]) => void,
+    updateSettings: (newSettings:Partial<MapStore["userSettings"]>) => void,
     updateTime: (newTime: {
         hours?: 1 | -1,
         days?: 1 | -1
@@ -37,6 +39,8 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
             ...newSettings
         } }))
     };
+
+    // update selected time
     const updateTime:MapStore["updateTime"] = (newTime) => {
         // get actuals values
         const settings = get().userSettings;
@@ -44,19 +48,15 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
         if (!settings.time || !settings.model || !mapCapabilities) return;
 
         // try to update the time
-        const time = new Date(settings.time.replace("_", ":"));
-        if (newTime.hours) time.setHours(time.getHours() + newTime.hours);
-        if (newTime.days) time.setDate(time.getDate() + newTime.days);
+        const time = new Date(settings.time);
+        time.setHours(time.getHours() + (newTime.hours ? newTime.hours : 0));
+        time.setDate(time.getDate() + (newTime.days ? newTime.days : 0));
+
+        const timeStr = time.toISOString().split(':00.000Z')[0] + "Z"; // remove unnecessary seconds and miliseconds
         // check time is available
-        if (!mapCapabilities[settings.model].availableTimes.find(available => new Date(available.replace("_", ":")).getTime() === time.getTime())) return;
+        if (!mapCapabilities[settings.model].availableTimes.find(available => available === timeStr)) return;
         // save the new time
-        const timeStr = time.toISOString().split(':')[0] + "_" + time.toISOString().split(':')[1].split(".")[0] + "Z"
-        set({
-            userSettings: {
-                ...settings,
-                time: timeStr,
-            }
-        })
+        updateSettings({ time: timeStr });
     }
 
     // get map capabilities on init
@@ -64,27 +64,28 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
         set({ status: "loading" });
         try {
             // fetch data
-            const data = await authService.get<{
-                [key: string]: {
-                    availableTimes: string[],
-                    dataset: string[]
-                }
-            }>("/getcapabilities");
+            const data = await authService.get<mapCapabilitiesData>("/getcapabilities");
             const mapCapabilities = {
                 availableModels: Object.keys(data),
                 data,
-            }
-            // usersettings
+            };
+
+            // init usersettings
             const userSettings = get().userSettings;
             // check model
-            if (!userSettings.model || !mapCapabilities.availableModels.find(model => model === userSettings.model)) userSettings.model = mapCapabilities.availableModels[0];
+            if (!userSettings.model || !mapCapabilities.availableModels.find(model => model === userSettings.model))
+                userSettings.model = mapCapabilities.availableModels[0];
             // check time
-            if (!userSettings.time || !data[userSettings.model].availableTimes.find(time => time === userSettings.time)) userSettings.time = data[userSettings.model].availableTimes[0];
+            if (!userSettings.time || !data[userSettings.model].availableTimes.find(time => time === userSettings.time))
+                userSettings.time = data[userSettings.model].availableTimes[0];
             // check selected dataset
-            if (!userSettings.selected || !data[userSettings.model].dataset.find(selected => selected === userSettings.selected)) userSettings.selected = data[userSettings.model].dataset[0];
+            if (!userSettings.selected || !data[userSettings.model].dataset.find(selected => selected === userSettings.selected))
+                userSettings.selected = data[userSettings.model].dataset[0];
 
+            // set state
             set({
                 mapCapabilities,
+                userSettings,
                 status: "success",
                 message: ""
             });
@@ -96,12 +97,12 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
             });
         }
     };
-    getCapabilities()
+    getCapabilities();
 
     return {
         mapCapabilities: null,
         userSettings: {
-            model: "arome", // selmected model
+            model: "arome", // selected model
             time: null, // selected time
             selected: null, // selected dataset
             level: 0 // selected level implemented later

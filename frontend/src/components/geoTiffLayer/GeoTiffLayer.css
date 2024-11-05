@@ -1,0 +1,9 @@
+.map-legend {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 2em;
+    background-color: aquamarine;
+    z-index: 1000;
+}
