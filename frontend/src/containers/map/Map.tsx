@@ -22,8 +22,8 @@ export default function Map() {
             />
             { userSettings.model && userSettings.selected && userSettings.time &&
             <>
-              <GeotiffLayer renderer={"rgb"}url={`${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/wspd.tif`} />
-              <GeotiffLayer renderer={"arrows"}url={`${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/${userSettings.selected}`} />
+              <GeotiffLayer renderer={"rgb"}url={`${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/${userSettings.selected}/wspd-0.tif`} />
+              <GeotiffLayer renderer={"arrows"}url={`${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/${userSettings.selected}/wdir-0.tif`} />
             </>
             }
 

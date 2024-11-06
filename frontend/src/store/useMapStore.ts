@@ -6,7 +6,12 @@ const authService = new RequestServices("api/map");
 type mapCapabilitiesData = {
     [key: string]: {
         availableTimes: string[],
-        dataset: string[]
+        dataset: {
+            [key: string]: {
+                names: string[],
+                levels: number[]
+            }
+        }
     }
 }
 
@@ -79,9 +84,9 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
             if (!userSettings.time || !data[userSettings.model].availableTimes.find(time => time === userSettings.time))
                 userSettings.time = data[userSettings.model].availableTimes[0];
             // check selected dataset
-            if (!userSettings.selected || !data[userSettings.model].dataset.find(selected => selected === userSettings.selected))
-                userSettings.selected = data[userSettings.model].dataset[0];
-
+            const datasets = Object.keys(data[userSettings.model].dataset)
+            if (!userSettings.selected || !datasets.find(selected => selected === userSettings.selected))
+                userSettings.selected = "wind"; //datasets[0];
             // set state
             set({
                 mapCapabilities,
