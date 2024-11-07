@@ -1,9 +1,9 @@
 export const windUnits = {
     defaultUnit: "m/s",
-    colorScale: [
-        [ "#ffffff", "#55ff55", "#ff5555" ],
-        [ 0, 5, 15 ]
-    ] as [ string[], number[] ],
+    colorScale: {
+        colors: [ "#ffffff", "#55ff55", "#ff5555" ],
+        levels: [ 0, 5, 15 ]
+    } as { colors: string[], levels: number[] },
     units: {
         "m/s": (base:number) => base,
         "km/h": (base:number) => base * 3.6,

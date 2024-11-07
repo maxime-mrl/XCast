@@ -3,13 +3,14 @@ import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 
 import L from "leaflet";
-
 import "leaflet-geotiff-2";
-
 import "leaflet-geotiff-2/dist/leaflet-geotiff-vector-arrows";
 
-import "./GeoTiffLayer.css"
 import Renderer from "./Renderer";
+import { windUnits } from "./units";
+
+import "./GeoTiffLayer.css";
+
 export default function GeoTiffLayer({ url, renderer }: {url: string, renderer: "arrows" | "rgb"}) {
   const map = useMap();
   useEffect(() => {
@@ -31,6 +32,17 @@ export default function GeoTiffLayer({ url, renderer }: {url: string, renderer: 
 
   if (renderer === "rgb") return (
     <div className="map-legend">
+      {windUnits.colorScale.colors.map((color, i) => (
+        <div style={{backgroundColor: color}} key={i}>
+          <i>
+            {windUnits.colorScale.levels[i]}
+          </i>
+        </div>
+      ))}
+      <div className="desc">
+        Vent (sol)
+        m/s
+      </div>
     </div>
   )
   return null;

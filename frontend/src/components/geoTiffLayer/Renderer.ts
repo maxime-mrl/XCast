@@ -3,7 +3,7 @@ import "leaflet-geotiff-2";
 import chroma from "chroma-js";
 import { windUnits } from "./units";
 
-const windScale = chroma.scale(windUnits.colorScale[0]).domain(windUnits.colorScale[1])
+const windScale = chroma.scale(windUnits.colorScale.colors).domain(windUnits.colorScale.levels)
 
 // Define your custom renderer by extending L.LeafletGeotiffRenderer
 const Renderer = L.LeafletGeotiffRenderer.extend({
@@ -16,7 +16,7 @@ const Renderer = L.LeafletGeotiffRenderer.extend({
         const rasterImageData = ctx.createImageData(raster.width, raster.height);
   
         raster.data[0].forEach((value, i) => {
-            // Grayscale: Set R, G, and B to the same intensity
+            // Set R, G, B And Alpha
             rasterImageData.data[i * 4] = windScale(value).rgb()[0];       // Red
             rasterImageData.data[i * 4 + 1] = windScale(value).rgb()[1];   // Green
             rasterImageData.data[i * 4 + 2] = windScale(value).rgb()[2];   // Blue
