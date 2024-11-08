@@ -86,7 +86,7 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
             // check selected dataset
             const datasets = Object.keys(data[userSettings.model].dataset)
             if (!userSettings.selected || !datasets.find(selected => selected === userSettings.selected))
-                userSettings.selected = "wind"; //datasets[0];
+                userSettings.selected = datasets[0];
             // set state
             set({
                 mapCapabilities,

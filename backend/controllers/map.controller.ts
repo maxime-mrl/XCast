@@ -4,6 +4,13 @@ import path from "path"
 import rootPath from "@rootPath";
 
 const mapsPath = path.join(rootPath, "public", "map"); // map data location
+const dataOrder = [
+    "wind",
+    "temp",
+    "rain",
+    "hum",
+    "th",
+]
 
 /* -------------------------------------------------------------------------- */
 /*                       GET AVAILABLE MODELS AND HOURS                       */
@@ -15,8 +22,8 @@ export function getCapabilities(_req:Request, res:Response) {
     fs.readdirSync(mapsPath).forEach((model) => {
         // get available times
         const availableTimes = fs.readdirSync(path.join(rootPath, "public", "map", model));
-        // get dataset (assume dataset is the same for each hours as it should)
-        const datasets = fs.readdirSync(path.join(rootPath, "public", "map", model, availableTimes[0]));
+        // get dataset (assume dataset is the same for each hours as it should) and sort it based on predefined order
+        const datasets = fs.readdirSync(path.join(rootPath, "public", "map", model, availableTimes[0])).sort((a,b) => dataOrder.indexOf(a) - dataOrder.indexOf(b));
         // get levels and file name for each dataset
         const parsedDataset: {
             [key: string]: {
