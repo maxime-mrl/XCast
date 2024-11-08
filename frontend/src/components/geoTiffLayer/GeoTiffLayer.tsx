@@ -1,4 +1,4 @@
-import { act, useEffect } from "react";
+import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 
 import L from "leaflet";
@@ -10,9 +10,8 @@ import Renderer from "./Renderer";
 
 import "./GeoTiffLayer.css";
 import { useUnitStore } from "@store/useUnitsStore";
-import { windUnits } from "./units";
 
-export default function GeoTiffLayer({ url, renderer, name }: {url: string, renderer: "arrows" | "rgb", name: mapDataTypes | null}) {
+export default function GeoTiffLayer({ url, renderer, name, level }: {url: string, renderer: "arrows" | "rgb", name: mapDataTypes | null, level: number | null}) {
   const units = useUnitStore();
   const activeUnit = name ? units[name] : null;
 
@@ -46,8 +45,8 @@ export default function GeoTiffLayer({ url, renderer, name }: {url: string, rend
         </div>
       ))}
       <div className="desc">
-        Vent (sol)
-        m/s
+        {units.names.get(name ? name : "")} ({level ? level : "sol"}) <br />
+        {activeUnit.selected}
       </div>
     </div>
   )

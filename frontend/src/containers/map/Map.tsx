@@ -7,7 +7,7 @@ import "leaflet-geotiff-2/src/leaflet-geotiff"
 import './Map.css'
 import { useDataContext } from '@context'
 import L, { LatLng } from 'leaflet'
-import { GeotiffLayer } from '@components'
+import { GeotiffLayer, TimeSelector } from '@components'
 import { useMapStore } from '@store/useMapStore'
 
 export default function Map() {
@@ -38,8 +38,8 @@ export default function Map() {
                 attribution='Tiles &copy; Esri &mdash; Source: Esri, Esri Japan, Esri China (Hong Kong), Esri (Thailand), DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, METI, TomTom'
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
             />
-            { baseUrl !== "" && files.length !== 0 && userSettings.level !== null && files.map(file => (
-              <GeotiffLayer renderer={/dir/.test(file) ? "arrows" : "rgb"} url={`${baseUrl}/${file}-${userSettings.level}.tif`} name={userSettings.selected} key={file} />
+            { baseUrl !== "" && files.length !== 0 && files.map(file => (
+              <GeotiffLayer renderer={/dir/.test(file) ? "arrows" : "rgb"} url={`${baseUrl}/${file}-${userSettings.level}.tif`} name={userSettings.selected} level={userSettings.level} key={file} />
             ))
 
             }
@@ -54,6 +54,7 @@ export default function Map() {
               })}>
               </Marker>
             }
+            <TimeSelector />
         </MapContainer>
   )
 }

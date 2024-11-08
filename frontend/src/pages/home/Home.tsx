@@ -1,5 +1,5 @@
 import "./Home.css"
-import { Forecast, Map, Settings, TimeSelector } from "@containers";
+import { Forecast, Map, Settings } from "@containers";
 
 export default function Home() {
     return (
@@ -9,7 +9,6 @@ export default function Home() {
                 <Map />
             </div>
             <Settings />
-            <TimeSelector />
         </div>
     )
 }

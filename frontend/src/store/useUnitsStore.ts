@@ -36,14 +36,14 @@ export const useUnitStore = createSelectors(create<UnitsStore>()((set, get) => {
             }
         },
         temp: {
-            selected: "C",
+            selected: "°C",
             scale: {
                 colors: [ "#ffffff", "#55ff55", "#ff5555" ],
                 levels: [ 0, 20, 35 ]
             },
             units: {
-                "C": (base:number) => base,
-                "F": (base:number) => base * 3.6,
+                "°C": (base:number) => base,
+                "°F": (base:number) => base * 3.6,
             }
         },
         names
