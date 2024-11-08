@@ -23,7 +23,7 @@ interface MapStore {
     userSettings: {
         model: string | null,
         time: string | null,
-        selected: string | null,
+        selected: mapDataTypes | null,
         level: number | null
     }
     status: string,
@@ -84,7 +84,7 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
             if (!userSettings.time || !data[userSettings.model].availableTimes.find(time => time === userSettings.time))
                 userSettings.time = data[userSettings.model].availableTimes[0];
             // check selected dataset
-            const datasets = Object.keys(data[userSettings.model].dataset)
+            const datasets = Object.keys(data[userSettings.model].dataset) as mapDataTypes[];
             if (!userSettings.selected || !datasets.find(selected => selected === userSettings.selected))
                 userSettings.selected = datasets[0];
             // set state

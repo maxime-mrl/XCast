@@ -1,5 +1,4 @@
-// ts-nocheck
-import { useEffect } from "react";
+import { act, useEffect } from "react";
 import { useMap } from "react-leaflet";
 
 import L from "leaflet";
@@ -8,11 +7,15 @@ import "leaflet-geotiff-2/dist/leaflet-geotiff-vector-arrows";
 import chroma from "chroma-js";
 
 import Renderer from "./Renderer";
-import { windUnits } from "./units";
 
 import "./GeoTiffLayer.css";
+import { useUnitStore } from "@store/useUnitsStore";
+import { windUnits } from "./units";
 
-export default function GeoTiffLayer({ url, renderer }: {url: string, renderer: "arrows" | "rgb"}) {
+export default function GeoTiffLayer({ url, renderer, name }: {url: string, renderer: "arrows" | "rgb", name: mapDataTypes | null}) {
+  const units = useUnitStore();
+  const activeUnit = name ? units[name] : null;
+
   const map = useMap();
   useEffect(() => {
     let isError = false;
@@ -20,7 +23,7 @@ export default function GeoTiffLayer({ url, renderer }: {url: string, renderer: 
       renderer: renderer === "arrows" ?
         L.LeafletGeotiff.vectorArrows({ arrowSize: 20, }) :
         new Renderer({
-          chromaScale: chroma.scale(windUnits.colorScale.colors).domain(windUnits.colorScale.levels)
+          chromaScale: activeUnit ? chroma.scale(activeUnit.scale.colors).domain(activeUnit.scale.levels) : null
         }),
       onError: (er:any) => {
         isError = true;
@@ -31,14 +34,14 @@ export default function GeoTiffLayer({ url, renderer }: {url: string, renderer: 
     if (!isError) geoTiffLayer.addTo(map);
     // Cleanup
     return () => { map.removeLayer(geoTiffLayer) };
-  }, [map, url, renderer]);
+  }, [map, url, renderer, activeUnit]);
 
-  if (renderer === "rgb") return (
+  if (renderer === "rgb" && activeUnit) return (
     <div className="map-legend">
-      {windUnits.colorScale.colors.map((color, i) => (
+      {activeUnit.scale.colors.map((color, i) => (
         <div style={{backgroundColor: color}} key={i}>
           <i>
-            {windUnits.colorScale.levels[i]}
+            {activeUnit.scale.levels[i]}
           </i>
         </div>
       ))}

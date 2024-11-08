@@ -39,7 +39,7 @@ export default function Map() {
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
             />
             { baseUrl !== "" && files.length !== 0 && userSettings.level !== null && files.map(file => (
-              <GeotiffLayer renderer={/dir/.test(file) ? "arrows" : "rgb"} url={`${baseUrl}/${file}-${userSettings.level}.tif`} key={file} />
+              <GeotiffLayer renderer={/dir/.test(file) ? "arrows" : "rgb"} url={`${baseUrl}/${file}-${userSettings.level}.tif`} name={userSettings.selected} key={file} />
             ))
 
             }

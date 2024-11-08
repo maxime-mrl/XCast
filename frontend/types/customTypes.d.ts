@@ -1,0 +1,1 @@
+declare type mapDataTypes = "wind" | "temp"

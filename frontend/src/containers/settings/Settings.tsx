@@ -11,7 +11,7 @@ export default function Settings() {
   const { settings:[isOpen, setIsOpen] } = useDataContext();
   
   const toggleSettings = () => setIsOpen(prevState => !prevState);
-  const [ datas, setDatas ] = useState<string[]>([]);
+  const [ datas, setDatas ] = useState<mapDataTypes[]>([]);
 
   const mapCapabilities = useMapStore.use.mapCapabilities();
   const userSettings = useMapStore.use.userSettings();
@@ -20,7 +20,7 @@ export default function Settings() {
 
   useEffect(() => {
     if (!mapCapabilities || !userSettings.model) return
-    setDatas(Object.keys(mapCapabilities.data[userSettings.model].dataset))
+    setDatas(Object.keys(mapCapabilities.data[userSettings.model].dataset) as mapDataTypes[])
   }, [mapCapabilities, userSettings.model])
 
   return (

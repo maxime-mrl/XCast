@@ -31,6 +31,6 @@ const Renderer = L.LeafletGeotiffRenderer.extend({
         ctx.putImageData(imageData, args.xStart, args.yStart); // debug output
       }
     
-});
+}) as any;
 
 export default Renderer;
