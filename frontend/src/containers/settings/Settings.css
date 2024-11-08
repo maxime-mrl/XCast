@@ -19,8 +19,8 @@
 .settingsContainer.active {
     visibility: visible;
     opacity: 1;
-    width: 20em;
-    width: min(20em, 75%);
+    width: 15em;
+    width: min(15em, 75%);
 }
 
 .settingsContainer .about {

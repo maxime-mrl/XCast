@@ -1,15 +1,19 @@
 import L, { LeafletGeotiffRendererOptions } from "leaflet";
 import "leaflet-geotiff-2";
 import chroma from "chroma-js";
-import { windUnits } from "./units";
 
-const windScale = chroma.scale(windUnits.colorScale.colors).domain(windUnits.colorScale.levels)
+// const windScale = chroma.scale(windUnits.colorScale.colors).domain(windUnits.colorScale.levels);
+const defaultScale = chroma.scale(["ffffff", "000000"]).domain([0, 30]);
 
-// Define your custom renderer by extending L.LeafletGeotiffRenderer
+interface CustomRendererOptions extends LeafletGeotiffRendererOptions {
+    chromaScale?: chroma.Scale; // Optional color scale
+}
+
 const Renderer = L.LeafletGeotiffRenderer.extend({
-    initialize: function (options:LeafletGeotiffRendererOptions) {
+    initialize: function (options:CustomRendererOptions) {
         // Call the base class’s initialize method
         L.setOptions(this, options);
+        this.scale = options && options.chromaScale ? options.chromaScale : defaultScale;
     },
     
     render: function (raster: {data: Uint32Array[], width: number, height: number}, canvas:HTMLCanvasElement, ctx:CanvasRenderingContext2D, args:any) {
@@ -17,10 +21,10 @@ const Renderer = L.LeafletGeotiffRenderer.extend({
   
         raster.data[0].forEach((value, i) => {
             // Set R, G, B And Alpha
-            rasterImageData.data[i * 4] = windScale(value).rgb()[0];       // Red
-            rasterImageData.data[i * 4 + 1] = windScale(value).rgb()[1];   // Green
-            rasterImageData.data[i * 4 + 2] = windScale(value).rgb()[2];   // Blue
-            rasterImageData.data[i * 4 + 3] = value < 0 ? 0 : 255;     // Alpha
+            rasterImageData.data[i * 4] = this.scale(value).rgba()[0];       // Red
+            rasterImageData.data[i * 4 + 1] = this.scale(value).rgba()[1];   // Green
+            rasterImageData.data[i * 4 + 2] = this.scale(value).rgba()[2];   // Blue
+            rasterImageData.data[i * 4 + 3] = value < 0 ? 0 : 150;     // Alpha
         })
   
         const imageData = this.parent.transform(rasterImageData, args);

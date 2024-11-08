@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import "leaflet/dist/leaflet.css"
 import "leaflet/dist/leaflet.js"
 import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet'
@@ -12,7 +12,25 @@ import { useMapStore } from '@store/useMapStore'
 
 export default function Map() {
   const { forecast:[position]} = useDataContext();
+  const [baseUrl, setBaseUrl] = useState("");
+  const [files, setFiles] = useState<string[]>([""]);
   const userSettings = useMapStore.use.userSettings();
+  const mapCapabilities = useMapStore.use.mapCapabilities();
+
+  useEffect(() => {
+    // check that zustand is well initialized
+    const dataFiles = mapCapabilities?.data[userSettings.model ? userSettings.model : ""].dataset[userSettings.selected ? userSettings.selected : ""].names;
+    if (!userSettings.time || !userSettings.model || !userSettings.selected || !dataFiles) return;
+    // if wind dir put it at the end of the array
+    const dirIndex = dataFiles.findIndex(file => /dir/.test(file));
+    if (dirIndex !== -1) {
+      dataFiles.push(dataFiles[dirIndex]);
+      dataFiles.splice(dirIndex, 1);
+    }
+    // set state
+    setBaseUrl(`${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/${userSettings.selected}`);
+    setFiles(dataFiles)
+  }, [userSettings.time, userSettings.model, userSettings.selected, mapCapabilities]);
 
   return (
         <MapContainer center={[-31, 148]} zoom={7} scrollWheelZoom={true} zoomControl={false}>
@@ -20,11 +38,10 @@ export default function Map() {
                 attribution='Tiles &copy; Esri &mdash; Source: Esri, Esri Japan, Esri China (Hong Kong), Esri (Thailand), DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, METI, TomTom'
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
             />
-            { userSettings.model && userSettings.selected && userSettings.time &&
-            <>
-              <GeotiffLayer renderer={"rgb"}url={`${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/${userSettings.selected}/wspd-0.tif`} />
-              <GeotiffLayer renderer={"arrows"}url={`${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/${userSettings.selected}/wdir-0.tif`} />
-            </>
+            { baseUrl !== "" && files.length !== 0 && userSettings.level !== null && files.map(file => (
+              <GeotiffLayer renderer={/dir/.test(file) ? "arrows" : "rgb"} url={`${baseUrl}/${file}-${userSettings.level}.tif`} key={file} />
+            ))
+
             }
 
             <ClickHandler />

@@ -94,7 +94,7 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
                 status: "success",
                 message: ""
             });
-            console.log("setcapabilities")
+            console.log(mapCapabilities)
         } catch (err) {
             set({
                 status: "error",

@@ -20,8 +20,9 @@ declare module "leaflet" {
     
     setParent(parent: LeafletGeotiff): void;
     
-    render(raster: any, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, args: any): void;
+    render(raster: {data: Uint32Array[], width: number, height: number}, canvas:HTMLCanvasElement, ctx:CanvasRenderingContext2D, args:any): void;
   }
+
 
   interface LeafletGeotiffOptions extends GridLayerOptions {
     renderer: LeafletGeotiffRenderer;
@@ -71,6 +72,4 @@ declare module "leaflet" {
     transpValue?: number,
     renderer: any, // wtf?
   }
-
-  interface LeafletGeotiffRenderer {}
 }

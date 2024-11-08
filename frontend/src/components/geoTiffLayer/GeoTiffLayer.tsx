@@ -5,6 +5,7 @@ import { useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet-geotiff-2";
 import "leaflet-geotiff-2/dist/leaflet-geotiff-vector-arrows";
+import chroma from "chroma-js";
 
 import Renderer from "./Renderer";
 import { windUnits } from "./units";
@@ -18,7 +19,9 @@ export default function GeoTiffLayer({ url, renderer }: {url: string, renderer: 
     const geoTiffLayer = new L.LeafletGeotiff(url, {
       renderer: renderer === "arrows" ?
         L.LeafletGeotiff.vectorArrows({ arrowSize: 20, }) :
-        new Renderer(),
+        new Renderer({
+          chromaScale: chroma.scale(windUnits.colorScale.colors).domain(windUnits.colorScale.levels)
+        }),
       onError: (er:any) => {
         isError = true;
         console.log(`error: ${er}`)

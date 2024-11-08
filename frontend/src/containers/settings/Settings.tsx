@@ -19,9 +19,9 @@ export default function Settings() {
   const unitsName = useUnitStore.use.names();
 
   useEffect(() => {
-    if (!mapCapabilities) return
-    setDatas(Object.keys(mapCapabilities.data[mapCapabilities.availableModels[0]].dataset))
-  }, [mapCapabilities])
+    if (!mapCapabilities || !userSettings.model) return
+    setDatas(Object.keys(mapCapabilities.data[userSettings.model].dataset))
+  }, [mapCapabilities, userSettings.model])
 
   return (
     <>
@@ -34,7 +34,7 @@ export default function Settings() {
         </a>
         <article className="datas">
           {datas.map(data => (
-            <button onClick={() => {updateSettings({ selected: data })}} className={data === userSettings.selected ? "select-data active" : "select-data"} >
+            <button onClick={() => {updateSettings({ selected: data })}} className={data === userSettings.selected ? "select-data active" : "select-data"} key={data} >
               {unitsName.get(data)}
             </button>
           ))
