@@ -19,6 +19,7 @@ export default function TimeSelector() {
   const userSettings = useMapStore.use.userSettings();
   const updateTime = useMapStore.use.updateTime();
   const [date, setDate] = useState("");
+  
   useEffect(() => {
     if (userSettings.time) {
       const forecastDate = new Date(userSettings.time);
@@ -26,7 +27,8 @@ export default function TimeSelector() {
       const minutes = forecastDate.getMinutes() < 10 ? `0${forecastDate.getMinutes()}` : forecastDate.getMinutes();
       setDate(`${days[forecastDate.getDay()]}. ${hours}:${minutes}`);
     }
-  }, [userSettings.time])
+  }, [userSettings.time]);
+
   return (
     <div className='time-selector'>
       <div className="infos">

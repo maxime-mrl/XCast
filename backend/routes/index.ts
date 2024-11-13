@@ -2,10 +2,10 @@ import path from "path";
 import express from "express";
 const router = express.Router();
 import rootPath from "@rootPath";
-import mapRoutes from "./api/map.routes";
+import mapRoutes from "./api/forecast.routes";
 
 /* ----------------------------------- API ---------------------------------- */
-router.use("/api/map", mapRoutes);
+router.use("/api/forecast", mapRoutes);
 
 /* ----------------------------- PUBLIC FOLDERS ----------------------------- */
 router.use("/map", express.static(path.join(rootPath, "public", "map")));

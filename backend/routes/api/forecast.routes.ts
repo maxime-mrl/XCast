@@ -1,4 +1,4 @@
-import { getCapabilities } from "@controllers/map.controller";
+import { getCapabilities } from "@controllers/forecast.controller";
 import express from "express";
 const router = express.Router();
 

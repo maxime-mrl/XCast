@@ -15,7 +15,7 @@ export default function Map() {
   const [baseUrl, setBaseUrl] = useState("");
   const [files, setFiles] = useState<string[]>([""]);
   const userSettings = useMapStore.use.userSettings();
-  const mapCapabilities = useMapStore.use.mapCapabilities();
+  const mapCapabilities = useMapStore.use.forecastCapabilities();
 
   useEffect(() => {
     // check that zustand is well initialized
@@ -33,29 +33,31 @@ export default function Map() {
   }, [userSettings.time, userSettings.model, userSettings.selected, mapCapabilities]);
 
   return (
-        <MapContainer center={[-31, 148]} zoom={7} scrollWheelZoom={true} zoomControl={false}>
-            <TileLayer
-                attribution='Tiles &copy; Esri &mdash; Source: Esri, Esri Japan, Esri China (Hong Kong), Esri (Thailand), DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, METI, TomTom'
-                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
-            />
-            { baseUrl !== "" && files.length !== 0 && files.map(file => (
-              <GeotiffLayer renderer={/dir/.test(file) ? "arrows" : "rgb"} url={`${baseUrl}/${file}-${userSettings.level}.tif`} name={userSettings.selected} level={userSettings.level} key={file} />
-            ))
+    <div className="map">
+      <MapContainer center={[-31, 148]} zoom={7} scrollWheelZoom={true} zoomControl={false}>
+          <TileLayer
+              attribution='Tiles &copy; Esri &mdash; Source: Esri, Esri Japan, Esri China (Hong Kong), Esri (Thailand), DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, METI, TomTom'
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+          />
+          { baseUrl !== "" && files.length !== 0 && files.map(file => (
+            <GeotiffLayer renderer={/dir/.test(file) ? "arrows" : "rgb"} url={`${baseUrl}/${file}-${userSettings.level}.tif`} name={userSettings.selected} level={userSettings.level} key={file} />
+          ))
+          
+        }
 
-            }
-
-            <ClickHandler />
-            
-            {position && 
-              <Marker position={position} icon={L.icon({
-                iconUrl: "/images/marker.png", // Path to your custom marker icon
-                iconSize: [38, 57], // Size of the icon
-                iconAnchor: [19, 57], // Point where the icon should be anchored (left point or center)
-              })}>
-              </Marker>
-            }
-            <TimeSelector />
-        </MapContainer>
+          
+          {position && 
+            <Marker position={position} icon={L.icon({
+              iconUrl: "/images/marker.png", // Path to your custom marker icon
+              iconSize: [38, 57], // Size of the icon
+              iconAnchor: [19, 57], // Point where the icon should be anchored (left point or center)
+            })}>
+            </Marker>
+          }
+        <ClickHandler />
+      </MapContainer>
+      <TimeSelector />  
+    </div>
   )
 }
 

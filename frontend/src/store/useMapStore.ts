@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import RequestServices from "./requestService";
 import { createSelectors } from "./createSelector";
-const authService = new RequestServices("api/map");
+const forecastService = new RequestServices("api/forecast");
 
-type mapCapabilitiesData = {
+type forecastCapabilitiesData = {
     [key: string]: {
         availableTimes: string[],
         dataset: {
@@ -15,10 +15,10 @@ type mapCapabilitiesData = {
     }
 }
 
-interface MapStore {
-    mapCapabilities: null | {
+interface ForecastStore {
+    forecastCapabilities: null | {
         availableModels: string[],
-        data: mapCapabilitiesData
+        data: forecastCapabilitiesData
     },
     userSettings: {
         model: string | null,
@@ -29,16 +29,16 @@ interface MapStore {
     status: string,
     message: string,
     getCapabilities: () => Promise<void>,
-    updateSettings: (newSettings:Partial<MapStore["userSettings"]>) => void,
+    updateSettings: (newSettings:Partial<ForecastStore["userSettings"]>) => void,
     updateTime: (newTime: {
         hours?: 1 | -1,
         days?: 1 | -1
     }) => void
 }
 
-export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
+export const useMapStore = createSelectors(create<ForecastStore>()((set, get) => {
     // update users preferences
-    const updateSettings:MapStore["updateSettings"] = (newSettings) => {
+    const updateSettings:ForecastStore["updateSettings"] = (newSettings) => {
         set((state) => ({ userSettings: {
             ...state.userSettings,
             ...newSettings
@@ -46,11 +46,11 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
     };
 
     // update selected time
-    const updateTime:MapStore["updateTime"] = (newTime) => {
+    const updateTime:ForecastStore["updateTime"] = (newTime) => {
         // get actuals values
         const settings = get().userSettings;
-        const mapCapabilities = get().mapCapabilities?.data;
-        if (!settings.time || !settings.model || !mapCapabilities) return;
+        const forecastCapabilities = get().forecastCapabilities?.data;
+        if (!settings.time || !settings.model || !forecastCapabilities) return;
 
         // try to update the time
         const time = new Date(settings.time);
@@ -59,7 +59,7 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
 
         const timeStr = time.toISOString().split(':00.000Z')[0] + "Z"; // remove unnecessary seconds and miliseconds
         // check time is available
-        if (!mapCapabilities[settings.model].availableTimes.find(available => available === timeStr)) return;
+        if (!forecastCapabilities[settings.model].availableTimes.find(available => available === timeStr)) return;
         // save the new time
         updateSettings({ time: timeStr });
     }
@@ -69,8 +69,8 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
         set({ status: "loading" });
         try {
             // fetch data
-            const data = await authService.get<mapCapabilitiesData>("/getcapabilities");
-            const mapCapabilities = {
+            const data = await forecastService.get<forecastCapabilitiesData>("/getcapabilities");
+            const forecastCapabilities = {
                 availableModels: Object.keys(data),
                 data,
             };
@@ -78,8 +78,8 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
             // init usersettings
             const userSettings = get().userSettings;
             // check model
-            if (!userSettings.model || !mapCapabilities.availableModels.find(model => model === userSettings.model))
-                userSettings.model = mapCapabilities.availableModels[0];
+            if (!userSettings.model || !forecastCapabilities.availableModels.find(model => model === userSettings.model))
+                userSettings.model = forecastCapabilities.availableModels[0];
             // check time
             if (!userSettings.time || !data[userSettings.model].availableTimes.find(time => time === userSettings.time))
                 userSettings.time = data[userSettings.model].availableTimes[0];
@@ -89,23 +89,23 @@ export const useMapStore = createSelectors(create<MapStore>()((set, get) => {
                 userSettings.selected = datasets[0];
             // set state
             set({
-                mapCapabilities,
+                forecastCapabilities,
                 userSettings,
                 status: "success",
                 message: ""
             });
-            console.log(mapCapabilities)
+            console.log(forecastCapabilities)
         } catch (err) {
             set({
                 status: "error",
-                message: authService.parseError(err)
+                message: forecastService.parseError(err)
             });
         }
     };
     getCapabilities();
 
     return {
-        mapCapabilities: null,
+        forecastCapabilities: null,
         userSettings: {
             model: "arome", // selected model
             time: null, // selected time
