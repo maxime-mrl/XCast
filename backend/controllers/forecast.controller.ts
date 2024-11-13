@@ -54,3 +54,41 @@ export function getCapabilities(_req:Request, res:Response) {
     });
     res.status(200).json(Object.fromEntries(models));
 }
+
+/* -------------------------------------------------------------------------- */
+/*                      GET DETAILED FORECAST FOR A POINT                     */
+/* -------------------------------------------------------------------------- */
+export function getForecast(req:Request, res:Response) { // req.quey = { lat: number, lon: number, model:string, time:string }
+    // parse req query checking entries
+    if (
+        typeof req.query.lat !== "string" || isNaN(parseFloat(req.query.lat)) ||
+        typeof req.query.lon !== "string" || isNaN(parseFloat(req.query.lon)) || 
+        typeof req.query.model !== "string" ||
+        typeof req.query.time !== "string"
+    ) throw new Error("Invalid entries");
+    const lat = parseFloat(req.query.lat);
+    const lon = parseFloat(req.query.lon);
+    const { model, time } = req.query;
+    console.log({lat, lon, model, time}) // should be used to get the correct forecast but for now it'll be soontm
+    const data = JSON.parse(fs.readFileSync(path.join(rootPath, "public", "data", "arome__0025__IP1__19H24H__2024-11-12T03_00_00Z.split150.json")).toString());
+    const selectedForecast: {
+        [key:string]:any
+    }[] = [];
+    data.forecast.forEach((time:{[key:string]:any}) => {
+        console.log(time.forecastTime)
+        const forecast:{ [key:string]:any } = {};
+        for (const [ key ] of Object.entries(time.data)) {
+            forecast[key] = {};
+            for (const [ level ] of Object.entries(time.data[key].values)) {
+                forecast[key][level] = time.data[key].values[level][0]; // 0 will be the selected loc (for now it's always the first one)
+            }
+        }
+        selectedForecast.push({
+            forecastTime: time.forecastTime,
+            forecast
+        })
+    });
+    console.log("selectedForecast")
+    
+    res.status(200).json(selectedForecast);
+}
