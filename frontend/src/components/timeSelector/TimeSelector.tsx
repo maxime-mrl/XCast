@@ -3,7 +3,7 @@ import { faAngleLeft, faAngleRight, faAnglesLeft, faAnglesRight } from '@fortawe
 
 import './TimeSelector.css';
 import { useEffect, useState } from 'react';
-import { useMapStore } from '@store/useMapStore';
+import { useForecastStore } from '@store/useForecastStore';
 
 const days = [
   "dim",
@@ -16,8 +16,8 @@ const days = [
 ]
 
 export default function TimeSelector() {
-  const userSettings = useMapStore.use.userSettings();
-  const updateTime = useMapStore.use.updateTime();
+  const userSettings = useForecastStore.use.userSettings();
+  const updateTime = useForecastStore.use.updateTime();
   const [date, setDate] = useState("");
   
   useEffect(() => {

@@ -5,10 +5,11 @@ export default class RequestServices {
         this.API_URL = `${process.env.REACT_APP_API_URL}/${APIEndPoint}`;
     }
 
-    get = async<T> (endpoint:string, token?:string) => {
+    get = async<T> (endpoint:string, reqData?:object, token?:string) => {
         const data = await RequestServices.#fetchRequest(this.API_URL + endpoint, {
             method: "GET",
-            token
+            token,
+            searchParams: reqData? new URLSearchParams(reqData as any) : undefined
         })
         return data as T;
     }
@@ -48,8 +49,10 @@ export default class RequestServices {
     static async #fetchRequest(url:string, options:{
         method: "GET" | "POST" | "DELETE" | "PUT",
         token?: string,
-        data?: object
+        data?: object,
+        searchParams?: URLSearchParams
     }) {
+        if (options.searchParams) url += "?" + options.searchParams.toString();
         // set headers
         const headers: Record<string, string> = { 'Content-Type': 'application/json' };
         if ("token" in options) headers['Authorization'] = `Bearer ${options.token}`;

@@ -3,9 +3,18 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useDataContext } from "@context";
 
 import './Forecast.css'
+import { useForecastStore } from "@store/useForecastStore";
+import { useEffect } from "react";
 
 export default function Forecast() {
   const { forecast:[position, setPosition] } = useDataContext();
+  const getForecast = useForecastStore.use.getForecast();
+  const userSettings = useForecastStore.use.userSettings();
+  useEffect(() => {
+    console.log("position update")
+    if (position) getForecast(position)
+  }, [position, getForecast, userSettings.time])
+
 
   return (
     <>

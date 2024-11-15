@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import RequestServices from "./requestService";
 import { createSelectors } from "./createSelector";
+import { LatLng } from "leaflet";
 const forecastService = new RequestServices("api/forecast");
 
 type forecastCapabilitiesData = {
@@ -20,6 +21,9 @@ interface ForecastStore {
         availableModels: string[],
         data: forecastCapabilitiesData
     },
+    forecast: null | {
+
+    }
     userSettings: {
         model: string | null,
         time: string | null,
@@ -29,6 +33,7 @@ interface ForecastStore {
     status: string,
     message: string,
     getCapabilities: () => Promise<void>,
+    getForecast: (LatLng: LatLng) => Promise<void>,
     updateSettings: (newSettings:Partial<ForecastStore["userSettings"]>) => void,
     updateTime: (newTime: {
         hours?: 1 | -1,
@@ -36,7 +41,7 @@ interface ForecastStore {
     }) => void
 }
 
-export const useMapStore = createSelectors(create<ForecastStore>()((set, get) => {
+export const useForecastStore = createSelectors(create<ForecastStore>()((set, get) => {
     // update users preferences
     const updateSettings:ForecastStore["updateSettings"] = (newSettings) => {
         set((state) => ({ userSettings: {
@@ -44,6 +49,21 @@ export const useMapStore = createSelectors(create<ForecastStore>()((set, get) =>
             ...newSettings
         } }))
     };
+
+    // update detailed forecast data
+    const getForecast:ForecastStore["getForecast"] = async (LatLng) => {
+        set({ status: "loading", forecast: null });
+        try {
+            const { time, model } = get().userSettings
+            const data = await forecastService.get<forecastCapabilitiesData>("/point", {...LatLng, time, model});
+            console.log(data)
+        } catch (err) {
+            set({
+                status: "error",
+                message: forecastService.parseError(err)
+            });
+        }
+    }
 
     // update selected time
     const updateTime:ForecastStore["updateTime"] = (newTime) => {
@@ -62,11 +82,11 @@ export const useMapStore = createSelectors(create<ForecastStore>()((set, get) =>
         if (!forecastCapabilities[settings.model].availableTimes.find(available => available === timeStr)) return;
         // save the new time
         updateSettings({ time: timeStr });
-    }
+    };
 
     // get map capabilities on init
     const getCapabilities = async () => {
-        set({ status: "loading" });
+        set({ status: "loading", forecastCapabilities: null });
         try {
             // fetch data
             const data = await forecastService.get<forecastCapabilitiesData>("/getcapabilities");
@@ -106,6 +126,7 @@ export const useMapStore = createSelectors(create<ForecastStore>()((set, get) =>
 
     return {
         forecastCapabilities: null,
+        forecast: null,
         userSettings: {
             model: "arome", // selected model
             time: null, // selected time
@@ -117,6 +138,7 @@ export const useMapStore = createSelectors(create<ForecastStore>()((set, get) =>
         message: "",
         updateSettings,
         getCapabilities,
+        getForecast,
         updateTime
     }
 }));

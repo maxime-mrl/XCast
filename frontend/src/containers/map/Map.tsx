@@ -8,14 +8,14 @@ import './Map.css'
 import { useDataContext } from '@context'
 import L, { LatLng } from 'leaflet'
 import { GeotiffLayer, TimeSelector } from '@components'
-import { useMapStore } from '@store/useMapStore'
+import { useForecastStore } from '@store/useForecastStore'
 
 export default function Map() {
   const { forecast:[position]} = useDataContext();
   const [baseUrl, setBaseUrl] = useState("");
   const [files, setFiles] = useState<string[]>([""]);
-  const userSettings = useMapStore.use.userSettings();
-  const mapCapabilities = useMapStore.use.forecastCapabilities();
+  const userSettings = useForecastStore.use.userSettings();
+  const mapCapabilities = useForecastStore.use.forecastCapabilities();
 
   useEffect(() => {
     // check that zustand is well initialized

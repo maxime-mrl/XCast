@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useDataContext } from "@context";
-import { useMapStore } from "@store/useMapStore";
+import { useForecastStore } from "@store/useForecastStore";
 
 import './Settings.css'
 import { useEffect, useState } from "react";
@@ -13,9 +13,9 @@ export default function Settings() {
   const toggleSettings = () => setIsOpen(prevState => !prevState);
   const [ datas, setDatas ] = useState<mapDataTypes[]>([]);
 
-  const forecastCapabilities = useMapStore.use.forecastCapabilities();
-  const userSettings = useMapStore.use.userSettings();
-  const updateSettings = useMapStore.use.updateSettings();
+  const forecastCapabilities = useForecastStore.use.forecastCapabilities();
+  const userSettings = useForecastStore.use.userSettings();
+  const updateSettings = useForecastStore.use.updateSettings();
   const unitsName = useUnitStore.use.names();
 
   useEffect(() => {
