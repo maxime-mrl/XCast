@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import RequestServices from "./requestService";
+import RequestServices from "@utils/requestService";
 import { createSelectors } from "./createSelector";
 import { LatLng } from "leaflet";
 const forecastService = new RequestServices("api/forecast");
@@ -14,16 +14,23 @@ type forecastCapabilitiesData = {
             }
         }
     }
-}
+};
+
+type forecastData = {
+    forecastTime: string,
+    forecast: {
+        [key: string]: {
+            [key: string]: number
+        }
+    }
+}[];
 
 interface ForecastStore {
     forecastCapabilities: null | {
         availableModels: string[],
         data: forecastCapabilitiesData
     },
-    forecast: null | {
-
-    }
+    forecast: null | forecastData,
     userSettings: {
         model: string | null,
         time: string | null,
@@ -55,7 +62,7 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
         set({ status: "loading", forecast: null });
         try {
             const { time, model } = get().userSettings
-            const data = await forecastService.get<forecastCapabilitiesData>("/point", {...LatLng, time, model});
+            const data = await forecastService.get<forecastData>("/point", {...LatLng, time, model});
             console.log(data)
         } catch (err) {
             set({

@@ -1,16 +1,23 @@
 #forecast-btn {
-
+    z-index: 1000;
+    display: block;
+    position: relative;
 }
 
 .forecastContainer {
     height: 100%;
     background-color: var(--bg);
-    padding: 1em;
     width: 100%;
     /* hide */
+    position: relative;
     display: none;
 }
 
 .forecastContainer.active {
     display: block;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
 }

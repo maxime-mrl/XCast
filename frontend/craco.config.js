@@ -8,6 +8,7 @@ module.exports = {
       "@pages": path.resolve(__dirname, "src/pages"),
       "@context": path.resolve(__dirname, "src/context/DataContext"),
       "@store": path.resolve(__dirname, "src/store"),
+      "@utils": path.resolve(__dirname, "src/utils"),
     }
   }
 };

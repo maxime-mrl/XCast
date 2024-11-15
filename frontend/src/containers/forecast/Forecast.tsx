@@ -4,16 +4,28 @@ import { useDataContext } from "@context";
 
 import './Forecast.css'
 import { useForecastStore } from "@store/useForecastStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { LatLng } from "leaflet";
+import { Sounding } from "@components";
 
 export default function Forecast() {
+  // set memory
+  const [memTime, setMemTime] = useState(new Date("2000-01-01T00:00Z").toISOString());
+  const [memPos, setMemPos] = useState(new LatLng(0,0));
+  // get stored data
   const { forecast:[position, setPosition] } = useDataContext();
   const getForecast = useForecastStore.use.getForecast();
   const userSettings = useForecastStore.use.userSettings();
+  // get new forecast when needed
   useEffect(() => {
-    console.log("position update")
-    if (position) getForecast(position)
-  }, [position, getForecast, userSettings.time])
+    // check if entries changed enough to call again
+    if ((!userSettings.time || !position) ||(memTime.split("T")[0] === userSettings.time.split("T")[0] && memPos === position)) return;
+    // update memory
+    setMemTime(userSettings.time);
+    setMemPos(position);
+    // update forecast
+    getForecast(position);
+  }, [position, getForecast, userSettings.time, memTime, memPos]);
 
 
   return (
@@ -23,9 +35,10 @@ export default function Forecast() {
           <FontAwesomeIcon icon={faXmark} />
         </button>
         {position && position.lng && position.lat ?
-          <div className="loc">
-            <p>Latitude: {position.lat} Longitude: {position.lng}</p>
-          </div>
+          // <div className="loc">
+          //   <p>Latitude: {position.lat} Longitude: {position.lng}</p>
+          // </div>
+          <Sounding />
           :
           <></>
         }

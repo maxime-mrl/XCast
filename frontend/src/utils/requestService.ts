@@ -9,7 +9,7 @@ export default class RequestServices {
         const data = await RequestServices.#fetchRequest(this.API_URL + endpoint, {
             method: "GET",
             token,
-            searchParams: reqData? new URLSearchParams(reqData as any) : undefined
+            searchParams: reqData? new URLSearchParams(reqData as any /* typescript dosen't want object in URLSeacrhParams */) : undefined
         })
         return data as T;
     }
