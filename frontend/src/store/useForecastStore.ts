@@ -16,7 +16,7 @@ type forecastCapabilitiesData = {
     }
 };
 
-type forecastData = {
+export type forecastData = {
     forecastTime: string,
     forecast: {
         [key: string]: {
@@ -63,7 +63,7 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
         try {
             const { time, model } = get().userSettings
             const data = await forecastService.get<forecastData>("/point", {...LatLng, time, model});
-            console.log(data)
+            set({ forecast: data })
         } catch (err) {
             set({
                 status: "error",
@@ -121,7 +121,6 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
                 status: "success",
                 message: ""
             });
-            console.log(forecastCapabilities)
         } catch (err) {
             set({
                 status: "error",

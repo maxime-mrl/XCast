@@ -70,17 +70,23 @@ export function getForecast(req:Request, res:Response) { // req.quey = { lat: nu
     const lng = parseFloat(req.query.lng);
     const { model, time } = req.query;
     console.log({lat, lng, model, time}) // should be used to get the correct forecast but for now it'll be soontm
+    // get the forecast
     const data = JSON.parse(fs.readFileSync(path.join(rootPath, "public", "data", "arome__0025__IP1__19H24H__2024-11-12T03_00_00Z.split150.json")).toString());
     const selectedForecast: {
         [key:string]:any
     }[] = [];
     data.forecast.forEach((time:{[key:string]:any}) => {
-        console.log(time.forecastTime)
+        // console.log(time.forecastTime)
         const forecast:{ [key:string]:any } = {};
-        for (const [ key ] of Object.entries(time.data)) {
-            forecast[key] = {};
-            for (const [ level ] of Object.entries(time.data[key].values)) {
-                forecast[key][level] = time.data[key].values[level][0]; // 0 will be the selected loc (for now it's always the first one)
+        const z = time.data.z.values
+        // console.log(z)
+        for (const [ level ] of Object.entries(z)) { // select point 0 should add logic to get the real GPS point later
+            const mlvl = Math.trunc(z[level][0]) / 10; // convert hPa lvl to meter
+            for (const [ key ] of Object.entries(time.data)) {
+                if (key !== "z") {
+                    if (!forecast[key])forecast[key] = {};
+                    forecast[key][mlvl] = time.data[key].values[level][0];
+                }
             }
         }
         selectedForecast.push({
