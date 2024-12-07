@@ -6,13 +6,15 @@ import './Forecast.css'
 import { useForecastStore } from "@store/useForecastStore";
 import { useEffect, useState } from "react";
 import { LatLng } from "leaflet";
-import { Sounding } from "@components";
+import { Meteogram, Sounding } from "@components";
+import { useLocation } from "react-router-dom";
 
 export default function Forecast() {
   // set memory
   const [memTime, setMemTime] = useState(new Date("2000-01-01T00:00Z").toISOString());
   const [memPos, setMemPos] = useState(new LatLng(0,0));
   // get stored data
+  const location = useLocation();
   const { forecast:[position, setPosition] } = useDataContext();
   const getForecast = useForecastStore.use.getForecast();
   const userSettings = useForecastStore.use.userSettings();
@@ -25,23 +27,29 @@ export default function Forecast() {
     setMemPos(position);
     // update forecast
     getForecast(position);
-  }, [position, getForecast, userSettings.time, memTime, memPos]);
 
+  }, [position, getForecast, userSettings.time, memTime, memPos]);
 
   return (
     <>
       <div className={`forecastContainer ${position ? "active" : ""}`}>
-        <button className="burger-btn" id='forecast-btn' onClick={() => setPosition(false)}>
-          <FontAwesomeIcon icon={faXmark} />
-        </button>
-        {position && position.lng && position.lat ?
-          // <div className="loc">
-          //   <p>Latitude: {position.lat} Longitude: {position.lng}</p>
-          // </div>
-          <Sounding />
-          :
-          <></>
+        {position && position.lng && position.lat &&
+        <>
+          {location.hash.substring(1) === "sounding" &&
+            <Sounding />
+          }
+          {location.hash.substring(1) === "meteogram" &&
+            <Meteogram />
+          }
+        </> 
         }
+        <nav className="forecast-nav">
+            <a href="#meteogram">Météogramme</a>
+            <a href="#sounding">Emagramme</a>
+            <button onClick={() => setPosition(false)}  className="close-forecast">
+              <FontAwesomeIcon icon={faXmark} />
+            </button>
+        </nav>
       </div>
     </>
   )

@@ -1,7 +1,7 @@
 import Canvas from '@utils/canvasTools';
-import './Sounding.css';
 import { useEffect, useRef } from 'react';
 import { forecastData, useForecastStore } from '@store/useForecastStore';
+import './Sounding.css';
 const xChart = {
   min: -35,
   max: 35,
@@ -28,8 +28,7 @@ export default function Sounding() {
   }, [forecast])
 
   return (
-    <div className='sounding' ref={containerRef}>
-    </div>
+    <div className='sounding' ref={containerRef}></div>
   )
 }
 
