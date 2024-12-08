@@ -35,10 +35,9 @@ export default function Forecast() {
       <div className={`forecastContainer ${position ? "active" : ""}`}>
         {position && position.lng && position.lat &&
         <>
-          {location.hash.substring(1) === "sounding" &&
+          {location.hash.substring(1) === "sounding" ?
             <Sounding />
-          }
-          {location.hash.substring(1) === "meteogram" &&
+            :
             <Meteogram />
           }
         </> 

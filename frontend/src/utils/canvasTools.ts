@@ -1,3 +1,10 @@
+export type chart = {
+    min: number,
+    max: number,
+    displayed: number[],
+    chartMargin: number
+}
+
 export default class Canvas {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D | null;
@@ -56,6 +63,17 @@ export default class Canvas {
     render = () => {
         this.ctx?.clearRect(0, 0, this.size.width * 2, this.size.height * 2);
         this.drawfns.forEach(f => f[0](this, f[1]));
+    }
+
+    /* ----------------------------- utility method ----------------------------- */
+    
+    getCoord = (canvas:Canvas, x: number, y: number, xChart:chart, yChart:chart) => {
+        const xIncrement = (canvas.size.width - xChart.chartMargin) / (xChart.max - xChart.min);
+        const yIncrement = (canvas.size.height - yChart.chartMargin) / (yChart.max - yChart.min);
+        return {
+            x: (x - xChart.min) * xIncrement + xChart.chartMargin,
+            y: canvas.size.height - (y - yChart.min) * yIncrement - yChart.chartMargin, // invert to start from bottom
+        }
     }
 }
 
