@@ -2,6 +2,8 @@ import Canvas, { chart } from '@utils/canvasTools';
 import { useEffect, useRef } from 'react';
 import { useForecastStore } from '@store/useForecastStore';
 import './Meteogram.css';
+import { useUnitStore } from '@store/useUnitsStore';
+import chroma, { Color, Scale } from 'chroma-js';
 
 const xChart:chart = {
   min: 4.5,
@@ -20,13 +22,16 @@ const yChart:chart = {
 export default function MetoGram() {
   const containerRef = useRef(null);
   const forecast = useForecastStore.use.forecast();
+  const windUnits = useUnitStore.use.wind();
+  const colorScale = chroma.scale(windUnits.scale.colors).domain(windUnits.scale.levels)
 
   useEffect(() => {
     const meteogram = containerRef.current;
     if (!meteogram || !forecast) return;
     const canvas = new Canvas(meteogram);
     canvas.addRenderer(drawChart);
-  }, [forecast])
+    canvas.addRenderer(drawMeteogram, colorScale);
+  }, [forecast, colorScale])
 
   return (
     <div className='meteogram' ref={containerRef}></div>
@@ -45,13 +50,13 @@ function drawChart(canvas:Canvas) {
   ctx.strokeStyle = "gray"
 
   yChart.displayed.forEach(value => {
-    const coord = canvas.getCoord(canvas, 0, value, xChart, yChart);
+    const coord = canvas.getCoord(0, value, xChart, yChart);
     ctx.fillText(String(value/100), xChart.chartMargin/2, coord.y);
   })
 
   xChart.displayed.forEach(value => {
-    const textCoord = canvas.getCoord(canvas, value, 0, xChart, yChart);
-    const lineCoord = canvas.getCoord(canvas, value + 0.5, 0, xChart, yChart);
+    const textCoord = canvas.getCoord(value, 0, xChart, yChart);
+    const lineCoord = canvas.getCoord(value + 0.5, 0, xChart, yChart);
     ctx.beginPath();
     ctx.moveTo(lineCoord.x, 0);
     ctx.lineTo(lineCoord.x, canvas.size.height - yChart.chartMargin);
@@ -59,4 +64,8 @@ function drawChart(canvas:Canvas) {
     ctx.closePath();
     ctx.fillText(String(value), textCoord.x, canvas.size.height - yChart.chartMargin/2);
   })
+}
+
+function drawMeteogram(canvas: Canvas, colorScale:Scale<Color>) {
+  canvas.drawWindArrow(200, 200, 30, 55, 20, colorScale);
 }

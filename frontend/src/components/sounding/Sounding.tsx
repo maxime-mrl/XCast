@@ -26,7 +26,7 @@ export default function Sounding() {
     if (!sounding || !forecast) return;
     const canvas = new Canvas(sounding);
     canvas.addRenderer(drawChart);
-    canvas.addRenderer(drawSound, forecast);
+    canvas.addRenderer(drawSounding, forecast);
   }, [forecast])
 
   return (
@@ -52,7 +52,7 @@ function drawChart(canvas:Canvas) {
   ctx.strokeStyle = "gray"
 
   yChart.displayed.forEach(value => {
-    const coord = canvas.getCoord(canvas, 0, value, xChart, yChart);
+    const coord = canvas.getCoord(0, value, xChart, yChart);
     ctx.beginPath();
     ctx.moveTo(xChart.chartMargin, coord.y);
     ctx.lineTo(canvas.size.width, coord.y);
@@ -62,7 +62,7 @@ function drawChart(canvas:Canvas) {
   })
 
   xChart.displayed.forEach(value => {
-    const coord = canvas.getCoord(canvas, value, 0, xChart, yChart);
+    const coord = canvas.getCoord(value, 0, xChart, yChart);
     ctx.beginPath();
     ctx.moveTo(coord.x, 0);
     ctx.lineTo(coord.x, canvas.size.height - yChart.chartMargin);
@@ -72,7 +72,7 @@ function drawChart(canvas:Canvas) {
   })
 }
 
-function drawSound(canvas:Canvas, forecasts:forecastData | null) {
+function drawSounding(canvas:Canvas, forecasts:forecastData | null) {
   if (!canvas.ctx || !forecasts) return;
   const ctx = canvas.ctx;
   const forecast = forecasts[0].forecast; // no time select for now
@@ -98,10 +98,10 @@ function drawSound(canvas:Canvas, forecasts:forecastData | null) {
   // temperature
   ctx.beginPath();
   ctx.strokeStyle = "black";
-  const tempOrigin = canvas.getCoord(canvas, parsed[0].temp, parsed[0].level, xChart, yChart);
+  const tempOrigin = canvas.getCoord(parsed[0].temp, parsed[0].level, xChart, yChart);
   ctx.moveTo(tempOrigin.x, tempOrigin.y);
   for (let i = 1; i < parsed.length; i++) {
-    const tempCoord = canvas.getCoord(canvas, parsed[i].temp, parsed[i].level, xChart, yChart);
+    const tempCoord = canvas.getCoord(parsed[i].temp, parsed[i].level, xChart, yChart);
     ctx.lineTo(tempCoord.x, tempCoord.y);
   }
   ctx.stroke();
@@ -109,10 +109,10 @@ function drawSound(canvas:Canvas, forecasts:forecastData | null) {
   // dew
   ctx.beginPath();
   ctx.strokeStyle = "blue";
-  const dewOrigin = canvas.getCoord(canvas, parsed[0].dew, parsed[0].level, xChart, yChart);
+  const dewOrigin = canvas.getCoord(parsed[0].dew, parsed[0].level, xChart, yChart);
   ctx.moveTo(dewOrigin.x, dewOrigin.y);
   for (let i = 1; i < parsed.length; i++) {
-    const dewCoord = canvas.getCoord(canvas, parsed[i].dew, parsed[i].level, xChart, yChart);
+    const dewCoord = canvas.getCoord(parsed[i].dew, parsed[i].level, xChart, yChart);
     ctx.lineTo(dewCoord.x, dewCoord.y);
   }
   ctx.stroke();

@@ -1,3 +1,5 @@
+import { Color, Scale } from "chroma-js";
+
 export type chart = {
     min: number,
     max: number,
@@ -7,7 +9,7 @@ export type chart = {
 
 export default class Canvas {
     canvas: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D | null;
+    ctx: CanvasRenderingContext2D;
     size: {
         width: number,
         height: number
@@ -34,7 +36,7 @@ export default class Canvas {
             window.addEventListener("resize", this.resize);
             window.addEventListener("orientationchange", this.resize);
         }
-        this.ctx = this.canvas.getContext("2d");
+        this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
         // init the size
         this.size = { width: 0, height: 0 };
@@ -61,19 +63,54 @@ export default class Canvas {
 
     // clear what's existing and draw with new dimensions
     render = () => {
-        this.ctx?.clearRect(0, 0, this.size.width * 2, this.size.height * 2);
+        this.ctx.clearRect(0, 0, this.size.width * 2, this.size.height * 2);
         this.drawfns.forEach(f => f[0](this, f[1]));
     }
 
     /* ----------------------------- utility method ----------------------------- */
-    
-    getCoord = (canvas:Canvas, x: number, y: number, xChart:chart, yChart:chart) => {
-        const xIncrement = (canvas.size.width - xChart.chartMargin) / (xChart.max - xChart.min);
-        const yIncrement = (canvas.size.height - yChart.chartMargin) / (yChart.max - yChart.min);
+    getCoord = (x: number, y: number, xChart:chart, yChart:chart) => {
+        const xIncrement = (this.size.width - xChart.chartMargin) / (xChart.max - xChart.min);
+        const yIncrement = (this.size.height - yChart.chartMargin) / (yChart.max - yChart.min);
         return {
             x: (x - xChart.min) * xIncrement + xChart.chartMargin,
-            y: canvas.size.height - (y - yChart.min) * yIncrement - yChart.chartMargin, // invert to start from bottom
+            y: this.size.height - (y - yChart.min) * yIncrement - yChart.chartMargin, // invert to start from bottom
         }
+    }
+
+    drawWindArrow = (x:number, y:number, size:number, wdir:number, wspd:number, colorScale?:Scale<Color>) => {
+        // arrow size
+        const thickness = size * Math.min(0.3,
+            0.02 * Math.exp(0.075 * (wspd - 10)) + 0.13 // this seems to look good after testing
+        );
+        const length = size*0.9;
+        const color = colorScale ? colorScale(wspd).hex() : "#00000";
+
+        // save ctx
+        this.ctx.save();
+        this.ctx.beginPath();
+
+        // translate and rotate
+        // rotate from center
+        this.ctx.translate(x + size * 0.5, y + size * 0.5);
+        this.ctx.rotate(wdir * Math.PI / 180);
+        // translate back to top left of arrow body
+        this.ctx.translate(-thickness*0.5, -length*0.5);
+        // just to flex that i can still math it was -(x + size * 0.5) then x + (size - thickness)/2
+
+        // draw arrow
+        this.ctx.roundRect(0, 0, thickness, length, [size]); // arrow body
+        this.ctx.translate(0, thickness*0.25); // make arrow tips start with arrow
+        this.ctx.rotate(45 * Math.PI / 180); // left part
+        this.ctx.roundRect(0, -thickness*0.75, thickness*0.75, length/2 + thickness*0.75, [size]);
+        this.ctx.rotate(-90 * Math.PI / 180); // right part
+        this.ctx.roundRect(0, 0, thickness*0.75, length/2 + thickness*0.75, [size]);
+        // fill
+        this.ctx.fillStyle = color;
+        this.ctx.fill();
+
+        // restore canvas to its original state
+        this.ctx.closePath();
+        this.ctx.restore();
     }
 }
 

@@ -2,7 +2,6 @@ import L, { LeafletGeotiffRendererOptions } from "leaflet";
 import "leaflet-geotiff-2";
 import chroma from "chroma-js";
 
-// const windScale = chroma.scale(windUnits.colorScale.colors).domain(windUnits.colorScale.levels);
 const defaultScale = chroma.scale(["ffffff", "000000"]).domain([0, 30]);
 
 interface CustomRendererOptions extends LeafletGeotiffRendererOptions {
@@ -16,7 +15,7 @@ const Renderer = L.LeafletGeotiffRenderer.extend({
         this.scale = options && options.chromaScale ? options.chromaScale : defaultScale;
     },
     
-    render: function (raster: {data: Uint32Array[], width: number, height: number}, canvas:HTMLCanvasElement, ctx:CanvasRenderingContext2D, args:any) {
+    render: function (raster: {data: Uint32Array[], width: number, height: number}, _canvas:HTMLCanvasElement, ctx:CanvasRenderingContext2D, args:any) {
         const rasterImageData = ctx.createImageData(raster.width, raster.height);
   
         raster.data[0].forEach((value, i) => {
