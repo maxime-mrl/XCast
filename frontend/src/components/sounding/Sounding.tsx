@@ -74,7 +74,7 @@ function drawChart(canvas:Canvas) {
 function drawSounding(canvas:Canvas, forecasts:forecastData | null) {
   if (!canvas.ctx || !forecasts) return;
   const ctx = canvas.ctx;
-  const forecast = forecasts[0].forecast; // no time select for now
+  const forecast = forecasts[0]; // no time select for now
   const parsed: {
     level:number,
     temp:number,
@@ -82,15 +82,14 @@ function drawSounding(canvas:Canvas, forecasts:forecastData | null) {
   }[] = [];
   
   // convert to celcius and dew point
-  for (const [level, temp] of Object.entries(forecast.t)) {
-    const tempC = temp - 273.15;
-    const dew = calculateDewPoint(tempC, forecast.r[level]);
+  forecast.z.forEach((z, i) => {
+    const dew = calculateDewPoint(forecast.t[i], forecast.r[i]);
     parsed.push({
-      level: parseInt(level),
-      temp: tempC,
+      level: z,
+      temp: forecast.t[i],
       dew
     });
-  }
+  })
   parsed.sort((a, b) => a.level - b.level);
   // draw
   ctx.lineWidth = 3;

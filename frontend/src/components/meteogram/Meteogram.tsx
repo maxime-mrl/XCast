@@ -74,27 +74,20 @@ function drawMeteogram(canvas: Canvas, {colorScale, forecast}: {colorScale: Scal
   console.log(forecast)
   forecast.forEach((forecastHour, i) => {
     const time = i + 5; // simulate time cause i don't have the full forecast for now
-    for (const [level, u] of Object.entries(forecastHour.forecast.u)) {
-      const { wspd, wdir } = uvToWspdWdir(u, forecastHour.forecast.v[level]);
-      let { x, y } = canvas.getCoord(time, parseInt(level), xChart, yChart)
-      canvas.drawWindArrow(x-size/2, y-size/2, size, wdir, wspd, colorScale);
+    forecastHour.z.forEach((z, i) => {
+      let { x, y } = canvas.getCoord(time, z, xChart, yChart)
+      canvas.drawWindArrow(
+        x-size/2,
+        y-size/2,
+        size,
+        forecastHour.wdir[i],
+        forecastHour.wspd[i],
+        colorScale
+      );
       canvas.ctx.fillRect(x,y,1,1)
       canvas.ctx.fillStyle = "#000000cc"
-      canvas.ctx.fillText(String(Math.round(wspd)), x, y, size)
-    }
+      canvas.ctx.fillText(String(Math.round(forecastHour.wspd[i])), x, y, size)
+
+    })
   })
-}
-
-function uvToWspdWdir(u:number, v:number) {
-  // Calculate wind speed (pythagore)
-  const wspd = (u**2 + v**2)**0.5;
-
-  // Calculate wind direction in degrees
-  let wdir = Math.atan2(-u, -v) * (180 / Math.PI); // atan2 uses (-U, -V)
-  if (wdir < 0) wdir += 360; // Ensure the direction is in the range [0, 360]
-
-  return {
-    wspd,
-    wdir
-  };
 }
