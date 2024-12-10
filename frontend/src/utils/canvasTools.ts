@@ -56,9 +56,9 @@ export default class Canvas {
     }
 
     // not sure that's a good idea we'll see if i keep it
-    addRenderer = (f: (canvas:this, params?: any) => void, params?: any) => {
-        f(this, params);
-        this.drawfns.push([f, params]);
+    addRenderer = (f: (canvas:this, params?: any) => void, param?: any) => {
+        f(this, param);
+        this.drawfns.push([f, param]);
     }
 
     // clear what's existing and draw with new dimensions
@@ -74,16 +74,19 @@ export default class Canvas {
         return {
             x: (x - xChart.min) * xIncrement + xChart.chartMargin,
             y: this.size.height - (y - yChart.min) * yIncrement - yChart.chartMargin, // invert to start from bottom
+            xIncrement,
+            yIncrement
         }
     }
 
     drawWindArrow = (x:number, y:number, size:number, wdir:number, wspd:number, colorScale?:Scale<Color>) => {
         // arrow size
         const thickness = size * Math.min(0.3,
-            0.02 * Math.exp(0.075 * (wspd - 10)) + 0.13 // this seems to look good after testing
+            0.02 * Math.exp(0.075 * ((wspd) - 10)) + 0.1 // this seems to look good after testing
         );
         const length = size*0.9;
         const color = colorScale ? colorScale(wspd).hex() : "#00000";
+        const lineThickness = thickness * 0.3;
 
         // save ctx
         this.ctx.save();
@@ -106,6 +109,8 @@ export default class Canvas {
         this.ctx.roundRect(0, 0, thickness*0.75, length/2 + thickness*0.75, [size]);
         // fill
         this.ctx.fillStyle = color;
+        this.ctx.lineWidth = lineThickness;
+        this.ctx.stroke();
         this.ctx.fill();
 
         // restore canvas to its original state

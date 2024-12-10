@@ -1,6 +1,6 @@
 import Canvas, { chart } from '@utils/canvasTools';
 import { useEffect, useRef } from 'react';
-import { useForecastStore } from '@store/useForecastStore';
+import { forecastData, useForecastStore } from '@store/useForecastStore';
 import './Meteogram.css';
 import { useUnitStore } from '@store/useUnitsStore';
 import chroma, { Color, Scale } from 'chroma-js';
@@ -30,7 +30,10 @@ export default function MetoGram() {
     if (!meteogram || !forecast) return;
     const canvas = new Canvas(meteogram);
     canvas.addRenderer(drawChart);
-    canvas.addRenderer(drawMeteogram, colorScale);
+    canvas.addRenderer(drawMeteogram, {
+      colorScale,
+      forecast
+    });
   }, [forecast, colorScale])
 
   return (
@@ -66,6 +69,32 @@ function drawChart(canvas:Canvas) {
   })
 }
 
-function drawMeteogram(canvas: Canvas, colorScale:Scale<Color>) {
-  canvas.drawWindArrow(200, 200, 30, 55, 20, colorScale);
+function drawMeteogram(canvas: Canvas, {colorScale, forecast}: {colorScale: Scale<Color>, forecast:forecastData}) {
+  const size = 25;
+  console.log(forecast)
+  forecast.forEach((forecastHour, i) => {
+    const time = i + 5; // simulate time cause i don't have the full forecast for now
+    for (const [level, u] of Object.entries(forecastHour.forecast.u)) {
+      const { wspd, wdir } = uvToWspdWdir(u, forecastHour.forecast.v[level]);
+      let { x, y } = canvas.getCoord(time, parseInt(level), xChart, yChart)
+      canvas.drawWindArrow(x-size/2, y-size/2, size, wdir, wspd, colorScale);
+      canvas.ctx.fillRect(x,y,1,1)
+      canvas.ctx.fillStyle = "#000000cc"
+      canvas.ctx.fillText(String(Math.round(wspd)), x, y, size)
+    }
+  })
+}
+
+function uvToWspdWdir(u:number, v:number) {
+  // Calculate wind speed (pythagore)
+  const wspd = (u**2 + v**2)**0.5;
+
+  // Calculate wind direction in degrees
+  let wdir = Math.atan2(-u, -v) * (180 / Math.PI); // atan2 uses (-U, -V)
+  if (wdir < 0) wdir += 360; // Ensure the direction is in the range [0, 360]
+
+  return {
+    wspd,
+    wdir
+  };
 }

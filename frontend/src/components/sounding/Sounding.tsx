@@ -19,7 +19,6 @@ const yChart:chart = {
 export default function Sounding() {
   const containerRef = useRef(null);
   const forecast = useForecastStore.use.forecast();
-  console.log(forecast)
 
   useEffect(() => {
     const sounding = containerRef.current;
