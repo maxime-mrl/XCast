@@ -71,11 +71,16 @@ function drawChart(canvas:Canvas) {
 
 function drawMeteogram(canvas: Canvas, {colorScale, forecast}: {colorScale: Scale<Color>, forecast:forecastData}) {
   const size = 25;
-  console.log(forecast)
-  forecast.forEach((forecastHour, i) => {
+  // ground layer
+  canvas.drawRectangle({ top: forecast.level, }, "#959695a0", xChart, yChart);
+  forecast.data.forEach((forecastHour, i) => {
     const time = i + 5; // simulate time cause i don't have the full forecast for now
+    
+    // boundary layer
+    canvas.drawRectangle({ top: forecastHour.bl, left: time-0.5, right: time+0.5, bottom: forecast.level }, "#FFc300A2", xChart, yChart);
+    // winds levels
     forecastHour.z.forEach((z, i) => {
-      let { x, y } = canvas.getCoord(time, z, xChart, yChart)
+      let { x, y } = canvas.getCoord(time, z, xChart, yChart);
       canvas.drawWindArrow(
         x-size/2,
         y-size/2,
@@ -85,9 +90,12 @@ function drawMeteogram(canvas: Canvas, {colorScale, forecast}: {colorScale: Scal
         colorScale
       );
       canvas.ctx.fillRect(x,y,1,1)
-      canvas.ctx.fillStyle = "#000000cc"
-      canvas.ctx.fillText(String(Math.round(forecastHour.wspd[i])), x, y, size)
 
+      canvas.ctx.font = "20px system-ui";
+      canvas.ctx.textBaseline = "middle";
+      canvas.ctx.textAlign = "center";
+      canvas.ctx.fillStyle = "black";
+      canvas.ctx.fillText(String(Math.round(forecastHour.wspd[i])), x, y, size)
     })
   })
 }

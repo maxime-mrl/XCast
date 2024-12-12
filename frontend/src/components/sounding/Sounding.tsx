@@ -71,22 +71,26 @@ function drawChart(canvas:Canvas) {
   })
 }
 
-function drawSounding(canvas:Canvas, forecasts:forecastData | null) {
-  if (!canvas.ctx || !forecasts) return;
-  const ctx = canvas.ctx;
-  const forecast = forecasts[0]; // no time select for now
+function drawSounding({ctx, getCoord, drawRectangle}:Canvas, forecast:forecastData) {
   const parsed: {
     level:number,
     temp:number,
     dew:number
   }[] = [];
+  const forecastData = forecast.data[0]
+  
+  
+  // ground layer
+  drawRectangle({ top: forecast.level, }, "#959695a0", xChart, yChart);
+  // boundary layer
+  drawRectangle({ top: forecastData.bl, bottom: forecast.level }, "#FFc300A2", xChart, yChart);
   
   // convert to celcius and dew point
-  forecast.z.forEach((z, i) => {
-    const dew = calculateDewPoint(forecast.t[i], forecast.r[i]);
+  forecastData.z.forEach((z, i) => {
+    const dew = calculateDewPoint(forecastData.t[i], forecastData.r[i]);
     parsed.push({
       level: z,
-      temp: forecast.t[i],
+      temp: forecastData.t[i],
       dew
     });
   })
@@ -96,10 +100,10 @@ function drawSounding(canvas:Canvas, forecasts:forecastData | null) {
   // temperature
   ctx.beginPath();
   ctx.strokeStyle = "black";
-  const tempOrigin = canvas.getCoord(parsed[0].temp, parsed[0].level, xChart, yChart);
+  const tempOrigin = getCoord(parsed[0].temp, parsed[0].level, xChart, yChart);
   ctx.moveTo(tempOrigin.x, tempOrigin.y);
   for (let i = 1; i < parsed.length; i++) {
-    const tempCoord = canvas.getCoord(parsed[i].temp, parsed[i].level, xChart, yChart);
+    const tempCoord = getCoord(parsed[i].temp, parsed[i].level, xChart, yChart);
     ctx.lineTo(tempCoord.x, tempCoord.y);
   }
   ctx.stroke();
@@ -107,10 +111,10 @@ function drawSounding(canvas:Canvas, forecasts:forecastData | null) {
   // dew
   ctx.beginPath();
   ctx.strokeStyle = "blue";
-  const dewOrigin = canvas.getCoord(parsed[0].dew, parsed[0].level, xChart, yChart);
+  const dewOrigin = getCoord(parsed[0].dew, parsed[0].level, xChart, yChart);
   ctx.moveTo(dewOrigin.x, dewOrigin.y);
   for (let i = 1; i < parsed.length; i++) {
-    const dewCoord = canvas.getCoord(parsed[i].dew, parsed[i].level, xChart, yChart);
+    const dewCoord = getCoord(parsed[i].dew, parsed[i].level, xChart, yChart);
     ctx.lineTo(dewCoord.x, dewCoord.y);
   }
   ctx.stroke();

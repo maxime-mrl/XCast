@@ -17,20 +17,23 @@ type forecastCapabilitiesData = {
 };
 
 export type forecastData = {
-    time: string; // ISO 8601 timestamp (e.g., "2024-10-30T03:00Z")
-    z: number[]; // Heights in meters (vertical levels)
-    wdir: number[]; // Wind direction at each level in degrees
-    wspd: number[]; // Wind speed at each level in m/s
-    t: number[]; // Temperature at each level in kelvin
-    r: number[]; // Relative humidity at each level in percentage (0-100)
-    vv: number[]; // Vertical velocity at each level in m/s
-    bl: number; // Boundary layer height in meters
-    rain: number; // Rainfall in mm
-    cloud_thr: number; // themral clouds (cumulus) in percentage (0-100) -- will change probably
-    cloud_low: number; // Low cloud cover in percentage (0-100)
-    cloud_med: number; // Medium cloud cover in percentage (0-100)
-    cloud_high: number; // High cloud cover in percentage (0-100)
-}[];
+    level: number, // actual model elevation
+    data: {
+        time: string; // ISO 8601 timestamp (e.g., "2024-10-30T03:00Z")
+        z: number[]; // Heights in meters (vertical levels)
+        wdir: number[]; // Wind direction at each level in degrees
+        wspd: number[]; // Wind speed at each level in m/s
+        t: number[]; // Temperature at each level in kelvin
+        r: number[]; // Relative humidity at each level in percentage (0-100)
+        vv: number[]; // Vertical velocity at each level in m/s
+        bl: number; // Boundary layer height in meters
+        rain: number; // Rainfall in mm
+        cloud_thr: number; // themral clouds (cumulus) in percentage (0-100) -- will change probably
+        cloud_low: number; // Low cloud cover in percentage (0-100)
+        cloud_med: number; // Medium cloud cover in percentage (0-100)
+        cloud_high: number; // High cloud cover in percentage (0-100)
+    }[]
+};
 
 interface ForecastStore {
     forecastCapabilities: null | {

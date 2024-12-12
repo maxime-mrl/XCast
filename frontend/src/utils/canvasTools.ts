@@ -117,5 +117,22 @@ export default class Canvas {
         this.ctx.closePath();
         this.ctx.restore();
     }
+    
+    drawRectangle = (
+        coords: {
+            top?: number,
+            bottom?: number,
+            left?: number,
+            right?: number
+        },
+        color:string, xChart:chart, yChart:chart
+    ) => {
+
+        const topLeft = this.getCoord(coords.left || xChart.min, coords.top || yChart.max, xChart, yChart);
+        const bottomRight = this.getCoord(coords.right || xChart.max, coords.bottom || 0, xChart, yChart);
+      
+        this.ctx.fillStyle = color;
+        this.ctx.fillRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+    }
 }
 
