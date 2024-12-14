@@ -1,34 +1,39 @@
-import { useEffect, useRef, useState } from 'react'
-import "leaflet/dist/leaflet.css"
-import "leaflet/dist/leaflet.js"
-import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet'
-import "leaflet-geotiff-2/src/leaflet-geotiff"
+import { useEffect, useRef, useState } from 'react';
+// leflet
+import "leaflet/dist/leaflet.js";
+import "leaflet/dist/leaflet.css";
+import L, { LatLng } from 'leaflet';
+import "leaflet-geotiff-2/src/leaflet-geotiff";
+import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
 
-import './Map.css'
-import L, { LatLng } from 'leaflet'
-import { GeotiffLayer, TimeSelector } from '@components'
-import { useForecastStore } from '@store/useForecastStore'
+import { GeotiffLayer, TimeSelector } from '@components';
+import { useForecastStore } from '@store/useForecastStore';
+import './Map.css';
 
 export default function Map() {
   const [baseUrl, setBaseUrl] = useState("");
-  const [files, setFiles] = useState<string[]>([""]);
+  const [geotiffs, setGeotiffs] = useState<string[]>([]);
+
   const userSettings = useForecastStore.use.userSettings();
   const position = useForecastStore.use.position();
   const mapCapabilities = useForecastStore.use.forecastCapabilities();
 
   useEffect(() => {
     // check that zustand is well initialized
-    const dataFiles = mapCapabilities?.data[userSettings.model ? userSettings.model : ""].dataset[userSettings.selected ? userSettings.selected : ""].names;
-    if (!userSettings.time || !userSettings.model || !userSettings.selected || !dataFiles) return;
-    // if wind dir put it at the end of the array
-    const dirIndex = dataFiles.findIndex(file => /dir/.test(file));
+    const dataset = mapCapabilities?.data[userSettings.model].dataset[userSettings.selected].names;
+    if (!userSettings.time || userSettings.model === "" || userSettings.selected === "" || !dataset) return;
+    // make sur wind direction is at the ends (so it's rendered last)
+    const dirIndex = dataset.findIndex(file => /dir/.test(file));
     if (dirIndex !== -1) {
-      dataFiles.push(dataFiles[dirIndex]);
-      dataFiles.splice(dirIndex, 1);
+      const [wdir] = dataset.splice(dirIndex, 1);
+      dataset.push(wdir);
     }
-    // set state
-    setBaseUrl(`${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/${userSettings.selected}`);
-    setFiles(dataFiles)
+    
+    // Construct base URL
+    const newBaseUrl = `${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/${userSettings.selected}`;
+    // set state if there're updated
+    setBaseUrl(prev => (prev !== newBaseUrl ? newBaseUrl : prev));
+    setGeotiffs((prev) => (JSON.stringify(prev) !== JSON.stringify(dataset) ? dataset : prev));
   }, [userSettings.time, userSettings.model, userSettings.selected, mapCapabilities]);
 
   return (
@@ -38,8 +43,14 @@ export default function Map() {
               attribution='Tiles &copy; Esri &mdash; Source: Esri, Esri Japan, Esri China (Hong Kong), Esri (Thailand), DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, METI, TomTom'
               url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
           />
-          { baseUrl !== "" && files.length !== 0 && files.map(file => (
-            <GeotiffLayer renderer={/dir/.test(file) ? "arrows" : "rgb"} url={`${baseUrl}/${file}-${userSettings.level}.tif`} name={userSettings.selected} level={userSettings.level} key={file} />
+          { baseUrl !== "" && geotiffs.length !== 0 && geotiffs.map(file => (
+            <GeotiffLayer
+              renderer={/dir/.test(file) ? "arrows" : "rgb"}
+              url={`${baseUrl}/${file}-${userSettings.level}.tif`}
+              name={userSettings.selected}
+              level={userSettings.level}
+              key={file}
+            />
           ))
           
         }
@@ -47,9 +58,9 @@ export default function Map() {
           
           {position && 
             <Marker position={position} icon={L.icon({
-              iconUrl: "/images/marker.png", // Path to your custom marker icon
-              iconSize: [38, 57], // Size of the icon
-              iconAnchor: [19, 57], // Point where the icon should be anchored (left point or center)
+              iconUrl: "/images/marker.png",
+              iconSize: [38, 57],
+              iconAnchor: [19, 57],
             })}>
             </Marker>
           }
@@ -64,6 +75,7 @@ export default function Map() {
 function ClickHandler() {
   const position = useForecastStore.use.position();
   const setPosition = useForecastStore.use.setPosition();
+  // used to check last position state and only pan when forecast is oppened
   const memoryPos = useRef(false as false | LatLng);
   const map = useMapEvents({});
 

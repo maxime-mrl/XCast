@@ -1,5 +1,5 @@
-import "./Home.css"
 import { Forecast, Map, Settings } from "@containers";
+import "./Home.css";
 
 export default function Home() {
     return (

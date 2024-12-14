@@ -42,9 +42,9 @@ interface ForecastStore {
     },
     forecast: null | forecastData,
     userSettings: {
-        model: string | null,
+        model: string,
         time: string | null,
-        selected: mapDataTypes | null,
+        selected: mapDataTypes | "",
         level: number | null
     },
     position: false | LatLng,
@@ -150,7 +150,7 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
         userSettings: {
             model: "arome", // selected model
             time: null, // selected time
-            selected: null, // selected dataset
+            selected: "", // selected dataset
             level: 0 // selected level implemented later
         },
         position: false,

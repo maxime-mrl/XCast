@@ -1,11 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useForecastStore } from "@store/useForecastStore";
 
-import './Settings.css'
-import { useEffect, useState } from "react";
+import { useForecastStore } from "@store/useForecastStore";
 import { useUnitStore } from "@store/useUnitsStore";
 import { useAppStore } from "@store/useAppStore";
+import './Settings.css'
 
 export default function Settings() {
   const forecastCapabilities = useForecastStore.use.forecastCapabilities();
@@ -15,18 +14,13 @@ export default function Settings() {
   const isOpen = useAppStore.use.isSettingsOpen();
   const toggleSettings = useAppStore.use.toggleSettings();
   
-  const [ datas, setDatas ] = useState<mapDataTypes[]>([]);
-
-
-
-  useEffect(() => {
-    if (!forecastCapabilities || !userSettings.model) return
-    setDatas(Object.keys(forecastCapabilities.data[userSettings.model].dataset) as mapDataTypes[])
-  }, [forecastCapabilities, userSettings.model])
+  const datas = forecastCapabilities?.data[userSettings.model]?.dataset
+    ? (Object.keys(forecastCapabilities.data[userSettings.model].dataset) as mapDataTypes[])
+    : [];
 
   return (
     <>
-      <button className="burger-btn" id='settings-btn' onClick={toggleSettings}>
+      <button onClick={toggleSettings} className="burger-btn" id='settings-btn'>
         <FontAwesomeIcon icon={isOpen ? faXmark : faBars} />
       </button>
       <section className={`settingsContainer ${isOpen ? "active" : ""}`}>
@@ -35,7 +29,11 @@ export default function Settings() {
         </a>
         <article className="datas">
           {datas.map(data => (
-            <button onClick={() => {updateSettings({ selected: data })}} className={data === userSettings.selected ? "select-data active" : "select-data"} key={data} >
+            <button
+              onClick={() => {updateSettings({ selected: data })}}
+              className={`select-data ${data === userSettings.selected ? "active" : ""}`}
+              key={data}
+            >
               {unitsName.get(data)}
             </button>
           ))

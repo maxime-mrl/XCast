@@ -4,37 +4,36 @@ import { useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet-geotiff-2";
 import "leaflet-geotiff-2/dist/leaflet-geotiff-vector-arrows";
-import chroma from "chroma-js";
+
 
 import Renderer from "./Renderer";
-
-import "./GeoTiffLayer.css";
 import { useUnitStore } from "@store/useUnitsStore";
+import "./GeoTiffLayer.css";
 
-export default function GeoTiffLayer({ url, renderer, name, level }: {url: string, renderer: "arrows" | "rgb", name: mapDataTypes | null, level: number | null}) {
+export default function GeoTiffLayer({ url, renderer, name, level }: {url: string, renderer: "arrows" | "rgb", name: mapDataTypes | "", level: number | null}) {
+  const map = useMap();
   const units = useUnitStore();
   const activeUnit = name ? units[name] : null;
 
-  const map = useMap();
   useEffect(() => {
-    let isError = false;
     const geoTiffLayer = new L.LeafletGeotiff(url, {
-      renderer: renderer === "arrows" ?
-        L.LeafletGeotiff.vectorArrows({ arrowSize: 20, }) :
-        new Renderer({
-          chromaScale: activeUnit ? chroma.scale(activeUnit.scale.colors).domain(activeUnit.scale.levels) : null
+      renderer: renderer === "arrows"
+        ? L.LeafletGeotiff.vectorArrows({ arrowSize: 20, })
+        : new Renderer({
+          chromaScale: activeUnit ? activeUnit.scale.colorScale : null
         }),
-      onError: (er:any) => {
-        isError = true;
-        console.log(`error: ${er}`)
-      }, 
+      onError: (er:any) => { console.log(`Geotiff layer error: ${er}`) }, 
     });
     // Add the layer to the map
-    if (!isError) geoTiffLayer.addTo(map);
+    geoTiffLayer.addTo(map);
     // Cleanup
-    return () => { map.removeLayer(geoTiffLayer) };
+    return () => {
+      if (map.hasLayer(geoTiffLayer)) {
+        map.removeLayer(geoTiffLayer);
+      }
+    };
   }, [map, url, renderer, activeUnit]);
-
+  // legend
   if (renderer === "rgb" && activeUnit) return (
     <div className="map-legend">
       {activeUnit.scale.colors.map((color, i) => (

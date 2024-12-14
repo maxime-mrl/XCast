@@ -1,9 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight, faAnglesLeft, faAnglesRight } from '@fortawesome/free-solid-svg-icons';
 
-import './TimeSelector.css';
-import { useEffect, useState } from 'react';
 import { useForecastStore } from '@store/useForecastStore';
+import './TimeSelector.css';
 
 const days = [
   "dim",
@@ -18,21 +17,22 @@ const days = [
 export default function TimeSelector() {
   const userSettings = useForecastStore.use.userSettings();
   const updateTime = useForecastStore.use.updateTime();
-  const [date, setDate] = useState("");
+
+  const getDateStr = () => {
+    if (!userSettings.time) return "";
+    const forecastDate = new Date(userSettings.time);
+
+    const hours = `${forecastDate.getHours()}`.padStart(2, "0");
+    const minutes = `${forecastDate.getMinutes()}`.padStart(2, "0");
+    
+    return`${days[forecastDate.getDay()]}. ${hours}:${minutes}`;
+  }
   
-  useEffect(() => {
-    if (userSettings.time) {
-      const forecastDate = new Date(userSettings.time);
-      const hours = forecastDate.getHours() < 10 ? `0${forecastDate.getHours()}` : forecastDate.getHours();
-      const minutes = forecastDate.getMinutes() < 10 ? `0${forecastDate.getMinutes()}` : forecastDate.getMinutes();
-      setDate(`${days[forecastDate.getDay()]}. ${hours}:${minutes}`);
-    }
-  }, [userSettings.time]);
 
   return (
     <div className='time-selector'>
       <div className="infos">
-        {date}
+        {getDateStr()}
       </div>
       <div className="selector">
         <div className="prev">

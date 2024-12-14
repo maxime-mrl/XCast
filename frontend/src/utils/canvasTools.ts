@@ -41,11 +41,18 @@ export default class Canvas {
         this.resize();
     }
 
+    clear = () => {
+        this.drawfns = [];
+        this.container.removeEventListener("resize", this.resize);
+        window.removeEventListener("resize", this.resize);
+        window.removeEventListener("orientationchange", this.resize);
+    }
+
     // handle resizing of canvas
     resize = () => {
         this.size = {
             width: this.container.clientWidth,
-            height: this.container.clientHeight,
+            height: this.container.clientHeight
         };
         this.canvas.setAttribute("width", this.size.width.toString());
         this.canvas.setAttribute("height", this.size.height.toString());
@@ -75,6 +82,23 @@ export default class Canvas {
             xIncrement,
             yIncrement
         }
+    }
+
+    drawText = (x:number, y:number, text:string, maxWidth?:number) => {
+        this.ctx.font = "20px system-ui";
+        this.ctx.textBaseline = "middle";
+        this.ctx.textAlign = "center";
+        this.ctx.fillStyle = "black";
+        this.ctx.fillText(text, x, y, maxWidth)
+
+    }
+
+    drawLine = (startX:number, startY: number, endX:number, endY: number) => {
+        this.ctx.beginPath();
+        this.ctx.moveTo(startX, startY);
+        this.ctx.lineTo(endX, endY);
+        this.ctx.stroke();
+        this.ctx.closePath();
     }
 
     drawWindArrow = (x:number, y:number, size:number, wdir:number, wspd:number, colorScale?:Scale<Color>) => {
