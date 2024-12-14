@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useDataContext } from "@context";
 
 import './Forecast.css'
 import { useForecastStore } from "@store/useForecastStore";
@@ -14,8 +13,9 @@ export default function Forecast() {
   const [memTime, setMemTime] = useState(new Date("2000-01-01T00:00Z").toISOString());
   const [memPos, setMemPos] = useState(new LatLng(0,0));
   // get stored data
-  const location = useLocation();
-  const { forecast:[position, setPosition] } = useDataContext();
+  const url = useLocation();
+  const position = useForecastStore.use.position();
+  const setPosition = useForecastStore.use.setPosition();
   const getForecast = useForecastStore.use.getForecast();
   const userSettings = useForecastStore.use.userSettings();
   // get new forecast when needed
@@ -35,7 +35,7 @@ export default function Forecast() {
       <div className={`forecastContainer ${position ? "active" : ""}`}>
         {position && position.lng && position.lat &&
         <>
-          {location.hash.substring(1) === "sounding" ?
+          {url.hash.substring(1) === "sounding" ?
             <Sounding />
             :
             <Meteogram />

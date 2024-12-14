@@ -46,16 +46,18 @@ interface ForecastStore {
         time: string | null,
         selected: mapDataTypes | null,
         level: number | null
-    }
+    },
+    position: false | LatLng,
     status: string,
     message: string,
+    setPosition: (point: false|LatLng) => void,
     getCapabilities: () => Promise<void>,
     getForecast: (LatLng: LatLng) => Promise<void>,
     updateSettings: (newSettings:Partial<ForecastStore["userSettings"]>) => void,
     updateTime: (newTime: {
         hours?: 1 | -1,
         days?: 1 | -1
-    }) => void
+    }) => void,
 }
 
 export const useForecastStore = createSelectors(create<ForecastStore>()((set, get) => {
@@ -100,6 +102,8 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
         // save the new time
         updateSettings({ time: timeStr });
     };
+
+    const setPosition:ForecastStore["setPosition"] = (point) => set(() => ({ position: point }));
 
     // get map capabilities on init
     const getCapabilities = async () => {
@@ -149,13 +153,14 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
             selected: null, // selected dataset
             level: 0 // selected level implemented later
         },
-    
+        position: false,
         status: "",
         message: "",
         updateSettings,
         getCapabilities,
         getForecast,
-        updateTime
+        updateTime,
+        setPosition,
     }
 }));
 

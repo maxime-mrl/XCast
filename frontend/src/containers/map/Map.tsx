@@ -5,16 +5,15 @@ import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet'
 import "leaflet-geotiff-2/src/leaflet-geotiff"
 
 import './Map.css'
-import { useDataContext } from '@context'
 import L, { LatLng } from 'leaflet'
 import { GeotiffLayer, TimeSelector } from '@components'
 import { useForecastStore } from '@store/useForecastStore'
 
 export default function Map() {
-  const { forecast:[position]} = useDataContext();
   const [baseUrl, setBaseUrl] = useState("");
   const [files, setFiles] = useState<string[]>([""]);
   const userSettings = useForecastStore.use.userSettings();
+  const position = useForecastStore.use.position();
   const mapCapabilities = useForecastStore.use.forecastCapabilities();
 
   useEffect(() => {
@@ -63,7 +62,8 @@ export default function Map() {
 
 
 function ClickHandler() {
-  const { forecast:[position, setPosition] } = useDataContext();
+  const position = useForecastStore.use.position();
+  const setPosition = useForecastStore.use.setPosition();
   const memoryPos = useRef(false as false | LatLng);
   const map = useMapEvents({});
 
