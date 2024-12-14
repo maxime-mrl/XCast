@@ -19,18 +19,27 @@ const yChart:chart = {
 export default function Sounding() {
   const containerRef = useRef(null);
   const forecast = useForecastStore.use.forecast();
+  const { time:forecastTime } = useForecastStore.use.userSettings();
 
   useEffect(() => {
     const sounding = containerRef.current;
-    if (!sounding || !forecast) return;
+    if (!sounding || !forecast || !forecastTime) return;
     const canvas = new Canvas(sounding);
     canvas.addRenderer(drawChart);
-    canvas.addRenderer(drawSounding, forecast);
-  }, [forecast])
+    canvas.addRenderer(drawSounding, getForecastTime(forecast, forecastTime));
+  }, [forecast, forecastTime])
 
   return (
     <div className='sounding' ref={containerRef}></div>
   )
+}
+
+function getForecastTime(forecast: forecastData, time:string) {
+  const forecastHour = forecast.data.find(data => data.time === time);
+  return {
+    level: forecast.level,
+    data: forecastHour
+  }
 }
 
 function calculateDewPoint(temp:number, rh:number) {
@@ -71,14 +80,18 @@ function drawChart(canvas:Canvas) {
   })
 }
 
-function drawSounding({ctx, getCoord, drawRectangle}:Canvas, forecast:forecastData) {
+function drawSounding({ctx, getCoord, drawRectangle}:Canvas, forecast: {
+  level: number,
+  data: forecastData["data"][0] | undefined
+}) {
+  if (!forecast.data) return;
+  const forecastData = forecast.data; // without local one typescript is mad
+  
   const parsed: {
     level:number,
     temp:number,
     dew:number
   }[] = [];
-  const forecastData = forecast.data[0]
-  
   
   // ground layer
   drawRectangle({ top: forecast.level, }, "#959695a0", xChart, yChart);

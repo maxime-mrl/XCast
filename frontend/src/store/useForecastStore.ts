@@ -96,7 +96,7 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
 
         const timeStr = time.toISOString().split(':00.000Z')[0] + "Z"; // remove unnecessary seconds and miliseconds
         // check time is available
-        if (!forecastCapabilities[settings.model].availableTimes.find(available => available === timeStr)) return;
+        if (!forecastCapabilities[settings.model].availableTimes.find(available => available === timeStr)) return; // should set to a default value time instead (soontm)
         // save the new time
         updateSettings({ time: timeStr });
     };
