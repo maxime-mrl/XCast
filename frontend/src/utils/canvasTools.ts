@@ -14,19 +14,17 @@ export default class Canvas {
         width: number,
         height: number
     };
-    unit: {
-        xMax: number,
-        xMin: number,
-        yMax: number,
-        yMin: number
-    } | null;
     container: Element;
     drawfns: [((canvas:this, params?: any) => void), any][];
+    xChart: chart;
+    yChart: chart;
 
-    constructor(parent:Element) {
+    constructor(parent:Element, xChart:chart, yChart:chart) {
         this.container = parent;
         this.drawfns = [];
-        this.unit = null;
+        this.xChart = xChart;
+        this.yChart = yChart;
+
         if (parent.querySelector("canvas")) { // if canvas arleady exist just link back to it
             this.canvas = parent.querySelector("canvas") as HTMLCanvasElement;
         } else { // no canvas => create one and listen for resize

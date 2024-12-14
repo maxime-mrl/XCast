@@ -24,7 +24,7 @@ export default function Sounding() {
   useEffect(() => {
     const sounding = containerRef.current;
     if (!sounding || !forecast || !forecastTime) return;
-    const canvas = new Canvas(sounding);
+    const canvas = new Canvas(sounding, xChart, yChart);
     canvas.addRenderer(drawChart);
     canvas.addRenderer(drawSounding, getForecastTime(forecast, forecastTime));
   }, [forecast, forecastTime])
