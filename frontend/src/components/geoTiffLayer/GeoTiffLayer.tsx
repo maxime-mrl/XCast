@@ -43,10 +43,12 @@ export default function GeoTiffLayer({ url, renderer, name, level }: {url: strin
           </i>
         </div>
       ))}
-      <div className="desc">
-        {units.names.get(name ? name : "")} ({level ? level : "sol"}) <br />
-        {activeUnit.selected}
-      </div>
+      { name !== "" &&
+        <div className="desc">
+          {units.names.get(name)} ({level ? level : "sol"}) <br />
+          {activeUnit.selected}
+        </div>
+      }
     </div>
   )
   return null;

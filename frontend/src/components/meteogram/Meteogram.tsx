@@ -117,7 +117,7 @@ function drawMeteogram(canvas: Canvas, {colorScale, forecast, hour}: {colorScale
       );
       canvas.ctx.fillRect(x,y,1,1);
 
-      canvas.drawText(x, y, String(Math.round(forecastHour.wspd[i])), size);
+      canvas.drawText(x, y, String(Math.round(forecastHour.wspd[i])), { maxWidth:size });
     });
   })
 }

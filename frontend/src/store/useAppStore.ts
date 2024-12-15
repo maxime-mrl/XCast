@@ -6,9 +6,7 @@ type AppStore = {
     toggleSettings: () => void
 };
 
-export const useAppStore = createSelectors(create<AppStore>()((set, get) => {
-    // const toggleSettings:AppStore["toggleSettings"]
-
+export const useAppStore = createSelectors(create<AppStore>()((set) => {
     return {
         isSettingsOpen: false,
         toggleSettings: () => set((prev) => ({ isSettingsOpen: !prev.isSettingsOpen }))

@@ -73,9 +73,9 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
     const getForecast:ForecastStore["getForecast"] = async (LatLng) => {
         set({ status: "loading", forecast: null });
         try {
-            const { time, model } = get().userSettings
+            const { time, model } = get().userSettings;
             const data = await forecastService.get<forecastData>("/point", {...LatLng, time, model});
-            set({ forecast: data })
+            set({ forecast: data, status: "success", message: "" });
         } catch (err) {
             set({
                 status: "error",
@@ -88,17 +88,25 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
     const updateTime:ForecastStore["updateTime"] = (newTime) => {
         // get actuals values
         const settings = get().userSettings;
-        const forecastCapabilities = get().forecastCapabilities?.data;
-        if (!settings.time || !settings.model || !forecastCapabilities) return;
+        const capabilities = get().forecastCapabilities?.data;
+        if (!settings.time || !settings.model || !capabilities) return;
+
+        const availableTimes = capabilities[settings.model].availableTimes;
+
+         // if time not available reset back to an existing one
+        if (!availableTimes.find(available => available === settings.time)) {
+            updateSettings({ time: availableTimes[0] });
+            return;
+        }
 
         // try to update the time
         const time = new Date(settings.time);
-        time.setHours(time.getHours() + (newTime.hours ? newTime.hours : 0));
-        time.setDate(time.getDate() + (newTime.days ? newTime.days : 0));
+        time.setHours(time.getHours() + (newTime.hours || 0));
+        time.setDate(time.getDate() + (newTime.days || 0));
 
         const timeStr = time.toISOString().split(':00.000Z')[0] + "Z"; // remove unnecessary seconds and miliseconds
         // check time is available
-        if (!forecastCapabilities[settings.model].availableTimes.find(available => available === timeStr)) return; // should set to a default value time instead (soontm)
+        if (!availableTimes.find(available => available === timeStr)) return; // if new time not available keep the old one    
         // save the new time
         updateSettings({ time: timeStr });
     };
@@ -111,27 +119,27 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
         try {
             // fetch data
             const data = await forecastService.get<forecastCapabilitiesData>("/getcapabilities");
-            const forecastCapabilities = {
-                availableModels: Object.keys(data),
-                data,
-            };
+            const availableModels = Object.keys(data);
 
             // init usersettings
             const userSettings = get().userSettings;
             // check model
-            if (!userSettings.model || !forecastCapabilities.availableModels.find(model => model === userSettings.model))
-                userSettings.model = forecastCapabilities.availableModels[0];
+            const model = availableModels.includes(userSettings.model) ? userSettings.model : availableModels[0];
+            const modelData = data[model];
             // check time
-            if (!userSettings.time || !data[userSettings.model].availableTimes.find(time => time === userSettings.time))
-                userSettings.time = data[userSettings.model].availableTimes[0];
+            const time = modelData.availableTimes.includes(userSettings.time!) ? userSettings.time : modelData.availableTimes[0];
             // check selected dataset
-            const datasets = Object.keys(data[userSettings.model].dataset) as mapDataTypes[];
-            if (!userSettings.selected || !datasets.find(selected => selected === userSettings.selected))
-                userSettings.selected = datasets[0];
+            const datasets = Object.keys(modelData.dataset) as mapDataTypes[];
+            const selected = datasets.includes(userSettings.selected as mapDataTypes) ? userSettings.selected : datasets[0];
             // set state
             set({
-                forecastCapabilities,
-                userSettings,
+                forecastCapabilities: { availableModels, data },
+                userSettings: {
+                    ...userSettings,
+                    model,
+                    time,
+                    selected
+                },
                 status: "success",
                 message: ""
             });
@@ -148,7 +156,7 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
         forecastCapabilities: null,
         forecast: null,
         userSettings: {
-            model: "arome", // selected model
+            model: "", // selected model
             time: null, // selected time
             selected: "", // selected dataset
             level: 0 // selected level implemented later

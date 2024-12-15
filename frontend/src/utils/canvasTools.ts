@@ -43,6 +43,7 @@ export default class Canvas {
 
     clear = () => {
         this.drawfns = [];
+        this.canvas.remove();
         this.container.removeEventListener("resize", this.resize);
         window.removeEventListener("resize", this.resize);
         window.removeEventListener("orientationchange", this.resize);
@@ -74,8 +75,12 @@ export default class Canvas {
 
     /* ----------------------------- utility method ----------------------------- */
     getCoord = (x: number, y: number, xChart:chart, yChart:chart) => {
-        const xIncrement = (this.size.width - xChart.chartMargin) / (xChart.max - xChart.min);
-        const yIncrement = (this.size.height - yChart.chartMargin) / (yChart.max - yChart.min);
+        const { chartMargin: xMargin, min: xMin, max: xMax } = xChart;
+        const { chartMargin: yMargin, min: yMin, max: yMax } = yChart;
+
+        const xIncrement = (this.size.width - xMargin) / (xMax - xMin);
+        const yIncrement = (this.size.height - yMargin) / (yMax - yMin);
+
         return {
             x: (x - xChart.min) * xIncrement + xChart.chartMargin,
             y: this.size.height - (y - yChart.min) * yIncrement - yChart.chartMargin, // invert to start from bottom
@@ -84,11 +89,18 @@ export default class Canvas {
         }
     }
 
-    drawText = (x:number, y:number, text:string, maxWidth?:number) => {
-        this.ctx.font = "20px system-ui";
-        this.ctx.textBaseline = "middle";
-        this.ctx.textAlign = "center";
-        this.ctx.fillStyle = "black";
+    drawText = (x:number, y:number, text:string, options?: {
+      font?: string;
+      align?: CanvasTextAlign;
+      baseline?: CanvasTextBaseline;
+      color?: string;
+      maxWidth?: number;
+    }) => {
+        const { font = "20px system-ui", align = "center", baseline = "middle", color = "black", maxWidth } = options || {};
+        this.ctx.font = font;
+        this.ctx.textBaseline = baseline;
+        this.ctx.textAlign = align;
+        this.ctx.fillStyle = color;
         this.ctx.fillText(text, x, y, maxWidth)
 
     }
@@ -117,7 +129,7 @@ export default class Canvas {
         // translate and rotate
         // rotate from center
         this.ctx.translate(x + size * 0.5, y + size * 0.5);
-        this.ctx.rotate(wdir * Math.PI / 180);
+        this.ctx.rotate((wdir * Math.PI) / 180);
         // translate back to top left of arrow body
         this.ctx.translate(-thickness*0.5, -length*0.5);
         // just to flex that i can still math it was -(x + size * 0.5) then x + (size - thickness)/2
@@ -141,15 +153,11 @@ export default class Canvas {
     }
     
     drawRectangle = (
-        coords: {
-            top?: number,
-            bottom?: number,
-            left?: number,
-            right?: number
-        },
-        color:string, xChart:chart, yChart:chart
+        coords: { top?: number, bottom?: number, left?: number, right?: number },
+        color:string,
+        xChart:chart,
+        yChart:chart
     ) => {
-
         const topLeft = this.getCoord(coords.left || xChart.min, coords.top || yChart.max, xChart, yChart);
         const bottomRight = this.getCoord(coords.right || xChart.max, coords.bottom || 0, xChart, yChart);
       
