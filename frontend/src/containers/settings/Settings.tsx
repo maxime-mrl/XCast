@@ -4,9 +4,10 @@ import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useForecastStore } from "@store/useForecastStore";
 import { useUnitStore } from "@store/useUnitsStore";
 import { useAppStore } from "@store/useAppStore";
-import './Settings.css'
+import './Settings.css';
 
 export default function Settings() {
+  // get stored data
   const forecastCapabilities = useForecastStore.use.forecastCapabilities();
   const userSettings = useForecastStore.use.userSettings();
   const updateSettings = useForecastStore.use.updateSettings();
@@ -14,6 +15,7 @@ export default function Settings() {
   const isOpen = useAppStore.use.isSettingsOpen();
   const toggleSettings = useAppStore.use.toggleSettings();
   
+  // get available data to select
   const datas = forecastCapabilities?.data[userSettings.model]?.dataset
     ? (Object.keys(forecastCapabilities.data[userSettings.model].dataset) as mapDataTypes[])
     : [];

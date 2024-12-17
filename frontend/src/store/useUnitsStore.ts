@@ -4,38 +4,40 @@ import chroma from "chroma-js";
 
 
 type UnitsConfig = {
-    selected: string;
-    scale: {
+    selected: string; // what unit is selected
+    scale: { // color scale (using chroma)
         colors: string[];
         levels: number[];
         colorScale: chroma.Scale;
     };
-    units: { [key: string]: (base: number) => number };
+    units: { [key: string]: (base: number) => number }; // available units with conversion from base one
 };
 
 type UnitsStore = {
-    [key in mapDataTypes]: UnitsConfig
+    [key in mapDataTypes]: UnitsConfig // one unitconfig per units (wind etc)
 } & {
-    names: Map<mapDataTypes, string>
+    names: Map<mapDataTypes, string> // names in french
 };
 
-export const useUnitStore = createSelectors(create<UnitsStore>()((set, get) => {
-    const names = new Map<mapDataTypes, string>([
-        ["wind", "Vent"],
-        ["temp", "Temperature"]
-    ]);
-    const scales = {
-        wind: {
-            colors: [ "#ffffff", "#55ff55", "#ff5555" ],
-            levels: [ 0, 5, 15 ]
-        },
-        temp: {
-            colors: [ "#ffffff", "#55ff55", "#ff5555" ],
-            levels: [ 0, 20, 35 ]
-        }
+// set scales to what we want
+const scales = {
+    wind: {
+        colors: [ "#ffffff", "#55ff55", "#ff5555" ],
+        levels: [ 0, 5, 15 ]
+    },
+    temp: {
+        colors: [ "#ffffff", "#55ff55", "#ff5555" ],
+        levels: [ 0, 20, 35 ]
     }
+}
 
-    
+// names in french
+const names = new Map<mapDataTypes, string>([
+    ["wind", "Vent"],
+    ["temp", "Temperature"]
+]);
+
+export const useUnitStore = createSelectors(create<UnitsStore>()(() => {
     // Reusable function to create unit configurations
     const createUnitConfig = (type: keyof typeof scales, units: UnitsConfig["units"]): UnitsConfig => ({
         selected: Object.keys(units)[0], // Default to the first unit
@@ -58,5 +60,5 @@ export const useUnitStore = createSelectors(create<UnitsStore>()((set, get) => {
             "°F": (base:number) => base * 1.8 + 32,
         }),
         names
-    }
+    };
 }));

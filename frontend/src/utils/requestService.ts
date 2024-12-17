@@ -1,4 +1,6 @@
-// handle api request for GET POST PUT DELETE
+/* -------------------------------------------------------------------------- */
+/*                   UTILITY SERVICE TO HANDLE HTTP REQUEST                   */
+/* -------------------------------------------------------------------------- */
 export default class RequestServices {
     private API_URL: string;
 
@@ -6,6 +8,7 @@ export default class RequestServices {
         this.API_URL = `${process.env.REACT_APP_API_URL}/${APIEndPoint}`;
     }
 
+    /* ------------------------------ Request types ----------------------------- */
     get = async<T> (endpoint:string, reqData?:object, token?:string): Promise<T> => {
         const data = await RequestServices.fetchRequest<T>(this.API_URL + endpoint, {
             method: "GET",
@@ -20,7 +23,7 @@ export default class RequestServices {
             method: "POST",
             data: reqData,
             token
-        })
+        });
         return data as T;
     }
 
@@ -29,7 +32,7 @@ export default class RequestServices {
             method: "PUT",
             data: reqData,
             token
-        })
+        });
         return data as T;
     }
 
@@ -37,16 +40,18 @@ export default class RequestServices {
         const data = await RequestServices.fetchRequest<T>(this.API_URL + endpoint, {
             method: "DELETE",
             token
-        })
+        });
         return data as T;
     }
     
+    /* ----------- Parse any errors to the best text version available ---------- */
     parseError = (err:any) => {
         if (err.response && err.response.data.error) return err.response.data.error;
         if (err.message) return err.message;
         return err.toString();
     }
 
+    /* ---------------- execute fetching (used by get / post...) ---------------- */
     private static async fetchRequest<T>(url:string, options:{
         method: "GET" | "POST" | "DELETE" | "PUT",
         token?: string,

@@ -14,7 +14,7 @@ export default function Forecast() {
   const setPosition = useForecastStore.use.setPosition();
   const getForecast = useForecastStore.use.getForecast();
 
-  // update forecast
+  // update forecast when position changes
   useEffect(() => {
     if (!position) return;
     getForecast(position);
@@ -23,6 +23,7 @@ export default function Forecast() {
   return (
     <>
       <div className={`forecastContainer ${position ? "active" : ""}`}>
+        {/* display sounding or meteogram */}
         {position && position.lng && position.lat &&
         <>
           {url.hash.substring(1) === "sounding"
@@ -31,6 +32,7 @@ export default function Forecast() {
           }
         </> 
         }
+        {/* navigation */}
         <nav className="forecast-nav">
             <a href="#meteogram">Météogramme</a>
             <a href="#sounding">Emagramme</a>

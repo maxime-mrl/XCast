@@ -1,1 +1,1 @@
-declare type mapDataTypes = "wind" | "temp"
+declare type mapDataTypes = "wind" | "temp";

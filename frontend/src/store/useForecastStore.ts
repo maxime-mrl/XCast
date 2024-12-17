@@ -5,12 +5,12 @@ import { LatLng } from "leaflet";
 const forecastService = new RequestServices("api/forecast");
 
 type forecastCapabilitiesData = {
-    [key: string]: {
-        availableTimes: string[],
+    [key: string]: { // models
+        availableTimes: string[], // array of iso dates
         dataset: {
-            [key: string]: {
-                names: string[],
-                levels: number[]
+            [key: string]: { // measurements available
+                names: string[], // geotiff name(s) (for wind to geotifs so [ wspd, wdir ])
+                levels: number[] // available altitude
             }
         }
     }
@@ -36,20 +36,25 @@ export type forecastData = {
 };
 
 interface ForecastStore {
+    // forecast capabilities (available models time and measurements)
     forecastCapabilities: null | {
         availableModels: string[],
         data: forecastCapabilitiesData
     },
+    // actual forecast
     forecast: null | forecastData,
+    // users settings for the forecast
     userSettings: {
-        model: string,
-        time: string | null,
-        selected: mapDataTypes | "",
-        level: number | null
+        model: string, // selected model
+        time: string | null, // time displayed (ISO)
+        selected: mapDataTypes | "", // selected measurement
+        level: number | null // selected altitude
     },
-    position: false | LatLng,
+    position: false | LatLng, // point position for forecast details (false = no points)
+    // error handling
     status: string,
     message: string,
+    // utility method to update data
     setPosition: (point: false|LatLng) => void,
     getCapabilities: () => Promise<void>,
     getForecast: (LatLng: LatLng) => Promise<void>,
@@ -58,10 +63,10 @@ interface ForecastStore {
         hours?: 1 | -1,
         days?: 1 | -1
     }) => void,
-}
+};
 
 export const useForecastStore = createSelectors(create<ForecastStore>()((set, get) => {
-    // update users preferences
+    /* ------------------------ update users preferences ------------------------ */
     const updateSettings:ForecastStore["updateSettings"] = (newSettings) => {
         set((state) => ({ userSettings: {
             ...state.userSettings,
@@ -69,11 +74,13 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
         } }))
     };
 
-    // update detailed forecast data
+    /* ---------------------- update detailed forecast data --------------------- */
     const getForecast:ForecastStore["getForecast"] = async (LatLng) => {
         set({ status: "loading", forecast: null });
         try {
+            // where / what model?
             const { time, model } = get().userSettings;
+            // request
             const data = await forecastService.get<forecastData>("/point", {...LatLng, time, model});
             set({ forecast: data, status: "success", message: "" });
         } catch (err) {
@@ -84,7 +91,7 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
         }
     }
 
-    // update selected time
+    /* -------------------------- update selected time -------------------------- */
     const updateTime:ForecastStore["updateTime"] = (newTime) => {
         // get actuals values
         const settings = get().userSettings;
@@ -111,9 +118,10 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
         updateSettings({ time: timeStr });
     };
 
+    /* --------------------------- set point position --------------------------- */
     const setPosition:ForecastStore["setPosition"] = (point) => set(() => ({ position: point }));
 
-    // get map capabilities on init
+    /* ---------------------- get map capabilities on init ---------------------- */
     const getCapabilities = async () => {
         set({ status: "loading", forecastCapabilities: null });
         try {
@@ -150,16 +158,16 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
             });
         }
     };
-    getCapabilities();
+    getCapabilities(); // call at init
 
-    return {
+    return { // most of it will be set by getcapabilities getforecast etc
         forecastCapabilities: null,
         forecast: null,
         userSettings: {
-            model: "", // selected model
-            time: null, // selected time
-            selected: "", // selected dataset
-            level: 0 // selected level implemented later
+            model: "",
+            time: null,
+            selected: "",
+            level: 0
         },
         position: false,
         status: "",
@@ -169,7 +177,7 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
         getForecast,
         updateTime,
         setPosition,
-    }
+    };
 }));
 
 

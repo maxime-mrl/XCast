@@ -5,8 +5,12 @@ export type chart = {
     max: number,
     displayed: number[],
     chartMargin: number
-}
+};
 
+
+/* -------------------------------------------------------------------------- */
+/*                  Canvas utility for sounding and meteogram                 */
+/* -------------------------------------------------------------------------- */
 export default class Canvas {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
@@ -25,15 +29,17 @@ export default class Canvas {
         this.xChart = xChart;
         this.yChart = yChart;
 
+        /* ------------------------ Create or retrieve canvas ----------------------- */
         if (parent.querySelector("canvas")) { // if canvas arleady exist just link back to it
             this.canvas = parent.querySelector("canvas") as HTMLCanvasElement;
-        } else { // no canvas => create one and listen for resize
+        } else { // no canvas => create one
             this.canvas = document.createElement("canvas");
             parent.appendChild(this.canvas);
-            parent.addEventListener("resize", this.resize);
-            window.addEventListener("resize", this.resize);
-            window.addEventListener("orientationchange", this.resize);
         }
+        // listen for resize and create context
+        parent.addEventListener("resize", this.resize);
+        window.addEventListener("resize", this.resize);
+        window.addEventListener("orientationchange", this.resize);
         this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
         // init the size
@@ -41,16 +47,9 @@ export default class Canvas {
         this.resize();
     }
 
-    clear = () => {
-        this.drawfns = [];
-        this.canvas.remove();
-        this.container.removeEventListener("resize", this.resize);
-        window.removeEventListener("resize", this.resize);
-        window.removeEventListener("orientationchange", this.resize);
-    }
 
-    // handle resizing of canvas
-    resize = () => {
+    /* --------------- handle resizing of canvas to fill container -------------- */
+    private resize = () => {
         this.size = {
             width: this.container.clientWidth,
             height: this.container.clientHeight
@@ -61,66 +60,117 @@ export default class Canvas {
         this.render();
     }
 
-    // not sure that's a good idea we'll see if i keep it
-    addRenderer = (f: (canvas:this, params?: any) => void, param?: any) => {
+    /* ---------------------- render / rerender everything ---------------------- */
+    private render = () => {
+        // clear canvas
+        this.ctx.clearRect(0, 0, this.size.width * 2, this.size.height * 2);
+        // call every custom renderer
+        this.drawfns.forEach(f => f[0](this, f[1]));
+    }
+
+    /* --- Clear everything class as made (canvas, AudioListener, Renderer...) -- */
+    clear = () => {
+        this.drawfns = [];
+        this.canvas.remove();
+        this.container.removeEventListener("resize", this.resize);
+        window.removeEventListener("resize", this.resize);
+        window.removeEventListener("orientationchange", this.resize);
+    }
+
+    /* --------------------- Add a custom renderer function --------------------- */
+    addRenderer = (f: (canvas:Canvas, params?: any) => void, param?: any) => {
         f(this, param);
         this.drawfns.push([f, param]);
     }
 
-    // clear what's existing and draw with new dimensions
-    render = () => {
-        this.ctx.clearRect(0, 0, this.size.width * 2, this.size.height * 2);
-        this.drawfns.forEach(f => f[0](this, f[1]));
-    }
+    /* -------------------------------------------------------------------------- */
+    /*                               UTILITY METHODS                              */
+    /* -------------------------------------------------------------------------- */
 
-    /* ----------------------------- utility method ----------------------------- */
-    getCoord = (x: number, y: number, xChart:chart, yChart:chart) => {
-        const { chartMargin: xMargin, min: xMin, max: xMax } = xChart;
-        const { chartMargin: yMargin, min: yMin, max: yMax } = yChart;
-
+    /* ------------ get pixel coordinate depending on the chart used ------------ */
+    getCoord = (x: number, y: number) => {
+        const { chartMargin: xMargin, min: xMin, max: xMax } = this.xChart;
+        const { chartMargin: yMargin, min: yMin, max: yMax } = this.yChart;
+        // increment is how much pixel we have to work with / chart range
         const xIncrement = (this.size.width - xMargin) / (xMax - xMin);
         const yIncrement = (this.size.height - yMargin) / (yMax - yMin);
 
         return {
-            x: (x - xChart.min) * xIncrement + xChart.chartMargin,
-            y: this.size.height - (y - yChart.min) * yIncrement - yChart.chartMargin, // invert to start from bottom
+            x: this.xChart.chartMargin + (x - this.xChart.min) * xIncrement, // start after margin multiply number by increment to get pixels
+            y: this.size.height - (y - this.yChart.min) * yIncrement - this.yChart.chartMargin, // invert to start from bottom
             xIncrement,
             yIncrement
         }
     }
 
+    /* ------------------- draw a line from a point to another ------------------ */
+    drawLine = (startX:number, startY: number, endX:number, endY: number) => {
+        // get points in pixels
+        const start = this.getCoord(startX, startY);
+        const end = this.getCoord(endX, endY);
+        // draw the line
+        this.ctx.beginPath();
+        this.ctx.moveTo(start.x, start.y);
+        this.ctx.lineTo(end.x, end.y);
+        this.ctx.stroke();
+        this.ctx.closePath();
+    }
+
+    /* ---------------- draw a rectangle from a point to another ---------------- */
+    drawRectangle = (
+        coords: { top?: number, bottom?: number, left?: number, right?: number },
+        color:string,
+    ) => {
+        // get points in pixels
+        const topLeft = this.getCoord(coords.left || this.xChart.min, coords.top || this.yChart.max);
+        const bottomRight = this.getCoord(coords.right || this.xChart.max, coords.bottom || 0);
+        // draw rectangle with custom color
+        this.ctx.fillStyle = color;
+        this.ctx.fillRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+    }
+
+    /* ------------------ draw text from custom point IN PIXEL ------------------ */
+    // pixels by default because text can often be outside of chart range so it's way easier to get the exact point before
+    // to get point coords options.pointCoordinates = true
     drawText = (x:number, y:number, text:string, options?: {
-      font?: string;
-      align?: CanvasTextAlign;
-      baseline?: CanvasTextBaseline;
-      color?: string;
-      maxWidth?: number;
+        pointCoordinates?: boolean
+        font?: string;
+        align?: CanvasTextAlign;
+        baseline?: CanvasTextBaseline;
+        color?: string;
+        maxWidth?: number;
     }) => {
+        // get coords optionnaly
+        const coords = options?.pointCoordinates ? this.getCoord(x, y) : { x, y };
+        // customize text
         const { font = "20px system-ui", align = "center", baseline = "middle", color = "black", maxWidth } = options || {};
         this.ctx.font = font;
         this.ctx.textBaseline = baseline;
         this.ctx.textAlign = align;
         this.ctx.fillStyle = color;
-        this.ctx.fillText(text, x, y, maxWidth)
-
+        // draw
+        this.ctx.fillText(text, coords.x, coords.y, maxWidth);
     }
 
-    drawLine = (startX:number, startY: number, endX:number, endY: number) => {
-        this.ctx.beginPath();
-        this.ctx.moveTo(startX, startY);
-        this.ctx.lineTo(endX, endY);
-        this.ctx.stroke();
-        this.ctx.closePath();
-    }
-
-    drawWindArrow = (x:number, y:number, size:number, wdir:number, wspd:number, colorScale?:Scale<Color>) => {
-        // arrow size
+    /* ----- draw wind arrow with varying scale and color depeding on speed ----- */
+    drawWindArrow = (pointX:number, pointY:number, size:number, wdir:number, wspd:number, options: {
+        colorScale?:Scale<Color>,
+        center?: boolean
+    }) => {
+        // arrow size and color
         const thickness = size * Math.min(0.3,
             0.02 * Math.exp(0.075 * ((wspd) - 10)) + 0.1 // this seems to look good after testing
         );
         const length = size*0.9;
-        const color = colorScale ? colorScale(wspd).hex() : "#00000";
+        const color = options.colorScale ? options.colorScale(wspd).hex() : "#00000";
         const lineThickness = thickness * 0.3;
+
+        // get coords
+        let { x, y } = this.getCoord(pointX, pointY);
+        if (options.center) {
+            x -= size/2;
+            y -= size/2;
+        }
 
         // save ctx
         this.ctx.save();
@@ -150,19 +200,6 @@ export default class Canvas {
         // restore canvas to its original state
         this.ctx.closePath();
         this.ctx.restore();
-    }
-    
-    drawRectangle = (
-        coords: { top?: number, bottom?: number, left?: number, right?: number },
-        color:string,
-        xChart:chart,
-        yChart:chart
-    ) => {
-        const topLeft = this.getCoord(coords.left || xChart.min, coords.top || yChart.max, xChart, yChart);
-        const bottomRight = this.getCoord(coords.right || xChart.max, coords.bottom || 0, xChart, yChart);
-      
-        this.ctx.fillStyle = color;
-        this.ctx.fillRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
     }
 }
 

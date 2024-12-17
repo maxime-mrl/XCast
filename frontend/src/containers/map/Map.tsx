@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-// leflet
+// leaflet
 import "leaflet/dist/leaflet.js";
 import "leaflet/dist/leaflet.css";
 import L, { LatLng } from 'leaflet';
@@ -38,40 +38,41 @@ export default function Map() {
 
   return (
     <div className="map">
+      {/* MAP */}
       <MapContainer center={[-31, 148]} zoom={7} scrollWheelZoom={true} zoomControl={false}>
-          <TileLayer
-              attribution='Tiles &copy; Esri &mdash; Source: Esri, Esri Japan, Esri China (Hong Kong), Esri (Thailand), DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, METI, TomTom'
-              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+        <TileLayer
+            attribution='Tiles &copy; Esri &mdash; Source: Esri, Esri Japan, Esri China (Hong Kong), Esri (Thailand), DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, METI, TomTom'
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+        />
+        {/* GEOTIFS */}
+        { baseUrl !== "" && geotiffs.length !== 0 && geotiffs.map(file => (
+          <GeotiffLayer
+            renderer={/dir/.test(file) ? "arrows" : "rgb"}
+            url={`${baseUrl}/${file}-${userSettings.level}.tif`}
+            name={userSettings.selected}
+            level={userSettings.level}
+            key={file}
           />
-          { baseUrl !== "" && geotiffs.length !== 0 && geotiffs.map(file => (
-            <GeotiffLayer
-              renderer={/dir/.test(file) ? "arrows" : "rgb"}
-              url={`${baseUrl}/${file}-${userSettings.level}.tif`}
-              name={userSettings.selected}
-              level={userSettings.level}
-              key={file}
-            />
-          ))
-          
+        )) }
+        {/* MARKER */}
+        {position && 
+          <Marker position={position} icon={L.icon({
+            iconUrl: "/images/marker.png",
+            iconSize: [38, 57],
+            iconAnchor: [19, 57],
+          })}>
+          </Marker>
         }
-
-          
-          {position && 
-            <Marker position={position} icon={L.icon({
-              iconUrl: "/images/marker.png",
-              iconSize: [38, 57],
-              iconAnchor: [19, 57],
-            })}>
-            </Marker>
-          }
+        {/* CLICK LISTENER */}
         <ClickHandler />
       </MapContainer>
+      {/* TIME SELECTOR */}
       <TimeSelector />  
     </div>
   )
 }
 
-
+/* -------------------------- Handle clicks on map -------------------------- */
 function ClickHandler() {
   const position = useForecastStore.use.position();
   const setPosition = useForecastStore.use.setPosition();
@@ -87,7 +88,7 @@ function ClickHandler() {
     map.invalidateSize();
     if (!memoryPos.current && position) map.panTo(position);
     memoryPos.current = position;
-  }, [position, map])
+  }, [position, map]);
 
   return null;
 }
