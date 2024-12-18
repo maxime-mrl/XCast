@@ -10,3 +10,7 @@
     height: 100vh;
     height: 100dvh;
 }
+
+.mobile .forecast {
+    display: block;
+}

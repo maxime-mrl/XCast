@@ -37,9 +37,9 @@ export default class Canvas {
             parent.appendChild(this.canvas);
         }
         // listen for resize and create context
-        parent.addEventListener("resize", this.resize);
-        window.addEventListener("resize", this.resize);
-        window.addEventListener("orientationchange", this.resize);
+        parent.addEventListener("resize", this.throttle(this.resize, 100));
+        window.addEventListener("resize", this.throttle(this.resize, 100));
+        window.addEventListener("orientationchange", this.throttle(this.resize, 100));
         this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
         // init the size
@@ -49,6 +49,19 @@ export default class Canvas {
 
 
     /* --------------- handle resizing of canvas to fill container -------------- */
+    // throttle function adapted from hackernoon.com/optimizing-performance-with-throttling-in-javascript
+    private throttle = (fn: () => void, time: number) => {
+        let timeout: null | NodeJS.Timeout = null;
+        return () => {
+            if (timeout) return;
+            const later = () => {
+                fn();
+                timeout = null;
+            }
+            timeout = setTimeout(later, time);
+        }
+    }
+
     private resize = () => {
         this.size = {
             width: this.container.clientWidth,

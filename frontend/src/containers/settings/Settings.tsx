@@ -25,7 +25,7 @@ export default function Settings() {
       <button onClick={toggleSettings} className="burger-btn" id='settings-btn'>
         <FontAwesomeIcon icon={isOpen ? faXmark : faBars} />
       </button>
-      <section className={`settingsContainer ${isOpen ? "active" : ""}`}>
+      <section className={`settingsContainer${isOpen ? " active" : ""}`}>
         <a className="about" href="#about">
           <h1 className="h2">XCast</h1>
         </a>
