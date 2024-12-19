@@ -9,6 +9,7 @@ import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
 import { GeotiffLayer, TimeSelector } from '@components';
 import { useForecastStore } from '@store/useForecastStore';
 import './Map.css';
+import { useAppStore } from '@store/useAppStore';
 
 export default function Map() {
   const [baseUrl, setBaseUrl] = useState("");
@@ -76,6 +77,7 @@ export default function Map() {
 function ClickHandler() {
   const position = useForecastStore.use.position();
   const setPosition = useForecastStore.use.setPosition();
+  const isMobile = useAppStore.use.isMobile();
   // used to check last position state and only pan when forecast is oppened
   const memoryPos = useRef(false as false | LatLng);
   const map = useMapEvents({});
@@ -86,9 +88,10 @@ function ClickHandler() {
   // update map sizing with or without forecast
   useEffect(() => {
     map.invalidateSize();
-    if (!memoryPos.current && position) map.panTo(position);
+    // pan map (center it) if there is no position memorized and position is defined (= when oppening forecast) and only on desktop
+    if (!memoryPos.current && position && !isMobile) map.panTo(position);
     memoryPos.current = position;
-  }, [position, map]);
+  }, [position, map, isMobile]);
 
   return null;
 }

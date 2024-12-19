@@ -3,24 +3,12 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import { Home } from "@pages"
 
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useAppStore, useWindowSizeInitializer } from "@store/useAppStore";
 
 export default function App() {
-  const [ isMobile, setIsMobile ] = useState(true); // default to true (it's better to see mobile version on desktop than other way)
-  useEffect(() => {
-    console.log("ee")
-    // handle resizing
-    const handleResize = () => setIsMobile(window.innerWidth < 800)
-    handleResize(); // Set initial size
-    // listen for resize and orientationchange
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("orientationchange", handleResize);
-    // cleanup
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("orientationchange", handleResize);
-    };
-  }, []);
+  // initialize window size (and get the ismobile while here c:)
+  useWindowSizeInitializer();
+  const isMobile = useAppStore.use.isMobile();
   
   return (
     <div className={isMobile ? "mobile" : "desktop"}>
