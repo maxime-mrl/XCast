@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Color, Scale } from 'chroma-js';
 
 import { forecastData, useForecastStore } from '@store/useForecastStore';
-import Canvas, { chart } from '@utils/canvasTools';
+import Canvas, { chart, generateYchart } from '@utils/canvasTools';
 import { useUnitStore } from '@store/useUnitsStore';
 import './Meteogram.css';
 
@@ -23,12 +23,11 @@ export default function MetoGram() {
     const timeRange = getTimeRange(forecast, forecastTime);
     if (!timeRange) return;
     // init canvas
-    const yChart:chart = {
-      min: 0,
-      max: maxHeight + 200,
-      displayed: yIncrements.filter(increment => increment <= maxHeight),
-      chartMargin: 40
-    };
+    const yChart = generateYchart({
+      min: forecast.level,
+      max: maxHeight,
+      increments: yIncrements,
+    })
 
     const canvas = new Canvas(meteogram, timeRange.chart, yChart);
     canvas.addRenderer(drawChart);
@@ -85,12 +84,12 @@ function getTimeRange(forecast:forecastData, time:string) {
 function drawChart(canvas:Canvas) {
   canvas.yChart.displayed.forEach(value => { // y axis (height)
     const coord = canvas.getCoord(0, value);
-    canvas.drawText(canvas.xChart.chartMargin/2, coord.y, String(value/100));
+    canvas.drawText(canvas.xChart.chartMargin/2, coord.y, String(Math.round(value/100)));
   });
 
   canvas.xChart.displayed.forEach(value => { // x axis (time)
     const coord = canvas.getCoord(value, 0);
-    canvas.drawLine(value + 0.5, canvas.yChart.max, value + 0.5, 0);
+    canvas.drawLine(value + 0.5, canvas.yChart.max, value + 0.5, canvas.yChart.min);
     canvas.drawText(coord.x, canvas.size.height - canvas.yChart.chartMargin/2, String(value));
   })
 }

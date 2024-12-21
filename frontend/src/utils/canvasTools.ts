@@ -8,6 +8,20 @@ export type chart = {
     minWidth?: number
 };
 
+export const generateYchart = ({ min, max, increments, margin=40 }: {
+    min: number,
+    max: number,
+    increments: number[],
+    margin?: number,
+}) => {
+    return {
+        min: min,
+        max: max + (max-min) * 0.1,
+        displayed: [min, ...increments.filter(increment => increment >= min && increment <= max)],
+        chartMargin: margin,
+    } as chart;
+}
+
 
 /* -------------------------------------------------------------------------- */
 /*                  Canvas utility for sounding and meteogram                 */
@@ -152,7 +166,7 @@ export default class Canvas {
     ) => {
         // get points in pixels
         const topLeft = this.getCoord(coords.left || this.xChart.min, coords.top || this.yChart.max);
-        const bottomRight = this.getCoord(coords.right || this.xChart.max, coords.bottom || 0);
+        const bottomRight = this.getCoord(coords.right || this.xChart.max, coords.bottom || this.yChart.min);
         // draw rectangle with custom color
         this.ctx.fillStyle = color;
         this.ctx.fillRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);

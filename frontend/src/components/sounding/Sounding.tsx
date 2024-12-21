@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 import { forecastData, useForecastStore } from '@store/useForecastStore';
-import Canvas, { chart } from '@utils/canvasTools';
+import Canvas, { chart, generateYchart } from '@utils/canvasTools';
 import './Sounding.css';
 
 const xChart:chart = {
@@ -26,12 +26,11 @@ export default function Sounding() {
     const forecastHour = getForecastTime(forecast, forecastTime);
     if (!forecastHour) return;
     // init canvas
-    const yChart:chart = {
-      min: 0,
-      max: maxHeight + 200,
-      displayed: yIncrements.filter(increment => increment <= maxHeight),
-      chartMargin: 40
-    };
+    const yChart = generateYchart({
+      min: forecast.level,
+      max: maxHeight,
+      increments: yIncrements,
+    })
 
     const canvas = new Canvas(sounding, xChart, yChart);
     canvas.addRenderer(drawChart);
@@ -63,11 +62,11 @@ function drawChart(canvas:Canvas) {
   canvas.yChart.displayed.forEach(value => { // y axis (height)
     canvas.drawLine(canvas.xChart.min, value, canvas.xChart.max, value);
     const coord = canvas.getCoord(0, value);
-    canvas.drawText(canvas.xChart.chartMargin/2, coord.y, String(value/100));
+    canvas.drawText(canvas.xChart.chartMargin/2, coord.y, String(Math.round(value/100)));
   });
 
   canvas.xChart.displayed.forEach(value => { // x axis (temperature)
-    canvas.drawLine(value, canvas.yChart.max, value, 0);
+    canvas.drawLine(value, canvas.yChart.max, value, canvas.yChart.min);
     const coord = canvas.getCoord(value, 0);
     canvas.drawText(coord.x, canvas.size.height - canvas.yChart.chartMargin/2, String(value));
   })
