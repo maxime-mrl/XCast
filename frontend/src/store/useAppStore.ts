@@ -21,7 +21,7 @@ type AppStore = {
     updateForecastWidth: (event: MouseEvent, container:HTMLElement) => void
 };
 
-export const useAppStore = createSelectors(create<AppStore>()((set) => {
+export const useAppStore = createSelectors(create<AppStore>()((set, get) => {
     function throttle(fn: () => void, time: number) {
         let timeout: null | NodeJS.Timeout = null;
         return () => {
@@ -50,7 +50,7 @@ export const useAppStore = createSelectors(create<AppStore>()((set) => {
             }));
         }, resizeThrottle),
         updateForecastWidth: (e, elem) => {
-            const widthRatio = e.clientX / window.innerWidth;
+            const widthRatio = e.clientX / get().width;
             elem.style.width = `${widthRatio*100}%`;
             set({ forecastWidth: widthRatio });
         }

@@ -48,7 +48,8 @@ interface ForecastStore {
         model: string, // selected model
         time: string | null, // time displayed (ISO)
         selected: mapDataTypes | "", // selected measurement
-        level: number | null // selected altitude
+        level: number | null, // selected altitude
+        maxHeight: number // display details forecast up to a height
     },
     position: false | LatLng, // point position for forecast details (false = no points)
     // error handling
@@ -167,7 +168,8 @@ export const useForecastStore = createSelectors(create<ForecastStore>()((set, ge
             model: "",
             time: null,
             selected: "",
-            level: 0
+            level: 0,
+            maxHeight: 5000 // default 5000m
         },
         position: false,
         status: "",

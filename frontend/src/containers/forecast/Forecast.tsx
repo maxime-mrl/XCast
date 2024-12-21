@@ -14,6 +14,8 @@ export default function Forecast() {
   const position = useForecastStore.use.position();
   const setPosition = useForecastStore.use.setPosition();
   const getForecast = useForecastStore.use.getForecast();
+  const userSettings = useForecastStore.use.userSettings();
+  const updateSettings = useForecastStore.use.updateSettings();
   const updateForecastWidth = useAppStore.use.updateForecastWidth();
 
   // refs for events listeners
@@ -58,28 +60,50 @@ export default function Forecast() {
   }, [updateForecastWidth]);
 
   return (
-    <>
-      <div className={`forecast-container ${position ? "active" : ""}`}>
-        {/* display sounding or meteogram */}
-        {position && position.lng && position.lat &&
-        <div>
-          {url.hash.substring(1) === "sounding"
-            ? <Sounding />
-            : <Meteogram />
-          }
-          {/* resizing */}
-          <div className="resizer" ref={resizerRefHandler}></div>
-        </div> 
+    <div className={`forecast-container ${position ? "active" : ""}`}>
+      {/* display sounding or meteogram */}
+      {position && position.lng && position.lat &&
+      <>
+        {url.hash.substring(1) === "sounding"
+          ? <Sounding />
+          : <Meteogram />
         }
-        {/* navigation */}
-        <nav className="forecast-nav">
-            <a href="#meteogram">Météogramme</a>
-            <a href="#sounding">Emagramme</a>
-            <button onClick={() => setPosition(false)}  className="close-forecast">
-              <FontAwesomeIcon icon={faXmark} />
-            </button>
-        </nav>
-      </div>
-    </>
+      </> 
+      }
+      {/* resizing */}
+      <div className="resizer" ref={resizerRefHandler}></div>
+      {/* navigation */}
+      <nav className="forecast-nav">
+        <div className="main-nav">
+          <a href="#meteogram" className="nav-btn">Météogramme</a>
+          <a href="#sounding" className="nav-btn">Emagramme</a>
+        </div>
+        <div className="separator"></div>
+        <div className="actions">
+          {/* height selection */}
+          <span className="height-select">
+            <label htmlFor="height-select">Alt. max:</label>
+            <span className="select">
+              <select
+                name="height-select"
+                id="height-select"
+                value={userSettings.maxHeight}
+                onChange={(e) => updateSettings({ maxHeight: parseInt(e.target.value) })}
+              >
+                <option value="2000">2000m</option>
+                <option value="3000">3000m</option>
+                <option value="4000">4000m</option>
+                <option value="5000">5000m</option>
+                <option value="10000">10000m</option>
+              </select>
+            </span>
+          </span>
+          {/* close forecast */}
+          <button onClick={() => setPosition(false)} className="close-forecast nav-btn">
+            <FontAwesomeIcon icon={faXmark} />
+          </button>
+        </div>
+      </nav>
+    </div>
   )
 }

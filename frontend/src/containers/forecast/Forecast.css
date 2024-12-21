@@ -5,61 +5,106 @@
 
 .forecast-container.active {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 0.3em;
+    grid-template-rows: 1fr auto;
     width: 50%;
     min-width: 20em;
     max-width: 90%;
     height: 100%;
     background-color: var(--bg);
     user-select: none;
-}
-
-.mobile .forecast-container.active {
-    width: 100%;
-    max-width: 100%;
-}
-
-.mobile .resizer {
-    display: none;
-}
-
-.forecast-container > div {
-    width: 100%;
-    height: 100%;
-    height: calc(100% - 3em);
-    display: flex;
-    flex-grow: 0;
+    container-type: inline-size; /* for container query */
+    container-name: forecast-container;
 }
 
 .resizer {
-    z-index: 10;
-    flex-shrink: 0;
-    width: 0.2em;
+    grid-row: 1 / 2;
+    grid-column: 2 / 2;
     cursor: e-resize;
 }
-
-.mobile .resizer {
-    display: none;
+.sounding, .meteogram {
+    grid-row: 1 / 1;
+    grid-column: 1 / 1;
 }
 
-
 .forecast-nav {
-    position: relative;
+    grid-row: 2 / 2;
+    grid-column: 1 / 1;
     display: flex;
-    gap: 1.5em;
-    gap: clamp(1em, 5vw, 3em);
+    flex-wrap: wrap-reverse;
+    justify-content: space-between;
+    padding: 0 0.5em;
     border-top: 1px solid var(--text);
 }
 
-.forecast-nav > * {
+.forecast-nav > div {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1em;
+    flex-shrink: 1;
+}
+
+.separator {
+    width: 0.1em;
+    min-width: 0.1em;
+    margin: 0.3em;
+    flex-shrink: 0;
+    background-color: var(--text);
+    border-radius: 10px;
+}
+
+.height-select {
+    display: flex;
+    gap: 0.2em;
+    align-items: center;
+}
+
+.nav-btn { /* clickable btns */
     padding: 0.5rem;
     cursor: pointer;
 }
 
 .close-forecast {
-    position: absolute;
-    right: 0.5em;
     font-size: 1.1em;
+}
+
+/* --------------------------- MOBILE / RESPONSIVE -------------------------- */
+.mobile .forecast-container.active {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100dvw;
+}
+
+.mobile .resizer {
+    display: none;
+}
+
+.mobile .resizer {
+    display: none;
+}
+
+@container forecast-container (width < 520px) {
+    .forecast-nav {
+        justify-content: space-around;
+    }
+    .forecast-nav > .separator {
+        width: 100%;
+        height: 0.1em;
+        /* display: none; */
+    }
+
+    .forecast-nav > .actions {
+        justify-content: space-between;
+        padding: 0 1.5em;
+        flex-grow: 1;
+    }
+
+    .forecast-nav > .main-nav {
+        flex-grow: 1;
+        padding: 0 1.5em;
+        padding: 0 calc(1.5em - 0.5rem);
+        justify-content: start;
+    }
 }

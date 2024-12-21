@@ -70,8 +70,38 @@ html, body {
 } */
 
 .h2 {
-  font-size: 1.2rem;
+  font-size: var(--h2-size);
   font-weight: 500;
+}
+
+
+/* select */
+.select {
+  display: grid;
+  grid-template-areas: "select";
+  align-items: center;
+  position: relative;
+  border: 1px solid var(--text);
+  border-radius: 0.25em;
+  height: fit-content;
+}
+
+.select select {
+  cursor: pointer;
+  grid-area: select;
+  padding: 0.2em;
+  padding-right: 2em;
+}
+
+.select::after {
+  content: "";
+  justify-self: end;
+  grid-area: select;
+  width: 0.8em;
+  height: 0.5em;
+  margin-right: 0.2em;
+  background-color: var(--text);
+  clip-path: polygon(100% 0%, 0 0%, 50% 100%);
 }
 
 

@@ -6,21 +6,14 @@ import Canvas, { chart } from '@utils/canvasTools';
 import { useUnitStore } from '@store/useUnitsStore';
 import './Meteogram.css';
 
-const yChart:chart = {
-  min: 0,
-  max: 5500,
-  displayed: [ 100, 500, 1000, 1500, 2000, 3000, 4000, 5000 ],
-  chartMargin: 40
-};
-// xChart is dynamic
-
+const yIncrements = [ 100, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6500, 8000, 10000 ];
 
 export default function MetoGram() {
   const containerRef = useRef(null); // ref for canvas
   // get stored data
   const forecast = useForecastStore.use.forecast();
   const { scale } = useUnitStore.use.wind();
-  const { time:forecastTime } = useForecastStore.use.userSettings();
+  const { time:forecastTime, maxHeight } = useForecastStore.use.userSettings();
 
   useEffect(() => {
     // check everything is here
@@ -30,6 +23,13 @@ export default function MetoGram() {
     const timeRange = getTimeRange(forecast, forecastTime);
     if (!timeRange) return;
     // init canvas
+    const yChart:chart = {
+      min: 0,
+      max: maxHeight + 500,
+      displayed: yIncrements.filter(increment => increment <= maxHeight),
+      chartMargin: 40
+    };
+
     const canvas = new Canvas(meteogram, timeRange.chart, yChart);
     canvas.addRenderer(drawChart);
     canvas.addRenderer(drawMeteogram, {
@@ -42,7 +42,7 @@ export default function MetoGram() {
     return () => {
       canvas.clear();
     };
-  }, [forecast, scale, forecastTime]);
+  }, [forecast, scale, forecastTime, maxHeight]);
 
   return (
     <div className='meteogram' ref={containerRef}></div>

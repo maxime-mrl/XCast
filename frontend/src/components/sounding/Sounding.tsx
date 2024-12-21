@@ -10,17 +10,13 @@ const xChart:chart = {
   displayed: [ -30, -20, -10, 0, 10, 20, 30 ],
   chartMargin: 40
 };
-const yChart:chart = {
-  min: 0,
-  max: 5500,
-  displayed: [ 100, 500, 1000, 1500, 2000, 3000, 4000, 5000 ],
-  chartMargin: 40
-};
+
+const yIncrements = [ 100, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6500, 8000, 10000 ];
 
 export default function Sounding() {
   const containerRef = useRef(null);
   const forecast = useForecastStore.use.forecast();
-  const { time:forecastTime } = useForecastStore.use.userSettings();
+  const { time:forecastTime, maxHeight } = useForecastStore.use.userSettings();
 
   useEffect(() => {
     // check everything is here
@@ -30,6 +26,13 @@ export default function Sounding() {
     const forecastHour = getForecastTime(forecast, forecastTime);
     if (!forecastHour) return;
     // init canvas
+    const yChart:chart = {
+      min: 0,
+      max: maxHeight + 500,
+      displayed: yIncrements.filter(increment => increment <= maxHeight),
+      chartMargin: 40
+    };
+    
     const canvas = new Canvas(sounding, xChart, yChart);
     canvas.addRenderer(drawChart);
     canvas.addRenderer(drawSounding, forecastHour);
@@ -38,7 +41,7 @@ export default function Sounding() {
     return () => {
       canvas.clear();
     };
-  }, [forecast, forecastTime]);
+  }, [forecast, forecastTime, maxHeight]);
 
   return (
     <div className='sounding' ref={containerRef}></div>
