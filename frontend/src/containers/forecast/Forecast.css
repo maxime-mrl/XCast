@@ -1,20 +1,31 @@
-.forecastContainer {
+.forecast-container {
     /* hide */
     display: none;
 }
 
-.forecastContainer.active {
+.forecast-container.active {
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     width: 50%;
+    min-width: 20em;
+    max-width: 90%;
     height: 100%;
     background-color: var(--bg);
     user-select: none;
 }
 
-.forecastContainer > div {
+.mobile .forecast-container.active {
+    width: 100%;
+    max-width: 100%;
+}
+
+.mobile .resizer {
+    display: none;
+}
+
+.forecast-container > div {
     width: 100%;
     height: 100%;
     height: calc(100% - 3em);

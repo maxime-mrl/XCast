@@ -51,9 +51,8 @@ export const useAppStore = createSelectors(create<AppStore>()((set) => {
         }, resizeThrottle),
         updateForecastWidth: (e, elem) => {
             const widthRatio = e.clientX / window.innerWidth;
-            console.log(widthRatio)
             elem.style.width = `${widthRatio*100}%`;
-            set({ forecastWidth: widthRatio })
+            set({ forecastWidth: widthRatio });
         }
     };
 }));

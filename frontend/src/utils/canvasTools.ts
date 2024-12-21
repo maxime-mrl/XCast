@@ -22,6 +22,7 @@ export default class Canvas {
     drawfns: [((canvas:this, params?: any) => void), any][];
     xChart: chart;
     yChart: chart;
+    resizeObserver: ResizeObserver;
 
     constructor(parent:Element, xChart:chart, yChart:chart) {
         this.container = parent;
@@ -36,12 +37,13 @@ export default class Canvas {
             this.canvas = document.createElement("canvas");
             parent.appendChild(this.canvas);
         }
-
-        // listen for resize and create context
-        parent.addEventListener("resize", this.throttle(this.resize, 100));
-        window.addEventListener("resize", this.throttle(this.resize, 100));
-        window.addEventListener("orientationchange", this.throttle(this.resize, 100));
+        
+        // create context
         this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+
+        // listen for resize
+        this.resizeObserver = new ResizeObserver(this.throttle(this.resize, 100));
+        this.resizeObserver.observe(this.canvas)
 
         // init the size
         this.size = { width: 0, height: 0 };
@@ -85,10 +87,8 @@ export default class Canvas {
     /* --- Clear everything class as made (canvas, AudioListener, Renderer...) -- */
     clear = () => {
         this.drawfns = [];
+        this.resizeObserver.disconnect();
         this.canvas.remove();
-        this.container.removeEventListener("resize", this.resize);
-        window.removeEventListener("resize", this.resize);
-        window.removeEventListener("orientationchange", this.resize);
     }
 
     /* --------------------- Add a custom renderer function --------------------- */

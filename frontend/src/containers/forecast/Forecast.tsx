@@ -5,8 +5,8 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import { Meteogram, Sounding } from "@components";
 import { useForecastStore } from "@store/useForecastStore";
-import './Forecast.css';
 import { useAppStore } from "@store/useAppStore";
+import './Forecast.css';
 
 export default function Forecast() {
   // get stored data
@@ -16,7 +16,11 @@ export default function Forecast() {
   const getForecast = useForecastStore.use.getForecast();
   const updateForecastWidth = useAppStore.use.updateForecastWidth();
 
-  const resizerRef = useRef<null|HTMLDivElement>(null);
+  // refs for events listeners
+  const handleMouseDown = useRef<null | (() => void)>();
+  const handleMouseUp = useRef<null | (() => void)>();
+  const handleMouseMove = useRef<null | ((e:MouseEvent) => void)>();
+  const resizerRef = useRef<null | HTMLElement>();
 
   // update forecast when position changes
   useEffect(() => {
@@ -28,60 +32,34 @@ export default function Forecast() {
   // + it works (yay)
   // - cleanup is teadious as you will see
   // for now it's only needed here since i don't listen anything -- for meteogramm and sounding there is other things that change so it work
+  // see github.com/facebook/react/issues/15176
   const resizerRefHandler = useCallback((resizer: HTMLDivElement | null) => {
-    const container = document.querySelector(".forecastContainer") as HTMLElement | null;
+    const container = document.querySelector(".forecast-container") as HTMLElement | null;
+
+    // handle cleanup
+    if (resizerRef.current && handleMouseDown.current && handleMouseUp.current && handleMouseMove.current) {
+      resizerRef.current.removeEventListener("mousedown", handleMouseDown.current);
+      document.removeEventListener("mouseup", handleMouseUp.current);
+      document.removeEventListener("mousemove", handleMouseMove.current);
+    }
+
+    // check that dom is here
     if (!resizer || !container) return;
-    console.log("Node attached:", resizer);
-
     let isResizing = false;
-    const handleMouseDown = () => {
-      console.log("click")
-      isResizing = true
-    };
-    const handleMouseUp = () => isResizing = false;
-    const handleMove = (e:MouseEvent) => {
-      if (!isResizing) return;
-      updateForecastWidth(e, container);
-    };
-
-    resizer.addEventListener("mousedown", handleMouseDown);
-    document.addEventListener("mouseup", handleMouseUp);
-    document.addEventListener("mousemove", handleMove);
+    // set the refs (for cleanup later)
+    handleMouseDown.current = () => isResizing = true;
+    handleMouseUp.current = () => isResizing = false;
+    handleMouseMove.current = (e) => isResizing && updateForecastWidth(e, container);
+    resizerRef.current = resizer;
+    // listen for events
+    resizerRef.current.addEventListener("mousedown", handleMouseDown.current);
+    document.addEventListener("mouseup", handleMouseUp.current);
+    document.addEventListener("mousemove", handleMouseMove.current);
   }, [updateForecastWidth]);
-  
-  // useEffect(() => {
-  //   const cleanup = resizerRefHandler(resizerRef.current);
-  //   return cleanup; // Ensure cleanup happens on unmount or dependency changes
-  // }, [resizerRefHandler]);
-  // listen for resize
-  // useEffect(() => {
-  //   const container = document.querySelector(".forecastContainer") as HTMLElement | null;
-  //   const resizer = document.querySelector(".resizer");
-  //   console.log(container);
-  //   console.log(resizer)
-  //   if (!resizer || !container) return;
-  //   let drag = false;
-  //   const handleMouseDown = () => drag = false;
-  //   const handleMouseUp = () => drag = true;
-  //   const handleMove = (e:MouseEvent) => {
-  //     if (!drag) return;
-  //     updateForecastWidth(e, container);
-  //   };
-
-  //   resizer.addEventListener("mousedown", handleMouseDown);
-  //   document.addEventListener("mouseup", handleMouseUp);
-  //   document.addEventListener("mousemove", handleMove);
-
-  //   return () => {
-  //     resizer.removeEventListener("mousedown", handleMouseDown);
-  //     document.removeEventListener("mouseup", handleMouseUp);
-  //     document.removeEventListener("mousemove", handleMove);
-  //   }
-  // }, [updateForecastWidth, resizerRef]);
 
   return (
     <>
-      <div className={`forecastContainer ${position ? "active" : ""}`}>
+      <div className={`forecast-container ${position ? "active" : ""}`}>
         {/* display sounding or meteogram */}
         {position && position.lng && position.lat &&
         <div>
@@ -89,6 +67,7 @@ export default function Forecast() {
             ? <Sounding />
             : <Meteogram />
           }
+          {/* resizing */}
           <div className="resizer" ref={resizerRefHandler}></div>
         </div> 
         }
