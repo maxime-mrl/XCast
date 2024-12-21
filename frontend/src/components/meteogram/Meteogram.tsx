@@ -25,7 +25,7 @@ export default function MetoGram() {
     // init canvas
     const yChart:chart = {
       min: 0,
-      max: maxHeight + 500,
+      max: maxHeight + 200,
       displayed: yIncrements.filter(increment => increment <= maxHeight),
       chartMargin: 40
     };

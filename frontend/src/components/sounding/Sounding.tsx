@@ -28,11 +28,11 @@ export default function Sounding() {
     // init canvas
     const yChart:chart = {
       min: 0,
-      max: maxHeight + 500,
+      max: maxHeight + 200,
       displayed: yIncrements.filter(increment => increment <= maxHeight),
       chartMargin: 40
     };
-    
+
     const canvas = new Canvas(sounding, xChart, yChart);
     canvas.addRenderer(drawChart);
     canvas.addRenderer(drawSounding, forecastHour);
@@ -74,7 +74,7 @@ function drawChart(canvas:Canvas) {
 }
 
 /* ------------------- draw sounding graph (dew end temp) ------------------- */
-function drawSounding({ drawRectangle, ctx, getCoord }:Canvas, forecast: {
+function drawSounding({ drawRectangle, ctx, getCoord, drawLine }:Canvas, forecast: {
   level: number,
   data: forecastData["data"][0]
 }) {
@@ -91,24 +91,36 @@ function drawSounding({ drawRectangle, ctx, getCoord }:Canvas, forecast: {
   })).sort((a, b) => a.level - b.level); // Sort by level
 
   // draw functions
-  const drawContiniousLine = (dataKey: "temp" | "dew", color: string) => {
-    ctx.beginPath();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = color;
+  const drawContiniousLine = (dataKey: "temp" | "dew", defindedColor?: string) => {
     // start the line
-    const origin = getCoord(parsed[0][dataKey], parsed[0].level);
-    ctx.moveTo(origin.x, origin.y);
+    // const origin = getCoord(parsed[0][dataKey], parsed[0].level);
+    // ctx.moveTo(origin.x, origin.y);
     // draw line at each points
     for (let i = 1; i < parsed.length; i++) {
+      const actual = { value: parsed[i][dataKey], level: parsed[i].level }
+      const prev = { value: parsed[i-1][dataKey], level: parsed[i-1].level }
       const coord = getCoord(parsed[i][dataKey], parsed[i].level);
+      const instabilityLevel = (actual.value - prev.value) / ((actual.level - prev.level) / 100);
+      const color = defindedColor ? defindedColor :
+      instabilityLevel <= -0.98
+        ? "yellow" // absolutely unstable air
+        : instabilityLevel <= -0.6
+          ? "lightgreen" // conditionally unstable air
+          : instabilityLevel < 0
+            ? "black" // stable
+            : "red"; // inversion
+      drawLine(prev.value, prev.level, actual.value, actual.level, {
+        width: 3,
+        color,
+      })
+      console.log(color)
+      // console.log(lapserate)
       ctx.lineTo(coord.x, coord.y);
     }
     // stroke
-    ctx.stroke();
-    ctx.closePath();
   };
   // draw each graphs
-  drawContiniousLine("temp", "black");
+  drawContiniousLine("temp");
   drawContiniousLine("dew", "blue");
 }
 

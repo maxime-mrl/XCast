@@ -76,6 +76,7 @@ html, body {
 
 
 /* select */
+/* inspired from moderncss.dev/custom-select-styles-with-pure-css/ */
 .select {
   display: grid;
   grid-template-areas: "select";

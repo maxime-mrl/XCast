@@ -127,12 +127,18 @@ export default class Canvas {
     }
 
     /* ------------------- draw a line from a point to another ------------------ */
-    drawLine = (startX:number, startY: number, endX:number, endY: number) => {
+    drawLine = (startX:number, startY: number, endX:number, endY: number, options?: {
+        width?: number,
+        color?: string,
+    }) => {
+        const { width = 1, color = "black" } = options || {};
         // get points in pixels
         const start = this.getCoord(startX, startY);
         const end = this.getCoord(endX, endY);
         // draw the line
         this.ctx.beginPath();
+        this.ctx.strokeStyle = color;
+        this.ctx.lineWidth = width;
         this.ctx.moveTo(start.x, start.y);
         this.ctx.lineTo(end.x, end.y);
         this.ctx.stroke();
