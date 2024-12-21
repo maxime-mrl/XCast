@@ -15,6 +15,10 @@ type AppStore = {
     height: number,
     isMobile: boolean,
     handleResize: () => void
+
+    // handling of custom forecast width
+    forecastWidth: number,
+    updateForecastWidth: (event: MouseEvent, container:HTMLElement) => void
 };
 
 export const useAppStore = createSelectors(create<AppStore>()((set) => {
@@ -29,11 +33,13 @@ export const useAppStore = createSelectors(create<AppStore>()((set) => {
             timeout = setTimeout(later, time);
         }
     }
+
     return {
         isSettingsOpen: false,
         width: 0,
         height: 0,
         isMobile: true,
+        forecastWidth: 0.5,
         
         toggleSettings: () => set((prev) => ({ isSettingsOpen: !prev.isSettingsOpen })),
         handleResize: throttle(() => {
@@ -43,6 +49,12 @@ export const useAppStore = createSelectors(create<AppStore>()((set) => {
                 isMobile: window.innerWidth < mobileWidth
             }));
         }, resizeThrottle),
+        updateForecastWidth: (e, elem) => {
+            const widthRatio = e.clientX / window.innerWidth;
+            console.log(widthRatio)
+            elem.style.width = `${widthRatio*100}%`;
+            set({ forecastWidth: widthRatio })
+        }
     };
 }));
 

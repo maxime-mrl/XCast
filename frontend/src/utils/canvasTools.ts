@@ -36,6 +36,7 @@ export default class Canvas {
             this.canvas = document.createElement("canvas");
             parent.appendChild(this.canvas);
         }
+
         // listen for resize and create context
         parent.addEventListener("resize", this.throttle(this.resize, 100));
         window.addEventListener("resize", this.throttle(this.resize, 100));

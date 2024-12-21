@@ -7,15 +7,30 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    width: 100%;
+    justify-content: space-between;
+    width: 50%;
     height: 100%;
     background-color: var(--bg);
+    user-select: none;
 }
 
-canvas {
+.forecastContainer > div {
     width: 100%;
     height: 100%;
+    height: calc(100% - 3em);
+    display: flex;
+    flex-grow: 0;
 }
+
+.resizer {
+    width: 0.2em;
+    cursor: e-resize;
+}
+
+.mobile .resizer {
+    display: none;
+}
+
 
 .forecast-nav {
     position: relative;
