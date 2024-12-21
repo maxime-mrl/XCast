@@ -34,6 +34,8 @@
 }
 
 .resizer {
+    z-index: 10;
+    flex-shrink: 0;
     width: 0.2em;
     cursor: e-resize;
 }

@@ -4,7 +4,8 @@ export type chart = {
     min: number,
     max: number,
     displayed: number[],
-    chartMargin: number
+    chartMargin: number,
+    minWidth?: number
 };
 
 
@@ -18,13 +19,13 @@ export default class Canvas {
         width: number,
         height: number
     };
-    container: Element;
+    container: HTMLElement;
     drawfns: [((canvas:this, params?: any) => void), any][];
     xChart: chart;
     yChart: chart;
     resizeObserver: ResizeObserver;
 
-    constructor(parent:Element, xChart:chart, yChart:chart) {
+    constructor(parent:HTMLElement, xChart:chart, yChart:chart) {
         this.container = parent;
         this.drawfns = [];
         this.xChart = xChart;
@@ -44,6 +45,7 @@ export default class Canvas {
         // listen for resize
         this.resizeObserver = new ResizeObserver(this.throttle(this.resize, 100));
         this.resizeObserver.observe(this.canvas)
+        this.resizeObserver.observe(this.container)
 
         // init the size
         this.size = { width: 0, height: 0 };
@@ -67,9 +69,16 @@ export default class Canvas {
 
     private resize = () => {
         this.size = {
-            width: this.container.clientWidth,
+            width: Math.max(this.container.clientWidth, this.xChart.minWidth || 0), // allow scroll if not enough space
             height: this.container.clientHeight
         };
+        if (this.size.width > this.container.clientWidth) {
+            // this.container.style.overflowX = "scroll";
+            // this.container.style.overflowY = "none";
+        } else {
+            // this.container.style.overflowX = "none";
+        }
+        this.canvas.style.width = this.size.width > this.container.clientWidth ?  `${this.size.width}px` : "100%";
         this.canvas.setAttribute("width", this.size.width.toString());
         this.canvas.setAttribute("height", this.size.height.toString());
 

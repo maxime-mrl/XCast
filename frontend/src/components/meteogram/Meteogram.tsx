@@ -74,7 +74,8 @@ function getTimeRange(forecast:forecastData, time:string) {
       max: hours[endTime] + 0.5,
       // displayed: hours.slice(startTime, endTime + 1),
       displayed: hours,
-      chartMargin: 40
+      chartMargin: 40,
+      minWidth: 530,
     } as chart,
     hour: hours[hourIndex],
   };
