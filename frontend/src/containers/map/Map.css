@@ -8,3 +8,24 @@
     width: 100%;
     height: 100%;
 }
+
+.point-marker .marker-circle {
+    background-color: var(--bg);
+    box-shadow: 2px 1px 5px #1e1e1e66;
+    opacity: 0.95;
+    filter: blur(1px);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    /* animation: marker 200ms linear 0 infinite both both; */
+    animation: 500ms ease-in-out infinite alternate marker;
+}
+
+@keyframes marker {
+    from {
+        transform: scale(1);
+    }
+    from {
+        transform: scale(1.1);
+    }
+}

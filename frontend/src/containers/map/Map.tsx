@@ -40,9 +40,16 @@ export default function Map() {
   return (
     <div className="map">
       {/* MAP */}
-      <MapContainer center={[-31, 148]} zoom={7} scrollWheelZoom={true} zoomControl={false}>
+      <MapContainer
+        center={[-31, 148]}
+        zoom={7}
+        scrollWheelZoom={true}
+        zoomControl={false}
+        attributionControl={false} // hide attribution so it's clean (still present in the dom and will have attribution in a about page)
+      >
         <TileLayer
             attribution='Tiles &copy; Esri &mdash; Source: Esri, Esri Japan, Esri China (Hong Kong), Esri (Thailand), DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, METI, TomTom'
+            
             url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
         />
         {/* GEOTIFS */}
@@ -57,10 +64,11 @@ export default function Map() {
         )) }
         {/* MARKER */}
         {position && 
-          <Marker position={position} icon={L.icon({
+          <Marker position={position} icon={L.divIcon({
+            className: "point-marker",
+            html: "<div class='marker-circle'></div>",
             iconUrl: "/images/marker.png",
-            iconSize: [38, 57],
-            iconAnchor: [19, 57],
+            iconSize: [15, 15],
           })}>
           </Marker>
         }
