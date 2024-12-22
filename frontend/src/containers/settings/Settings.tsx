@@ -2,10 +2,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import { useForecastStore } from "@store/useForecastStore";
-import { useUnitStore } from "@store/useUnitsStore";
+import { UnitsConfig, useUnitStore } from "@store/useUnitsStore";
 import { useAppStore } from "@store/useAppStore";
-import './Settings.css';
 import { StepSlider } from "@components";
+import './Settings.css';
 
 export default function Settings() {
   // get stored data
@@ -15,6 +15,15 @@ export default function Settings() {
   const unitsName = useUnitStore.use.names();
   const isOpen = useAppStore.use.isSettingsOpen();
   const toggleSettings = useAppStore.use.toggleSettings();
+  const unitsStore = useUnitStore();
+  // const unit = userSettings.selected !== "" ? unitsStore[userSettings.selected] : false;
+  const units: (UnitsConfig & { name: string })[] = [];
+  for (const [unit, name] of unitsStore.names.entries()) {
+    const unitConfig = unitsStore[unit] as UnitsConfig & { name: string };
+    unitConfig["name"] = name;
+    units.push(unitConfig)
+  };
+
   
   // get available data to select
   const datas = forecastCapabilities?.data[userSettings.model]?.dataset
@@ -57,6 +66,26 @@ export default function Settings() {
             unit="m"
             value={userSettings.level || levels[0]}
           />
+        </article>
+        <article className="units">
+          <h2 className="h3 title-divider">Unités</h2>
+          {units.map((unit) => (
+          <span key={unit.name}>
+          <label htmlFor={`unit-select-${unit.name}`}>{unit.name}:</label>
+          <span className="select">
+            <select
+              name={`unit-select-${unit.name}`}
+              id={`unit-select-${unit.name}`}
+              value={unit.selected}
+              onChange={e => unit.select(e.target.value)}
+            >
+              {Object.keys(unit.units).map(value => (
+                <option value={value} key={value}>{value}</option>
+              ))}
+            </select>
+          </span>
+          </span>
+          ))}
         </article>
       </section>
     </>

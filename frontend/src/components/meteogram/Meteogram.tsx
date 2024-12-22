@@ -12,7 +12,7 @@ export default function MetoGram() {
   const containerRef = useRef(null); // ref for canvas
   // get stored data
   const forecast = useForecastStore.use.forecast();
-  const { scale } = useUnitStore.use.wind();
+  const { scale, units, selected } = useUnitStore.use.wind();
   const { time:forecastTime, maxHeight } = useForecastStore.use.userSettings();
 
   useEffect(() => {
@@ -34,14 +34,16 @@ export default function MetoGram() {
     canvas.addRenderer(drawMeteogram, {
       colorScale: scale.colorScale,
       forecast,
-      hour: timeRange.hour
+      hour: timeRange.hour,
+      selected,
+      units
     });
     
     // cleanup canvas
     return () => {
       canvas.clear();
     };
-  }, [forecast, scale, forecastTime, maxHeight]);
+  }, [forecast, scale, forecastTime, maxHeight, selected, units]);
 
   return (
     <div className='meteogram' ref={containerRef}></div>
@@ -97,8 +99,13 @@ function drawChart(canvas:Canvas) {
 /* ----------- draw meteogram (wind and thermal at every heights) ----------- */
 function drawMeteogram(
   { xChart, drawRectangle, drawWindArrow, drawText }: Canvas,
-  {colorScale, forecast, hour}: {colorScale: Scale<Color>,
-  forecast:forecastData, hour:number}
+  {colorScale, forecast, hour, selected, units}: {
+    colorScale: Scale<Color>,
+    forecast:forecastData,
+    hour:number,
+    selected:string,
+    units: { [key: string]: (base: number) => number }
+  }
 ) {
   const size = 25; // wind arrow size
   // ground layer
@@ -121,7 +128,7 @@ function drawMeteogram(
         { colorScale, center:true }
       );
       // wind speed (text)
-      drawText(time, z, String(Math.round(forecastHour.wspd[i])), { maxWidth:size, pointCoordinates:true });
+      drawText(time, z, String(units[selected](forecastHour.wspd[i])), { maxWidth:size, pointCoordinates:true });
     });
   })
 }

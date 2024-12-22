@@ -52,13 +52,13 @@ export default function GeoTiffLayer(
       {activeUnit.scale.colors.map((color, i) => (
         <div style={{backgroundColor: color}} key={i}>
           <i>
-            {activeUnit.scale.levels[i]}
+            {activeUnit.units[activeUnit.selected](activeUnit.scale.levels[i])}
           </i>
         </div>
       ))}
       { name !== "" &&
         <div className="desc">
-          {units.names.get(name)} ({level ? level : "sol"}) <br />
+          {units.names.get(name)} ({level ? level + "m" : "sol"}) <br />
           {activeUnit.selected}
         </div>
       }

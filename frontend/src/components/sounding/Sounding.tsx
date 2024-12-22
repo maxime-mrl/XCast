@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { forecastData, useForecastStore } from '@store/useForecastStore';
 import Canvas, { chart, generateYchart } from '@utils/canvasTools';
 import './Sounding.css';
+import { useUnitStore } from '@store/useUnitsStore';
 
 const xChart:chart = {
   min: -35,
@@ -16,6 +17,7 @@ const yIncrements = [ 100, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6500, 8000, 
 export default function Sounding() {
   const containerRef = useRef(null);
   const forecast = useForecastStore.use.forecast();
+    const { units, selected } = useUnitStore.use.temp();
   const { time:forecastTime, maxHeight } = useForecastStore.use.userSettings();
 
   useEffect(() => {
@@ -30,17 +32,17 @@ export default function Sounding() {
       min: forecast.level,
       max: maxHeight,
       increments: yIncrements,
-    })
+    });
 
     const canvas = new Canvas(sounding, xChart, yChart);
-    canvas.addRenderer(drawChart);
+    canvas.addRenderer(drawChart, {units, selected});
     canvas.addRenderer(drawSounding, forecastHour);
 
     // cleanup canvas
     return () => {
       canvas.clear();
     };
-  }, [forecast, forecastTime, maxHeight]);
+  }, [forecast, forecastTime, maxHeight, units, selected]);
 
   return (
     <div className='sounding' ref={containerRef}></div>
@@ -58,7 +60,9 @@ function getForecastTime(forecast: forecastData, time:string) {
 }
 
 /* ----------------------------- draw the chart ----------------------------- */
-function drawChart(canvas:Canvas) {
+function drawChart(canvas:Canvas, { units, selected } :
+  { selected:string, units: { [key: string]: (base: number) => number } }
+) {
   canvas.yChart.displayed.forEach(value => { // y axis (height)
     canvas.drawLine(canvas.xChart.min, value, canvas.xChart.max, value);
     const coord = canvas.getCoord(0, value);
@@ -68,7 +72,7 @@ function drawChart(canvas:Canvas) {
   canvas.xChart.displayed.forEach(value => { // x axis (temperature)
     canvas.drawLine(value, canvas.yChart.max, value, canvas.yChart.min);
     const coord = canvas.getCoord(value, 0);
-    canvas.drawText(coord.x, canvas.size.height - canvas.yChart.chartMargin/2, String(value));
+    canvas.drawText(coord.x, canvas.size.height - canvas.yChart.chartMargin/2, String(units[selected](value)));
   })
 }
 
@@ -112,8 +116,6 @@ function drawSounding({ drawRectangle, ctx, getCoord, drawLine }:Canvas, forecas
         width: 3,
         color,
       })
-      console.log(color)
-      // console.log(lapserate)
       ctx.lineTo(coord.x, coord.y);
     }
     // stroke

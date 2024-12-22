@@ -2,9 +2,22 @@ import { create } from "zustand";
 import { createSelectors } from "./createSelector";
 import chroma from "chroma-js";
 
+const colorScale = [
+    "#F1F7F9", // 1 - white 
+    "#A9CEDA", // 2 - light blue
+    "#78C091", // 3 - green
+    "#F6BD60", // 4 - yellow/orange
+    "#E7940D", // 5 - orange
+    "#CE5427", // 6 - orange/red
+    "#520001", // 7 - darkred
+    "#290000", // 8 - almost black
+];
 
-type UnitsConfig = {
+
+export type UnitsConfig = {
+    // default: string; // what unit is selected
     selected: string; // what unit is selected
+    select: (unit:string) => void,
     scale: { // color scale (using chroma)
         colors: string[];
         levels: number[];
@@ -22,12 +35,12 @@ type UnitsStore = {
 // set scales to what we want
 const scales = {
     wind: {
-        colors: [ "#ffffff", "#55ff55", "#ff5555" ],
-        levels: [ 0, 5, 15 ]
+        colors: colorScale,
+        levels: [ 0, 1.5, 3, 5, 8, 10, 15, 18 ]
     },
     temp: {
-        colors: [ "#ffffff", "#55ff55", "#ff5555" ],
-        levels: [ 0, 20, 35 ]
+        colors: colorScale,
+        levels: [ 0, 10, 18, 25, 30, 35, 40, 45 ]
     }
 }
 
@@ -37,10 +50,18 @@ const names = new Map<mapDataTypes, string>([
     ["temp", "Temperature"]
 ]);
 
-export const useUnitStore = createSelectors(create<UnitsStore>()(() => {
+export const useUnitStore = createSelectors(create<UnitsStore>()((set) => {
     // Reusable function to create unit configurations
     const createUnitConfig = (type: keyof typeof scales, units: UnitsConfig["units"]): UnitsConfig => ({
+        // default: Object.keys(units)[0], // Default to the first unit
         selected: Object.keys(units)[0], // Default to the first unit
+        select: (newUnit) => {
+            if (!Object.keys(units).find(value => value === newUnit)) return;
+            set((state) => ({ [type]: {
+                ...state[type],
+                selected: newUnit 
+            } }));
+        },
         scale: {
             ...scales[type],
             colorScale: chroma.scale(scales[type].colors).domain(scales[type].levels)
@@ -50,14 +71,14 @@ export const useUnitStore = createSelectors(create<UnitsStore>()(() => {
 
     return {
         wind: createUnitConfig("wind", {
-            "m/s": (base:number) => base,
-            "km/h": (base:number) => base * 3.6,
-            "mph": (base:number) => base * 2.237,
-            "noeuds": (base:number) => base * 1.943844
+            "m/s": (base:number) => Math.round(base ),
+            "km/h": (base:number) => Math.round(base * 3.6),
+            "mph": (base:number) => Math.round(base * 2.237),
+            "noeuds": (base:number) => Math.round(base * 1.943844)
         }),
         temp: createUnitConfig("temp", {
-            "°C": (base:number) => base,
-            "°F": (base:number) => base * 1.8 + 32,
+            "°C": (base:number) => Math.round(base  ),
+            "°F": (base:number) => Math.round(base * 1.8 + 32,)
         }),
         names
     };

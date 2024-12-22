@@ -22,7 +22,6 @@ export const generateYchart = ({ min, max, increments, margin=40 }: {
     } as chart;
 }
 
-
 /* -------------------------------------------------------------------------- */
 /*                  Canvas utility for sounding and meteogram                 */
 /* -------------------------------------------------------------------------- */
@@ -86,12 +85,6 @@ export default class Canvas {
             width: Math.max(this.container.clientWidth, this.xChart.minWidth || 0), // allow scroll if not enough space
             height: this.container.clientHeight
         };
-        if (this.size.width > this.container.clientWidth) {
-            // this.container.style.overflowX = "scroll";
-            // this.container.style.overflowY = "none";
-        } else {
-            // this.container.style.overflowX = "none";
-        }
         this.canvas.style.width = this.size.width > this.container.clientWidth ?  `${this.size.width}px` : "100%";
         this.canvas.setAttribute("width", this.size.width.toString());
         this.canvas.setAttribute("height", this.size.height.toString());
@@ -201,9 +194,10 @@ export default class Canvas {
         center?: boolean
     }) => {
         // arrow size and color
-        const thickness = size * Math.min(0.3,
-            0.02 * Math.exp(0.075 * ((wspd) - 10)) + 0.1 // this seems to look good after testing
-        );
+        // const thickness = size * Math.min(0.4,
+        //     0.03 * Math.exp(0.2 * wspd) // this seems to look good after testing
+        // );
+        const thickness = size * Math.min(0.4, 0.016 * wspd + 0.05); // in the end linear may be better
         const length = size*0.9;
         const color = options.colorScale ? options.colorScale(wspd).hex() : "#00000";
         const lineThickness = thickness * 0.3;
