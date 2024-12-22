@@ -54,6 +54,7 @@ img {
  --secondary: #ff00ff;
 
  --h2-size: 1.5rem;
+ --h2-size: 1.3rem;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -71,6 +72,11 @@ html, body {
 
 .h2 {
   font-size: var(--h2-size);
+  font-weight: 500;
+}
+
+.h3 {
+  font-size: var(--h3-size);
   font-weight: 500;
 }
 

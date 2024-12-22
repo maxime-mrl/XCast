@@ -27,7 +27,7 @@
     text-align: center;
 }
 
-.settingsContainer .datas {
+.settingsContainer .datas, .settingsContainer .levels {
     border-top: 0.5px solid var(--text);
     margin-top: 1.5em;
     padding: 1.5em 1em 0;
@@ -58,4 +58,19 @@
 }
 .settingsContainer .select-data.active::before {
 	border-left: 0.9em solid var(--accent);
+}
+
+.settingsContainer .title-divider {
+    text-align: center;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8em;
+}
+.title-divider::before, .title-divider::after {
+    content: "";
+    height: 1px;
+    width: 1em;
+    background-color: var(--text);
 }

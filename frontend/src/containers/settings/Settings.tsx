@@ -5,6 +5,7 @@ import { useForecastStore } from "@store/useForecastStore";
 import { useUnitStore } from "@store/useUnitsStore";
 import { useAppStore } from "@store/useAppStore";
 import './Settings.css';
+import { StepSlider } from "@components";
 
 export default function Settings() {
   // get stored data
@@ -19,6 +20,8 @@ export default function Settings() {
   const datas = forecastCapabilities?.data[userSettings.model]?.dataset
     ? (Object.keys(forecastCapabilities.data[userSettings.model].dataset) as mapDataTypes[])
     : [];
+  // get available levels for selected data
+  const levels = forecastCapabilities?.data[userSettings.model].dataset[userSettings.selected].levels || [];
 
   return (
     <>
@@ -30,6 +33,7 @@ export default function Settings() {
           <h1 className="h2">XCast</h1>
         </a>
         <article className="datas">
+          <h2 className="h3 title-divider">Carte</h2>
           {datas.map(data => (
             <button
               onClick={() => {updateSettings({ selected: data })}}
@@ -41,6 +45,18 @@ export default function Settings() {
           ))
 
           }
+        </article>
+        <article className="levels">
+          <h2 className="h3 title-divider">Altitude</h2>
+          <p>Sélectionné: {userSettings.level}m</p>
+          <StepSlider
+            steps={levels.sort((a,b) => a - b)}
+            min={Math.min(...levels)}
+            max={Math.max(...levels)}
+            handleUpdate={(value) => updateSettings({level: value})}
+            unit="m"
+            value={userSettings.level || levels[0]}
+          />
         </article>
       </section>
     </>
