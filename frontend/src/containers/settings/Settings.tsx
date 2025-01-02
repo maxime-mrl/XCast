@@ -16,7 +16,6 @@ export default function Settings() {
   const isOpen = useAppStore.use.isSettingsOpen();
   const toggleSettings = useAppStore.use.toggleSettings();
   const unitsStore = useUnitStore();
-  // const unit = userSettings.selected !== "" ? unitsStore[userSettings.selected] : false;
   const units: (UnitsConfig & { name: string })[] = [];
   for (const [unit, name] of unitsStore.names.entries()) {
     const unitConfig = unitsStore[unit] as UnitsConfig & { name: string };
@@ -62,29 +61,44 @@ export default function Settings() {
             steps={levels.sort((a,b) => a - b)}
             min={Math.min(...levels)}
             max={Math.max(...levels)}
-            handleUpdate={(value) => updateSettings({level: value})}
+            handleUpdate={value => updateSettings({level: value})}
             unit="m"
             value={userSettings.level || levels[0]}
           />
         </article>
-        <article className="units">
-          <h2 className="h3 title-divider">Unités</h2>
-          {units.map((unit) => (
-          <span key={unit.name}>
-          <label htmlFor={`unit-select-${unit.name}`}>{unit.name}:</label>
+        <article className="models">
+          <label className="h3 title-divider" htmlFor={`models-select`}>Modèles</label>
           <span className="select">
             <select
-              name={`unit-select-${unit.name}`}
-              id={`unit-select-${unit.name}`}
-              value={unit.selected}
-              onChange={e => unit.select(e.target.value)}
+              name={`models-select`}
+              id={`models-select`}
+              value={userSettings.model}
+              onChange={e => updateSettings({model: e.target.value})}
             >
-              {Object.keys(unit.units).map(value => (
-                <option value={value} key={value}>{value}</option>
+              {forecastCapabilities?.availableModels.map(model => (
+                <option value={model} key={model}>{model}</option>
               ))}
             </select>
           </span>
-          </span>
+        </article>
+        <article className="units">
+          <h2 className="h3 title-divider">Unités</h2>
+          {units.map((unit) => (
+          <div key={unit.name}>
+            <label htmlFor={`unit-select-${unit.name}`}>{unit.name}:</label>
+            <span className="select">
+              <select
+                name={`unit-select-${unit.name}`}
+                id={`unit-select-${unit.name}`}
+                value={unit.selected}
+                onChange={e => unit.select(e.target.value)}
+              >
+                {Object.keys(unit.units).map(value => (
+                  <option value={value} key={value}>{value}</option>
+                ))}
+              </select>
+            </span>
+          </div>
           ))}
         </article>
       </section>
