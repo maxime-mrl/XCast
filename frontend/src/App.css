@@ -53,22 +53,25 @@ img {
  --accent: #00ffff;
  --secondary: #ff00ff;
 
+ --transitions: 200ms;
+
+ --h1-size: 1.8rem;
  --h2-size: 1.5rem;
- --h2-size: 1.3rem;
+ --h3-size: 1.3rem;
 }
 
 /* -------------------------------------------------------------------------- */
 /*                               GENERAL STYLING                              */
 /* -------------------------------------------------------------------------- */
 html, body {
-  overflow: hidden;
   color: var(--text);
   background-color: var(--bg);
 }
 
-/* .h1 {
-  
-} */
+.h1 {
+  font-size: var(--h1-size);
+  font-weight: 600;
+}
 
 .h2 {
   font-size: var(--h2-size);
@@ -80,6 +83,52 @@ html, body {
   font-weight: 500;
 }
 
+
+.link {
+  font-weight: 600;
+  transition: transform 200ms ease-out;
+  display: inline-flex;
+  align-items: center;
+  line-height: 0.8;
+  gap: 0.2em;
+}
+.link:hover {
+  transform: scale(1.05);
+}
+
+.link-icon::after {
+  content: "🔗";
+  font-size: 0.8em;
+}
+
+.my-1 {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.mx-05 {
+  margin-right: 0.5em;
+  margin-left: 0.5em;
+}
+
+.my-2 {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.margin-center {
+  margin: 0 auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-img {
+  max-height: 2em;
+  padding: 0.1em;
+  object-fit: contain;
+}
 
 /* select */
 /* inspired from moderncss.dev/custom-select-styles-with-pure-css/ */

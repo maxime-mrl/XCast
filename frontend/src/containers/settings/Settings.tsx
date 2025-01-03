@@ -16,14 +16,14 @@ export default function Settings() {
   const isOpen = useAppStore.use.isSettingsOpen();
   const toggleSettings = useAppStore.use.toggleSettings();
   const unitsStore = useUnitStore();
+
+  // get available units in a nice array
   const units: (UnitsConfig & { name: string })[] = [];
   for (const [unit, name] of unitsStore.names.entries()) {
     const unitConfig = unitsStore[unit] as UnitsConfig & { name: string };
     unitConfig["name"] = name;
-    units.push(unitConfig)
+    units.push(unitConfig);
   };
-
-  
   // get available data to select
   const datas = forecastCapabilities?.data[userSettings.model]?.dataset
     ? (Object.keys(forecastCapabilities.data[userSettings.model].dataset) as mapDataTypes[])
@@ -100,6 +100,9 @@ export default function Settings() {
             </span>
           </div>
           ))}
+        </article>
+        <article className="about">
+          <a href="/about" target="_blank" className="link link-icon margin-center" rel="noreferrer">A propos de XCcast</a>
         </article>
       </section>
     </>

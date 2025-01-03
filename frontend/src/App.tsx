@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 
-import { Home } from "@pages"
+import { About, Home } from "@pages"
 
 import "./App.css";
 import { useAppStore, useWindowSizeInitializer } from "@store/useAppStore";
@@ -15,6 +15,7 @@ export default function App() {
     <Router>
         <Routes>
           <Route path="/" element={ <Home /> } />
+          <Route path="/about" element={ <About /> } />
           <Route path="*" element={ <Navigate to="/" /> } />
         </Routes>
     </Router>
