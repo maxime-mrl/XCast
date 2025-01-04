@@ -4,11 +4,16 @@ import { About, Home } from "@pages"
 
 import "./App.css";
 import { useAppStore, useWindowSizeInitializer } from "@store/useAppStore";
+import { useForecastStore } from "@store/useForecastStore";
+import { useEffect } from "react";
 
 export default function App() {
   // initialize window size (and get the ismobile while here c:)
   useWindowSizeInitializer();
   const isMobile = useAppStore.use.isMobile();
+  // initialize forecast capabilities
+  const initForecastCapabilities = useForecastStore.use.getCapabilities();
+  useEffect(() => { initForecastCapabilities() }, [initForecastCapabilities])
   
   return (
     <div className={isMobile ? "mobile" : "desktop"}>

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { createSelectors } from "./createSelector";
 import { useEffect } from "react";
 
@@ -18,23 +19,11 @@ type AppStore = {
 
     // handling of custom forecast width
     forecastWidth: number,
-    updateForecastWidth: (event: MouseEvent, container:HTMLElement) => void
+    updateForecastWidth: (event: MouseEvent) => void
 };
 
-export const useAppStore = createSelectors(create<AppStore>()((set, get) => {
-    function throttle(fn: () => void, time: number) {
-        let timeout: null | NodeJS.Timeout = null;
-        return () => {
-            if (timeout) return;
-            const later = () => {
-                fn();
-                timeout = null;
-            }
-            timeout = setTimeout(later, time);
-        }
-    }
-
-    return {
+export const useAppStore = createSelectors(create<AppStore>()(
+    persist((set, get) => ({
         isSettingsOpen: false,
         width: 0,
         height: 0,
@@ -49,13 +38,27 @@ export const useAppStore = createSelectors(create<AppStore>()((set, get) => {
                 isMobile: window.innerWidth < mobileWidth
             }));
         }, resizeThrottle),
-        updateForecastWidth: (e, elem) => {
-            const widthRatio = e.clientX / get().width;
-            elem.style.width = `${widthRatio*100}%`;
-            set({ forecastWidth: widthRatio });
+        updateForecastWidth: (e) => {
+            set({ forecastWidth: e.clientX / get().width });
         }
-    };
-}));
+    }), {
+        name: "app-settings",
+        partialize: (state) => ({ forecastWidth: state.forecastWidth })
+    })
+));
+
+// throttle to a certain timeoiut any function
+function throttle(fn: () => void, time: number) {
+    let timeout: null | NodeJS.Timeout = null;
+    return () => {
+        if (timeout) return;
+        const later = () => {
+            fn();
+            timeout = null;
+        }
+        timeout = setTimeout(later, time);
+    }
+}
 
 // Initialize the resize listener
 export function useWindowSizeInitializer() {

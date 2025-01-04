@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { createSelectors } from "./createSelector";
 import chroma from "chroma-js";
+import { persist } from "zustand/middleware";
 
 const colorScale = [
     "#F1F7F9", // 1 - white 
@@ -50,26 +51,8 @@ const names = new Map<mapDataTypes, string>([
     ["temp", "Temperature"]
 ]);
 
-export const useUnitStore = createSelectors(create<UnitsStore>()((set) => {
-    // Reusable function to create unit configurations
-    const createUnitConfig = (type: keyof typeof scales, units: UnitsConfig["units"]): UnitsConfig => ({
-        // default: Object.keys(units)[0], // Default to the first unit
-        selected: Object.keys(units)[0], // Default to the first unit
-        select: (newUnit) => {
-            if (!Object.keys(units).find(value => value === newUnit)) return;
-            set((state) => ({ [type]: {
-                ...state[type],
-                selected: newUnit 
-            } }));
-        },
-        scale: {
-            ...scales[type],
-            colorScale: chroma.scale(scales[type].colors).domain(scales[type].levels)
-        },
-        units
-    });
-
-    return {
+export const useUnitStore = createSelectors(create<UnitsStore>()(
+    persist(() => ({
         wind: createUnitConfig("wind", {
             "m/s": (base:number) => Math.round(base ),
             "km/h": (base:number) => Math.round(base * 3.6),
@@ -81,5 +64,54 @@ export const useUnitStore = createSelectors(create<UnitsStore>()((set) => {
             "°F": (base:number) => Math.round(base * 1.8 + 32,)
         }),
         names
-    };
-}));
+    }), {
+        name: "units-settings",
+        partialize: (state) => {
+            const { names, ...units } = state;
+            const SelectedUnits:Partial<{[key in mapDataTypes]: { selected: string }}> = {};
+            Object.keys(units).forEach(key => {
+                const { selected } = units[key as keyof typeof units];
+                SelectedUnits[key as keyof typeof units] = { selected };
+            })
+            return SelectedUnits;
+        },
+        merge: (persistedState, defaultState:UnitsStore) => {
+            if (!persistedState || typeof persistedState !== "object") return defaultState;
+            const state = persistedState as Partial<UnitsStore>;
+            const newState = {...defaultState};
+            // Ensure missing sub-objects are restored from defaults
+            const keys = Object.keys(defaultState) as (keyof typeof defaultState)[];
+            keys.forEach((key) => {
+                if (key === "names") return;
+                if (typeof newState[key] === "object" && key in state && typeof state[key] === "object") {
+                    newState[key] = {
+                        ...newState[key],
+                        ...state[key]
+                    }
+                }
+            })
+            return newState;
+        },
+    })
+));
+
+
+// Reusable function to create unit
+function createUnitConfig(type: keyof typeof scales, units: UnitsConfig["units"]): UnitsConfig {
+    return {
+        // default: Object.keys(units)[0], // Default to the first unit
+        selected: Object.keys(units)[0], // Default to the first unit
+        select: (newUnit) => {
+            if (!Object.keys(units).find(value => value === newUnit)) return;
+            useUnitStore.setState((state) => ({ [type]: {
+                ...state[type],
+                selected: newUnit 
+            } }));
+        },
+        scale: {
+            ...scales[type],
+            colorScale: chroma.scale(scales[type].colors).domain(scales[type].levels)
+        },
+        units
+    }
+};

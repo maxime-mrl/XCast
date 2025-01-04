@@ -17,6 +17,7 @@ export default function Forecast() {
   const userSettings = useForecastStore.use.userSettings();
   const updateSettings = useForecastStore.use.updateSettings();
   const updateForecastWidth = useAppStore.use.updateForecastWidth();
+  const forecastWidth = useAppStore.use.forecastWidth();
 
   // refs for events listeners
   const handleMouseDown = useRef<null | (() => void)>();
@@ -33,10 +34,9 @@ export default function Forecast() {
   // as far as i can tell one of the only way to properly do this is with a callbackref
   // + it works (yay)
   // - cleanup is teadious as you will see
-  // for now it's only needed here since i don't listen anything -- for meteogramm and sounding there is other things that change so it work
+  // for now it's only needed here since i don't listen anything -- for meteogramm and sounding there is other things that change after init so it work
   // see github.com/facebook/react/issues/15176
   const resizerRefHandler = useCallback((resizer: HTMLDivElement | null) => {
-    const container = document.querySelector(".forecast-container") as HTMLElement | null;
 
     // handle cleanup
     if (resizerRef.current && handleMouseDown.current && handleMouseUp.current && handleMouseMove.current) {
@@ -46,12 +46,12 @@ export default function Forecast() {
     }
 
     // check that dom is here
-    if (!resizer || !container) return;
+    if (!resizer) return;
     let isResizing = false;
     // set the refs (for cleanup later)
     handleMouseDown.current = () => isResizing = true;
     handleMouseUp.current = () => isResizing = false;
-    handleMouseMove.current = (e) => isResizing && updateForecastWidth(e, container);
+    handleMouseMove.current = (e) => isResizing && updateForecastWidth(e);
     resizerRef.current = resizer;
     // listen for events
     resizerRef.current.addEventListener("mousedown", handleMouseDown.current);
@@ -60,7 +60,7 @@ export default function Forecast() {
   }, [updateForecastWidth]);
 
   return (
-    <div className={`forecast-container ${position ? "active" : ""}`}>
+    <div className={`forecast-container ${position ? "active" : ""}`} style={{width: forecastWidth*100+"%"}}>
       {/* display sounding or meteogram */}
       {position && position.lng && position.lat &&
       <>
