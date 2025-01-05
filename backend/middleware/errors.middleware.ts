@@ -7,6 +7,5 @@ export default (err:Error, _req:Request, res:Response, next:NextFunction) => { /
         status: status,
         error: err.message
     });
-    console.error(err)
     next();
 };

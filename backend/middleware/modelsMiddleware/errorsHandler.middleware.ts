@@ -1,27 +1,27 @@
-export default (err:any, _doc:unknown, next:() => {}) => { // detect and handle specific errors thrown by models
+export default (err:any, _doc:unknown, next:() => void) => { // detect and handle specific errors thrown by models
     // having some sort of model middleware is the best (and sometimes only) way to get some good looking error messages from the model
     if (!err) return next(); // if no error life is good
     // else we need to handle it
     if (err.code === 11000) { // unique key duplicate
-        err = new Error(`This ${Object.keys(err.keyPattern)} is arleady used`);
+        err = new Error(`Ce ${Object.keys(err.keyPattern)} est déjà utilisé!`);
         err.status = 200;
     }
     if (err.errors && err.errors[Object.keys(err.errors)[0]]) {
         const error = err.errors[Object.keys(err.errors)[0]];
         if (error.kind === 'minlength') { // input too short
-            err = new Error(`Your ${error.path} ${error.value} is too short! It must be at least ${error.properties.minlength} characters long.`);
+            err = new Error(`Ton ${error.path} ${error.value} est trop court! il doit faire au moins ${error.properties.minlength} charactères.`);
             err.status = 400;
         }
         if (error.kind === 'maxlength') { // input too big
-            err = new Error(`Your ${error.path} ${error.value} is too long! It shouldn't be more than ${error.properties.maxlength} characters long.`);
+            err = new Error(`Your ${error.path} ${error.value} est trop long! il ne doit pas faire plus que ${error.properties.maxlength} charactères.`);
             err.status = 400;
         }
         if (error.kind === 'string') { // invalid input format
-            err = new Error(`Your ${error.path} is not a valid format.`);
+            err = new Error(`Ton ${error.path} n'est pas valide.`);
             err.status = 400;
         }
         if (/objectid/i.test(error.kind)) { // invalid ObjectID
-            err = new Error(`Invalid identifiers in ${error.value}.`);
+            err = new Error(`Identifiants invalide, ${error.value}.`);
             err.status = 400;
         }
     }

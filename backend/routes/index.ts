@@ -3,9 +3,11 @@ import express from "express";
 const router = express.Router();
 import rootPath from "@rootPath";
 import mapRoutes from "./api/forecast.routes";
+import userRoutes from "./api/users.routes";
 
 /* ----------------------------------- API ---------------------------------- */
 router.use("/api/forecast", mapRoutes);
+router.use("/api/user", (userRoutes));
 
 /* ----------------------------- PUBLIC FOLDERS ----------------------------- */
 router.use("/map", express.static(path.join(rootPath, "public", "map")));
