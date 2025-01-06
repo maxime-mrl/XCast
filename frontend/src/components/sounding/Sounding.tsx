@@ -66,7 +66,7 @@ function drawChart(canvas:Canvas, { units, selected } :
   canvas.yChart.displayed.forEach(value => { // y axis (height)
     canvas.drawLine(canvas.xChart.min, value, canvas.xChart.max, value);
     const coord = canvas.getCoord(0, value);
-    canvas.drawText(canvas.xChart.chartMargin/2, coord.y, String(Math.round(value/100)));
+    canvas.drawText(canvas.xChart.chartMargin/2, coord.y, String(Math.round(value)), {font:"15px system-ui"});
   });
 
   canvas.xChart.displayed.forEach(value => { // x axis (temperature)

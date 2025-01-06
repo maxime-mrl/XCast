@@ -86,7 +86,7 @@ function getTimeRange(forecast:forecastData, time:string) {
 function drawChart(canvas:Canvas) {
   canvas.yChart.displayed.forEach(value => { // y axis (height)
     const coord = canvas.getCoord(0, value);
-    canvas.drawText(canvas.xChart.chartMargin/2, coord.y, String(Math.round(value/100)));
+    canvas.drawText(canvas.xChart.chartMargin/2, coord.y, String(Math.round(value)), {font:"15px system-ui"});
   });
 
   canvas.xChart.displayed.forEach(value => { // x axis (time)

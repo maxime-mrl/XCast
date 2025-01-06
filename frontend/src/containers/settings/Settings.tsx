@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faWarning, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import { useForecastStore } from "@store/useForecastStore";
 import { UnitsConfig, useUnitStore } from "@store/useUnitsStore";
@@ -33,13 +33,14 @@ export default function Settings() {
 
   return (
     <>
-      <button onClick={toggleSettings} className="burger-btn" id='settings-btn'>
+      <button onClick={toggleSettings} className={`burger-btn${isOpen ? " active" : ""}`} id='settings-btn'>
         <FontAwesomeIcon icon={isOpen ? faXmark : faBars} />
       </button>
       <section className={`settingsContainer${isOpen ? " active" : ""}`}>
-        <a className="about" href="#about">
-          <h1 className="h2">XCast</h1>
-        </a>
+        <h1 className="settings-title h2 bold">
+          <img src="/images/logo-512.png" alt="Logo XCCast" className="text-img" />
+          XCast
+        </h1>
         <article className="datas">
           <h2 className="h3 title-divider">Carte</h2>
           {datas.map(data => (
@@ -100,6 +101,14 @@ export default function Settings() {
             </span>
           </div>
           ))}
+        </article>
+        <article className="sync">
+          <h2 className="h3 text-center">Synchronisation</h2>
+          <span className="checkbox-container">
+            <label htmlFor="settings-sync">Activer la synchronisation (nécessite un compte):</label>
+            <input type="checkbox" id="settings-sync" name="settings-sync" checked/>
+          </span>
+          <button className="btn margin-center">Réinitialiser l'App <FontAwesomeIcon icon={faWarning} /></button>
         </article>
         <article className="about">
           <a href="/about" target="_blank" className="link link-icon margin-center" rel="noreferrer">A propos de XCcast</a>

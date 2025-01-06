@@ -17,6 +17,10 @@ type AppStore = {
     isMobile: boolean,
     handleResize: () => void
 
+    // store zoom level
+    zoom: number,
+    updateZoom: (zoom: number) => void,
+
     // handling of custom forecast width
     forecastWidth: number,
     updateForecastWidth: (event: MouseEvent) => void
@@ -29,7 +33,9 @@ export const useAppStore = createSelectors(create<AppStore>()(
         height: 0,
         isMobile: true,
         forecastWidth: 0.5,
+        zoom: 7,
         
+        updateZoom: (zoom) => set({ zoom }),
         toggleSettings: () => set((prev) => ({ isSettingsOpen: !prev.isSettingsOpen })),
         handleResize: throttle(() => {
             set(() => ({
@@ -43,7 +49,10 @@ export const useAppStore = createSelectors(create<AppStore>()(
         }
     }), {
         name: "app-settings",
-        partialize: (state) => ({ forecastWidth: state.forecastWidth })
+        partialize: (state) => ({
+            forecastWidth: state.forecastWidth,
+            zoom: state.zoom
+        }),
     })
 ));
 

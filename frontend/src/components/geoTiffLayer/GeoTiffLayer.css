@@ -3,11 +3,32 @@
     right: 0;
     top: 0;
     height: 100%;
-    width: 1em;
+    width: 0.6rem;
     display: flex;
     flex-direction: column-reverse;
     background-color: white;
     z-index: 1000;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* background semi transparent on hover */
+.map-legend::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8em;
+    height: 100%;
+    background-color: var(--bg);
+    opacity: 0.4;
+    filter: blur(10px);
+    z-index: -1;
+}
+
+.map-legend:hover::before {
+    opacity: 0.7;
+    z-index: -1;
 }
 
 .map-legend > * {
@@ -15,17 +36,23 @@
     position: relative;
 }
 
+/* hide 0 */
+.map-legend > *:first-child i {
+    display: none;
+}
+
 .map-legend i {
     position: absolute;
     bottom: 0;
     right: 100%;
-    margin: 0.5em;
+    margin: 0.5rem;
 }
 
 .map-legend .desc {
     position: absolute;
     right: 100%;
-    top: 0;
+    height: fit-content;
+    bottom: 0;
     width: 15ch;
     text-align: right;
     margin: 0.5em;

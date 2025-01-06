@@ -54,14 +54,14 @@ const names = new Map<mapDataTypes, string>([
 export const useUnitStore = createSelectors(create<UnitsStore>()(
     persist(() => ({
         wind: createUnitConfig("wind", {
-            "m/s": (base:number) => Math.round(base ),
             "km/h": (base:number) => Math.round(base * 3.6),
             "mph": (base:number) => Math.round(base * 2.237),
+            "m/s": (base:number) => Math.round(base),
             "noeuds": (base:number) => Math.round(base * 1.943844)
         }),
         temp: createUnitConfig("temp", {
-            "°C": (base:number) => Math.round(base  ),
-            "°F": (base:number) => Math.round(base * 1.8 + 32,)
+            "°C": (base:number) => Math.round(base),
+            "°F": (base:number) => Math.round(base * 1.8 + 32)
         }),
         names
     }), {
@@ -82,7 +82,8 @@ export const useUnitStore = createSelectors(create<UnitsStore>()(
             // Ensure missing sub-objects are restored from defaults
             const keys = Object.keys(defaultState) as (keyof typeof defaultState)[];
             keys.forEach((key) => {
-                if (key === "names") return;
+                if (key === "names") return; // names are not synced
+                // if is an object, make a deep merge
                 if (typeof newState[key] === "object" && key in state && typeof state[key] === "object") {
                     newState[key] = {
                         ...newState[key],

@@ -1,11 +1,16 @@
 #settings-btn {
+    right: 1em;
+    transition: var(--transitions);
+}
+
+.active#settings-btn {
     right: 0;
 }
 
 .settingsContainer {
     height: 100vh;
     height: 100dvh;
-    overflow: hidden;
+    overflow-x: hidden;
     background-color: var(--bg);
     width: 0;
     opacity: 0;
@@ -14,6 +19,7 @@
     right: 0;
     padding: 1em 0;
     padding-top: 3em;
+    padding-bottom: 2em;
 }
 
 .settingsContainer.active {
@@ -73,4 +79,11 @@
     height: 1px;
     width: 1em;
     background-color: var(--text);
+}
+
+.settings-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
 }

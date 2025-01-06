@@ -19,6 +19,8 @@ export default function Map() {
   const position = useForecastStore.use.position();
   const mapCapabilities = useForecastStore.use.forecastCapabilities();
 
+  const zoom = useAppStore.use.zoom();
+
   useEffect(() => {
     // check that zustand is well initialized
     const dataset = mapCapabilities?.data[userSettings.model].dataset[userSettings.selected].names;
@@ -41,11 +43,11 @@ export default function Map() {
     <div className="map">
       {/* MAP */}
       <MapContainer
-        center={[-31, 148]}
-        zoom={7}
+        center={position ? position : [-31, 148]}
+        zoom={zoom}
         scrollWheelZoom={true}
         zoomControl={false}
-        attributionControl={false} // hide attribution so it's clean (still present in the dom and will have attribution in a about page)
+        attributionControl={false} // hide attribution so it's clean (still present in the dom and visible in about page)
       >
         <TileLayer
             attribution='Tiles &copy; Esri &mdash; Source: Esri, Esri Japan, Esri China (Hong Kong), Esri (Thailand), DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, METI, TomTom'
@@ -73,7 +75,7 @@ export default function Map() {
           </Marker>
         }
         {/* CLICK LISTENER */}
-        <ClickHandler />
+        <MapEventsHandler />
       </MapContainer>
       {/* TIME SELECTOR */}
       <TimeSelector />  
@@ -81,17 +83,19 @@ export default function Map() {
   )
 }
 
-/* -------------------------- Handle clicks on map -------------------------- */
-function ClickHandler() {
+/* -------------------------- Handle events on map -------------------------- */
+function MapEventsHandler() {
   const position = useForecastStore.use.position();
   const setPosition = useForecastStore.use.setPosition();
   const isMobile = useAppStore.use.isMobile();
+  const updateZoom = useAppStore.use.updateZoom();
   // used to check last position state and only pan when forecast is oppened
   const memoryPos = useRef(false as false | LatLng);
   const map = useMapEvents({});
 
   // listen for clicks
   map.addEventListener("click", e => setPosition(e.latlng));
+  map.addEventListener("zoomend", () => updateZoom(map.getZoom()));
 
   // update map sizing with or without forecast
   useEffect(() => {
