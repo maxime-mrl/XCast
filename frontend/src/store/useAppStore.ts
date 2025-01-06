@@ -21,6 +21,10 @@ type AppStore = {
     zoom: number,
     updateZoom: (zoom: number) => void,
 
+    // sync preferences
+    sync: boolean,
+    toggleSync: () => void,
+
     // handling of custom forecast width
     forecastWidth: number,
     updateForecastWidth: (event: MouseEvent) => void
@@ -34,7 +38,9 @@ export const useAppStore = createSelectors(create<AppStore>()(
         isMobile: true,
         forecastWidth: 0.5,
         zoom: 7,
+        sync: false,
         
+        toggleSync: () => set((prev) => ({ sync: !prev.sync })),
         updateZoom: (zoom) => set({ zoom }),
         toggleSettings: () => set((prev) => ({ isSettingsOpen: !prev.isSettingsOpen })),
         handleResize: throttle(() => {

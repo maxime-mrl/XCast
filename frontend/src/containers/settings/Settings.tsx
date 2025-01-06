@@ -15,6 +15,8 @@ export default function Settings() {
   const unitsName = useUnitStore.use.names();
   const isOpen = useAppStore.use.isSettingsOpen();
   const toggleSettings = useAppStore.use.toggleSettings();
+  const sync = useAppStore.use.sync();
+  const toggleSync = useAppStore.use.toggleSync();
   const unitsStore = useUnitStore();
 
   // get available units in a nice array
@@ -30,6 +32,13 @@ export default function Settings() {
     : [];
   // get available levels for selected data
   const levels = forecastCapabilities?.data[userSettings.model].dataset[userSettings.selected].levels || [];
+
+  function resetSettings() {
+    localStorage.clear();
+    window.location.reload();
+    // should have a reset for user account if synced
+    // will be made latter when user account actually exists
+  }
 
   return (
     <>
@@ -106,9 +115,9 @@ export default function Settings() {
           <h2 className="h3 text-center">Synchronisation</h2>
           <span className="checkbox-container">
             <label htmlFor="settings-sync">Activer la synchronisation (nécessite un compte):</label>
-            <input type="checkbox" id="settings-sync" name="settings-sync" checked/>
+            <input type="checkbox" id="settings-sync" name="settings-sync" checked={sync} onClick={toggleSync}/>
           </span>
-          <button className="btn margin-center">Réinitialiser l'App <FontAwesomeIcon icon={faWarning} /></button>
+          <button className="btn margin-center" onClick={resetSettings}>Réinitialiser l'App <FontAwesomeIcon icon={faWarning} /></button>
         </article>
         <article className="about">
           <a href="/about" target="_blank" className="link link-icon margin-center" rel="noreferrer">A propos de XCcast</a>

@@ -7,6 +7,7 @@ import { useUnitStore } from '@store/useUnitsStore';
 import './Meteogram.css';
 
 const yIncrements = [ 100, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6500, 8000, 10000 ];
+const minChartWidth = 650;
 
 export default function MetoGram() {
   const containerRef = useRef(null); // ref for canvas
@@ -76,7 +77,7 @@ function getTimeRange(forecast:forecastData, time:string) {
       // displayed: hours.slice(startTime, endTime + 1),
       displayed: hours,
       chartMargin: 40,
-      minWidth: 530,
+      minWidth: minChartWidth,
     } as chart,
     hour: hours[hourIndex],
   };
@@ -98,7 +99,7 @@ function drawChart(canvas:Canvas) {
 
 /* ----------- draw meteogram (wind and thermal at every heights) ----------- */
 function drawMeteogram(
-  { xChart, drawRectangle, drawWindArrow, drawText }: Canvas,
+  { xChart, drawRectangle, drawWindArrow, drawText, canvas }: Canvas,
   {colorScale, forecast, hour, selected, units}: {
     colorScale: Scale<Color>,
     forecast:forecastData,
@@ -107,7 +108,9 @@ function drawMeteogram(
     units: { [key: string]: (base: number) => number }
   }
 ) {
-  const size = 25; // wind arrow size
+  const textSize = canvas.width/50;
+  const arrrowSize = Math.max(14, textSize); // wind arrow size
+  console.log(textSize)
   // ground layer
   drawRectangle({ top: forecast.level, }, "#959695a0");
   // selected time
@@ -123,12 +126,12 @@ function drawMeteogram(
     // winds arrows
     forecastHour.z.forEach((z, i) => {
       drawWindArrow(
-        time, z, size,
+        time +0.2, z, arrrowSize,
         forecastHour.wdir[i], forecastHour.wspd[i],
         { colorScale, center:true }
       );
       // wind speed (text)
-      drawText(time, z, String(units[selected](forecastHour.wspd[i])), { maxWidth:size, pointCoordinates:true });
+      drawText(time - 0.2, z, String(units[selected](forecastHour.wspd[i])), { pointCoordinates:true, font:`${textSize}px system-ui` });
     });
   })
 }
