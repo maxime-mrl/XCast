@@ -33,6 +33,7 @@ export type forecastData = {
         cloud_low: number; // Low cloud cover in percentage (0-100)
         cloud_med: number; // Medium cloud cover in percentage (0-100)
         cloud_high: number; // High cloud cover in percentage (0-100)
+        cld_frac: number[]; // Cloud fraction at each level in percentage (0-100)
     }[]
 };
 

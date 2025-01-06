@@ -13,6 +13,7 @@ const xChart:chart = {
 };
 
 const yIncrements = [ 100, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6500, 8000, 10000 ];
+const heightOffset = 25;
 
 export default function Sounding() {
   const containerRef = useRef(null);
@@ -65,7 +66,7 @@ function drawChart(canvas:Canvas, { units, selected } :
 ) {
   canvas.yChart.displayed.forEach(value => { // y axis (height)
     canvas.drawLine(canvas.xChart.min, value, canvas.xChart.max, value);
-    const coord = canvas.getCoord(0, value);
+    const coord = canvas.getCoord(0, value + heightOffset);
     canvas.drawText(canvas.xChart.chartMargin/2, coord.y, String(Math.round(value)), {font:"15px system-ui"});
   });
 
@@ -87,11 +88,15 @@ function drawSounding({ drawRectangle, ctx, getCoord, drawLine }:Canvas, forecas
   drawRectangle({ top: forecast.data.bl, bottom: forecast.level }, "#FFc300A2");
   
   // parse data
-  const parsed = forecast.data.z.map((z, i) => ({
-    level: z,
-    temp: forecast.data.t[i],
-    dew: calculateDewPoint(forecast.data.t[i], forecast.data.r[i]),
-  })).sort((a, b) => a.level - b.level); // Sort by level
+  const parsed = forecast.data.z.map((z, i) => {
+    // cld_frac (cloud)
+    drawRectangle({ top: forecast.data.z[i+1], bottom: z, left: 30}, `rgba(80, 80, 80, ${forecast.data.cld_frac[i]/100})`);
+    return {
+      level: z,
+      temp: forecast.data.t[i],
+      dew: calculateDewPoint(forecast.data.t[i], forecast.data.r[i]),
+    }
+  }).sort((a, b) => a.level - b.level); // Sort by level
 
   // draw functions
   const drawContiniousLine = (dataKey: "temp" | "dew", defindedColor?: string) => {

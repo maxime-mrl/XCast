@@ -8,6 +8,7 @@ import './Meteogram.css';
 
 const yIncrements = [ 100, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6500, 8000, 10000 ];
 const minChartWidth = 650;
+const heightOffset = 25;
 
 export default function MetoGram() {
   const containerRef = useRef(null); // ref for canvas
@@ -74,8 +75,8 @@ function getTimeRange(forecast:forecastData, time:string) {
     chart: {
       min: hours[startTime] - 0.5,
       max: hours[endTime] + 0.5,
-      // displayed: hours.slice(startTime, endTime + 1),
-      displayed: hours,
+      displayed: hours.slice(startTime, endTime + 1),
+      // displayed: hours,
       chartMargin: 40,
       minWidth: minChartWidth,
     } as chart,
@@ -86,7 +87,7 @@ function getTimeRange(forecast:forecastData, time:string) {
 /* ----------------------------- draw the chart ----------------------------- */
 function drawChart(canvas:Canvas) {
   canvas.yChart.displayed.forEach(value => { // y axis (height)
-    const coord = canvas.getCoord(0, value);
+    const coord = canvas.getCoord(0, value + heightOffset);
     canvas.drawText(canvas.xChart.chartMargin/2, coord.y, String(Math.round(value)), {font:"15px system-ui"});
   });
 
@@ -110,11 +111,10 @@ function drawMeteogram(
 ) {
   const textSize = canvas.width/50;
   const arrrowSize = Math.max(14, textSize); // wind arrow size
-  console.log(textSize)
   // ground layer
   drawRectangle({ top: forecast.level, }, "#959695a0");
   // selected time
-  drawRectangle({ left:hour-0.5, right:hour+0.5 }, "#bbbbbba1");
+  drawRectangle({ left:hour-0.5, right:hour+0.5 }, "#bbeebb80");
 
   // draw for every hours
   forecast.data.forEach((forecastHour) => {
@@ -123,14 +123,19 @@ function drawMeteogram(
     
     // boundary layer
     drawRectangle({ top: forecastHour.bl, left: time-0.5, right: time+0.5, bottom: forecast.level }, "#FFc300A2");
-    // winds arrows
+    // wind and cloud fraction
     forecastHour.z.forEach((z, i) => {
+      // slight z offset to avoid overlapping
+      z = z + heightOffset;
+      // cld_frac (cloud)
+      drawRectangle({ top: forecastHour.z[i+1], bottom: z, left: time-0.4, right: time+0.4 }, `rgba(80, 80, 80, ${forecastHour.cld_frac[i]/100})`);
+      // wspd arrows
       drawWindArrow(
         time +0.2, z, arrrowSize,
         forecastHour.wdir[i], forecastHour.wspd[i],
         { colorScale, center:true }
       );
-      // wind speed (text)
+      // wspd text
       drawText(time - 0.2, z, String(units[selected](forecastHour.wspd[i])), { pointCoordinates:true, font:`${textSize}px system-ui` });
     });
   })

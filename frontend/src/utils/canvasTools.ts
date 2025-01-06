@@ -16,7 +16,7 @@ export const generateYchart = ({ min, max, increments, margin=40 }: {
 }) => {
     return {
         min: min,
-        max: max + (max-min) * 0.1,
+        max: max + 125,
         displayed: [min, ...increments.filter(increment => increment >= min && increment <= max)],
         chartMargin: margin,
     } as chart;
