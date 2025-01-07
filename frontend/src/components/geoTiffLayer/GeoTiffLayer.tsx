@@ -57,10 +57,10 @@ export default function GeoTiffLayer(
         </div>
       ))}
       { name !== "" &&
-        <div className="desc">
+        <i>
           {units.names.get(name)} ({level ? level + "m" : "sol"}) <br />
           {activeUnit.selected}
-        </div>
+        </i>
       }
     </div>
   )

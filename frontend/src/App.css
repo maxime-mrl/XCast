@@ -68,53 +68,9 @@ html, body {
   background-color: var(--bg);
 }
 
-.h1 {
-  font-size: var(--h1-size);
-  font-weight: 600;
-}
-
-.h2 {
-  font-size: var(--h2-size);
-  font-weight: 500;
-}
-
-.h3 {
-  font-size: var(--h3-size);
-  font-weight: 500;
-}
-
+/* -------------------------------- utilities ------------------------------- */
 .bold {
   font-weight: 600;
-}
-
-.btn {
-  max-width: 100%;
-  padding: 0.5em 1.5em;
-  border: 1px solid var(--text);
-  border-radius: 0.25em;
-  cursor: pointer;
-  transition: transform var(--transitions);
-}
-
-.btn:hover {
-  transform: scale(1.01);
-}
-
-.link {
-  font-weight: 600;
-  transition: transform 200ms ease-out;
-  display: inline-flex;
-  align-items: center;
-  line-height: 0.8;
-  gap: 0.2em;
-}
-.link:hover {
-  transform: scale(1.05);
-}
-
-.link-icon::after {
-  content: "🔗";
-  font-size: 0.8em;
 }
 
 .my-1 {
@@ -140,14 +96,84 @@ html, body {
   text-align: center;
 }
 
+.gap-1 {
+  display: flex;
+  gap: 1em;
+}
+
 .text-img {
   max-height: 2em;
   padding: 0.1em;
   object-fit: contain;
 }
 
+.content-width {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 90ch;
+  padding-left: 1.5ch;
+  padding-right: 1.5ch;
+}
 
-/* checkboxes */
+/* --------------------------------- titles --------------------------------- */
+.h1 {
+  font-size: var(--h1-size);
+  font-weight: 600;
+}
+
+.h2 {
+  font-size: var(--h2-size);
+  font-weight: 500;
+}
+
+.h3 {
+  font-size: var(--h3-size);
+  font-weight: 500;
+}
+
+/* --------------------------------- buttons -------------------------------- */
+.btn {
+  max-width: 100%;
+  padding: 0.5em 1.5em;
+  border: 1px solid var(--text);
+  border-radius: 0.25em;
+  cursor: pointer;
+  transition: transform var(--transitions);
+}
+.btn:hover {
+  transform: scale(1.01);
+}
+
+.burger-btn {
+  z-index: 10;
+  font-size: var(--h2-size);
+  padding: 0.5em;
+  cursor: pointer;
+  transition: transform var(--transitions) ease;
+}
+.burger-btn:hover {
+  transform: scale(1.1);
+}
+
+/* ---------------------------------- link ---------------------------------- */
+.link {
+  font-weight: 600;
+  transition: transform var(--transitions) ease-out;
+  display: inline-flex;
+  align-items: center;
+  line-height: 0.8;
+  gap: 0.2em;
+}
+.link:hover {
+  transform: scale(1.05);
+}
+
+.link-icon::after {
+  content: "🔗";
+  font-size: 0.8em;
+}
+
+/* ------------------------------- checkboxes ------------------------------- */
 .checkbox-container {
   display: flex;
   align-items: end;
@@ -168,9 +194,6 @@ input[type="checkbox"] {
   appearance: unset;
 }
 
-/* input[type="checkbox"]:checked {
-  } */
-  
 input[type="checkbox"]:checked::after {
   content: "✔";
   background-color: var(--accent);
@@ -184,7 +207,7 @@ input[type="checkbox"]:checked::after {
   color: var(--text);
 }
 
-/* select */
+/* --------------------------------- select --------------------------------- */
 /* inspired from moderncss.dev/custom-select-styles-with-pure-css/ */
 .select {
   display: grid;
@@ -212,16 +235,4 @@ input[type="checkbox"]:checked::after {
   margin-right: 0.2em;
   background-color: var(--text);
   clip-path: polygon(100% 0%, 0 0%, 50% 100%);
-}
-
-
-.burger-btn {
-  z-index: 10;
-  font-size: var(--h2-size);
-  padding: 0.5em;
-  cursor: pointer;
-  transition: transform 200ms ease;
-}
-.burger-btn:hover {
-  transform: scale(1.1);
 }

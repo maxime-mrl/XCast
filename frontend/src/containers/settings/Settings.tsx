@@ -112,14 +112,14 @@ export default function Settings() {
           ))}
         </article>
         <article className="sync">
-          <h2 className="h3 text-center">Synchronisation</h2>
+          <h2 className="h3 title-divider">Synchronisation</h2>
           <span className="checkbox-container">
             <label htmlFor="settings-sync">Activer la synchronisation (nécessite un compte):</label>
-            <input type="checkbox" id="settings-sync" name="settings-sync" checked={sync} onClick={toggleSync}/>
+            <input type="checkbox" id="settings-sync" name="settings-sync" checked={sync} onChange={toggleSync}/>
           </span>
           <button className="btn margin-center" onClick={resetSettings}>Réinitialiser l'App <FontAwesomeIcon icon={faWarning} /></button>
         </article>
-        <article className="about">
+        <article className="about text-center">
           <a href="/about" target="_blank" className="link link-icon margin-center" rel="noreferrer">A propos de XCcast</a>
         </article>
       </section>

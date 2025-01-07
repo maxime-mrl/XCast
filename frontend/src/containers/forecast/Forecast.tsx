@@ -75,8 +75,8 @@ export default function Forecast() {
       {/* navigation */}
       <nav className="forecast-nav">
         <div className="main-nav">
-          <a href="#meteogram" className="nav-btn">Météogramme</a>
-          <a href="#sounding" className="nav-btn">Emagramme</a>
+          <a href="#meteogram" className="nav-btn link">Météogramme</a>
+          <a href="#sounding" className="nav-btn link">Emagramme</a>
         </div>
         <div className="separator"></div>
         <div className="actions">

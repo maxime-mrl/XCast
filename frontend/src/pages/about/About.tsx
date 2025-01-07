@@ -6,16 +6,16 @@ export default function About() {
     return (
         <>
             <div className="nav-container">
-                <nav className="about-nav flex-nav">
+                <nav className="about-nav content-width gap-1">
                     <a className="link" href="/"><img src="/images/logo-transparent.png" className="text-img" alt="Logo XCcast" />Prévisions</a>
-                    <span className="flex-nav">
+                    <span className="gap-1">
                         <a className="link" href="#sources">Sources</a>
                         <a className="link" href="#contact">Contact</a>
                         <a className="link" href="#legal">légal</a>
                     </span>
                 </nav>
             </div>
-            <div className="about">
+            <div className="about content-width">
                 <section className="header my-2">
                     <img src="/images/logo-512.png" alt="Logo XCcast" className="header-logo" />
                     <h1 className="h1 text-center">Bienvenue sur XCcast</h1>
@@ -67,7 +67,7 @@ export default function About() {
                 </section>
             </div>
             <footer>
-                <div className="footer-content">
+                <div className="footer-content content-width">
                     <span>
                         <a href="/" className="link h2"><img src="/images/logo-transparent.png" className="text-img" alt="Logo XCcast" /> XCcast</a>
                     </span>

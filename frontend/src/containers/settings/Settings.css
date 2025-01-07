@@ -1,3 +1,4 @@
+/* ----------------------------- burger position ---------------------------- */
 #settings-btn {
     right: 1em;
     transition: var(--transitions);
@@ -7,19 +8,18 @@
     right: 0;
 }
 
+/* -------------------------------- container ------------------------------- */
 .settingsContainer {
     height: 100vh;
     height: 100dvh;
+    right: 0;
+    padding: 3em 0 2em;
     overflow-x: hidden;
     background-color: var(--bg);
-    width: 0;
     opacity: 0;
+    width: 0;
     visibility: hidden;
-    transition: 200ms;
-    right: 0;
-    padding: 1em 0;
-    padding-top: 3em;
-    padding-bottom: 2em;
+    transition: var(--transitions);
 }
 
 .settingsContainer.active {
@@ -29,18 +29,15 @@
     width: min(15em, 75%);
 }
 
-.settingsContainer .about {
-    text-align: center;
-}
-
 .settingsContainer > article {
-    border-top: 0.5px solid var(--text);
-    margin-top: 1.5em;
-    padding: 1.5em 1em 0;
     display: grid;
     gap: 1em;
+    margin-top: 1.5em;
+    padding: 1.5em 1em 0;
+    border-top: 0.5px solid var(--text);
 }
 
+/* ------------------------- custom buttons selector ------------------------ */
 .settingsContainer .select-data {
     text-align: left;
     cursor: pointer;
@@ -62,18 +59,22 @@
     cursor: pointer;
     font-weight: bold;
 }
+
 .settingsContainer .select-data.active::before {
 	border-left: 0.9em solid var(--accent);
 }
 
+/* --------------------------------- titles --------------------------------- */
 .settingsContainer .title-divider {
-    text-align: center;
-    position: relative;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     gap: 0.8em;
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
 }
+
 .title-divider::before, .title-divider::after {
     content: "";
     height: 1px;

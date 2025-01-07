@@ -14,23 +14,22 @@
     height: 100%;
     background-color: var(--bg);
     user-select: none;
-    container-type: size; /* for container query */
-    container-name: forecast-container;
+    container: forecast-container / size;
 }
 
 .resizer {
-    grid-row: 1 / 2;
-    grid-column: 2 / 2;
+    grid-row: 1 / 3;
+    grid-column: 2;
     cursor: e-resize;
 }
 .sounding, .meteogram {
-    grid-row: 1 / 1;
-    grid-column: 1 / 1;
+    grid-row: 1;
+    grid-column: 1;
 }
 
 .forecast-nav {
-    grid-row: 2 / 2;
-    grid-column: 1 / 1;
+    grid-row: 2;
+    grid-column: 1;
     display: flex;
     flex-wrap: wrap-reverse;
     justify-content: space-between;
@@ -61,9 +60,16 @@
     align-items: center;
 }
 
+.main-nav {
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+    flex-shrink: 1;
+    height: 100%;
+}
+
 .nav-btn { /* clickable btns */
     padding: 0.5rem;
-    cursor: pointer;
 }
 
 .close-forecast {
@@ -90,10 +96,8 @@
         justify-content: space-around;
     }
     .forecast-nav > .separator {
-        /* flex-grow: 1; */
         width: 100%;
         height: 0.1em;
-        /* display: none; */
     }
 
     .forecast-nav > .actions {
@@ -104,8 +108,10 @@
 
     .forecast-nav > .main-nav {
         flex-grow: 1;
+        height: auto;
         padding: 0 1.5em;
         padding: 0 calc(1.5em - 0.5rem);
+        margin-bottom: 0.5em;
         justify-content: start;
     }
 }

@@ -27,16 +27,17 @@
 
 .notches-container {
     position: absolute;
-    width: 100%;
-    height: 30%;
     z-index: -1;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+    height: 30%;
 }
 
 .notch {
     width: 1px;
     height: 100%;
-    background: #1e1e1e67;
+    background: var(--text);
+    opacity: 0.5;
 }
