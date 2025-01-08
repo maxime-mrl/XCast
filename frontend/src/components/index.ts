@@ -4,7 +4,8 @@ const TimeSelector = loadable(() => import('./timeSelector/TimeSelector'));
 const Sounding = loadable(() => import('./sounding/Sounding'));
 const Meteogram = loadable(() => import('./meteogram/Meteogram'));
 const StepSlider = loadable(() => import('./StepSlider/StepSlider'));
-const Loader = loadable(() => import('./StepSlider/StepSlider'));
+const Loader = loadable(() => import('./loader/Loader'));
+const ModalContainer = loadable(() => import('./modalContainer/ModalContainer'));
 
 export {
     GeotiffLayer,
@@ -12,5 +13,6 @@ export {
     Sounding,
     Meteogram,
     StepSlider,
-    Loader
+    Loader,
+    ModalContainer
 }

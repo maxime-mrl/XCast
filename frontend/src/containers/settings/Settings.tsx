@@ -6,6 +6,8 @@ import { UnitsConfig, useUnitStore } from "@store/useUnitsStore";
 import { useAppStore } from "@store/useAppStore";
 import { StepSlider } from "@components";
 import './Settings.css';
+import ModalContainer from "src/components/modalContainer/ModalContainer";
+import { useState } from "react";
 
 export default function Settings() {
   // get stored data
@@ -18,6 +20,8 @@ export default function Settings() {
   const sync = useAppStore.use.sync();
   const toggleSync = useAppStore.use.toggleSync();
   const unitsStore = useUnitStore();
+
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   // get available units in a nice array
   const units: (UnitsConfig & { name: string })[] = [];
@@ -42,7 +46,7 @@ export default function Settings() {
 
   return (
     <>
-      <button onClick={toggleSettings} className={`burger-btn${isOpen ? " active" : ""}`} id='settings-btn'>
+      <button onClick={toggleSettings} className={`burger-btn${isOpen ? " active" : ""}`} id='settings-btn' style={{display: confirmModalOpen ? "none" : "block"}}>
         <FontAwesomeIcon icon={isOpen ? faXmark : faBars} />
       </button>
       <section className={`settingsContainer${isOpen ? " active" : ""}`}>
@@ -117,7 +121,11 @@ export default function Settings() {
             <label htmlFor="settings-sync">Activer la synchronisation (nécessite un compte):</label>
             <input type="checkbox" id="settings-sync" name="settings-sync" checked={sync} onChange={toggleSync}/>
           </span>
-          <button className="btn margin-center" onClick={resetSettings}>Réinitialiser l'App <FontAwesomeIcon icon={faWarning} /></button>
+          <button className="btn margin-center" onClick={() => setConfirmModalOpen(true)}>Réinitialiser l'App <FontAwesomeIcon icon={faWarning} /></button>
+          <ModalContainer isOpen={confirmModalOpen} setIsOpen={setConfirmModalOpen}>
+            <p>Êtes-vous sûr de vouloir réinitialiser l'application ?</p>
+            <button className="btn margin-center" onClick={resetSettings}>Oui</button>
+          </ModalContainer>
         </article>
         <article className="about text-center">
           <a href="/about" target="_blank" className="link link-icon margin-center" rel="noreferrer">A propos de XCcast</a>

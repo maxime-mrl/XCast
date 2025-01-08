@@ -1,3 +1,16 @@
+/* -------------------------- reset leaflet styling ------------------------- */
+/* (all the z-index crap) */
+
+.leaflet-map-pane canvas {
+    z-index: 1 !important;
+}
+
+.leaflet-tile-pane, .leaflet-map-pane svg, .leaflet-pane,
+.leaflet-overlay-pane, .leaflet-shadow-pane, .leaflet-marker-pane,
+.leaflet-tooltip-pane, .leaflet-popup-pane, .leaflet-zoom-box {
+    z-index: 2 !important;
+}
+
 .map {
     flex-grow: 1;
     height: 100%;
