@@ -56,7 +56,7 @@ interface ForecastStore {
     position: false | LatLng, // point position for forecast details (false = no points)
     // error handling
     status: string,
-    message: string,
+    message: string | null,
     // utility method to update data
     setPosition: (point: false|LatLng) => void,
     getCapabilities: () => Promise<void>,
@@ -83,7 +83,7 @@ export const useForecastStore = createSelectors(create<ForecastStore>()(
         position: false,
         /* ------------------------------- STORE STATE ------------------------------ */
         status: "",
-        message: "",
+        message: null,
         /* ------------------------------ STORE UPDATE ------------------------------ */
         // update user settings (since it's nested we can't update only one settings with default set)
         updateSettings: (newSettings) => {

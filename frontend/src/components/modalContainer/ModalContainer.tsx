@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './ModalContainer.css';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
-export default function ModalContainer({ children, isOpen, setIsOpen }: { children: React.ReactNode, isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ModalContainer({ children, isOpen, setIsOpen }: { children: React.ReactNode, isOpen: boolean, setIsOpen: (isOpen:boolean) => void }) {
   return (
     <div className='modal-container' style={{ display: isOpen ? 'flex' : 'none' }}>
       <button onClick={() => setIsOpen(false)} className={`burger-btn`} id='modal-btn'>

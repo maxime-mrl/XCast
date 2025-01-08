@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createSelectors } from "./createSelector";
 import { useEffect } from "react";
+import { useUserStore } from "./useUserStore";
 
 const mobileWidth = 750;
 const resizeThrottle = 300;
@@ -10,6 +11,12 @@ type AppStore = {
     // settings panel
     isSettingsOpen: boolean,
     toggleSettings: () => void,
+
+    // acounts panel
+    isRegisterOpen: boolean,
+    isLoginOpen: boolean,
+    setIsRegisterOpen: (isOpen: boolean) => void,
+    setIsLoginOpen: (isOpen: boolean) => void,
 
     // handling window size and ismobile
     width: number,
@@ -39,8 +46,18 @@ export const useAppStore = createSelectors(create<AppStore>()(
         forecastWidth: 0.5,
         zoom: 7,
         sync: false,
+        isRegisterOpen: false,
+        isLoginOpen: false,
         
-        toggleSync: () => set((prev) => ({ sync: !prev.sync })),
+        setIsRegisterOpen: (isOpen) => set({ isRegisterOpen: isOpen }),
+        setIsLoginOpen: (isOpen) => set({ isLoginOpen: isOpen }),
+        toggleSync: () => {
+            // check if user is logged in (user store)
+            // if not logged in, open register panel
+            if (!useUserStore.getState().user) get().setIsRegisterOpen(true);
+            // else toggle sync
+            else set((prev) => ({ sync: !prev.sync }));
+        },
         updateZoom: (zoom) => set({ zoom }),
         toggleSettings: () => set((prev) => ({ isSettingsOpen: !prev.isSettingsOpen })),
         handleResize: throttle(() => {

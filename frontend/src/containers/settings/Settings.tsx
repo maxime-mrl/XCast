@@ -124,7 +124,10 @@ export default function Settings() {
           <button className="btn margin-center" onClick={() => setConfirmModalOpen(true)}>Réinitialiser l'App <FontAwesomeIcon icon={faWarning} /></button>
           <ModalContainer isOpen={confirmModalOpen} setIsOpen={setConfirmModalOpen}>
             <p>Êtes-vous sûr de vouloir réinitialiser l'application ?</p>
-            <button className="btn margin-center" onClick={resetSettings}>Oui</button>
+            <div className="gap-1 margin-center">
+              <button className="btn" onClick={resetSettings}>Oui</button>
+              <button className="btn" onClick={() => setConfirmModalOpen(false)}>Non</button>
+            </div>
           </ModalContainer>
         </article>
         <article className="about text-center">
