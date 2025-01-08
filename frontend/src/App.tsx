@@ -6,6 +6,7 @@ import "./App.css";
 import { useAppStore, useWindowSizeInitializer } from "@store/useAppStore";
 import { useForecastStore } from "@store/useForecastStore";
 import { useEffect } from "react";
+import Loader from "./components/loader/Loader";
 
 export default function App() {
   // initialize window size (and get the ismobile while here c:)
@@ -17,6 +18,7 @@ export default function App() {
   
   return (
     <div className={isMobile ? "mobile" : "desktop"}>
+    <Loader />
     <Router>
         <Routes>
           <Route path="/" element={ <Home /> } />
