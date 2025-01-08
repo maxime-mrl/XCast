@@ -67,6 +67,7 @@ export const useUnitStore = createSelectors(create<UnitsStore>()(
     }), {
         name: "units-settings",
         partialize: (state) => {
+            // only sync selected units fields
             const { names, ...units } = state;
             const SelectedUnits:Partial<{[key in mapDataTypes]: { selected: string }}> = {};
             Object.keys(units).forEach(key => {

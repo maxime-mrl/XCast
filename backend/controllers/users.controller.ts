@@ -1,32 +1,54 @@
-import { Request, Response } from "@node_modules/@types/express";
+// types
+import { Request, Response } from "express";
 import { Types } from "mongoose";
-
+import { requestWithUser } from "@customTypes";
+// imports
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import usersModel from "../models/users.model";
-import { requestWithUser } from "@customTypes";
+import usersModel, { User } from "@models/users.model";
+import { checkUser, checkandParseSettings } from "@middleware/modelsMiddleware/userCheck.middleware";
+
+    // const userDefaultPreferences = {
+    //     forecastSettings: {
+    //         model: "gfs",
+    //         selected: "all",
+    //         level: 2000,
+    //         maxHeight: 500,
+    //         position: false
+    //     },
+    //     units: new Map([
+    //         ["temperature", { selected: "celsius" }],
+    //         ["wind", { selected: "kmh" }],
+    //         ["pressure", { selected: "hpa" }]
+    //     ])
+    // };
 
 /* -------------------------------------------------------------------------- */
 /*                             CREATE NEW ACCOUNT                             */
 /* -------------------------------------------------------------------------- */
 export const registerUser = asyncHandler(async (req:Request, res:Response) => {
     /* ------------------------------ INPUTS CHECK ------------------------------ */
-    const { username, mail, password, age } = req.body;
-    // check everything is here
-    if (!username || !mail || !password) throw {
-        message: "At least one missing field",
+    const { username, mail, password, settings:rawSettings } = req.body;
+    // check everything is here and valid
+    if (!username || !mail || !password || !rawSettings) throw {
+        message: "Il manque au moins un champ",
         status: 400
     };
+    await checkUser({ mail, username, password });
+    // transform received units object to Map
+    // if (settings.units) settings.units = new Map(Object.entries(settings.units));
+    // check settings validity
+    const settings = checkandParseSettings(rawSettings);
     /* ------------------------------- CREATE USER ------------------------------ */
-    const user = await usersModel.create({ mail, username, password });
+    const user = await usersModel.create({ mail, username, password, settings });
     /* -------------------------------- RESPONSE -------------------------------- */
     if (user) res.status(201).json({
         _id: user._id,
         username: user.username,
         token: generateToken(user._id)
     });
-    else throw new Error("User can't be created right now");
+    else throw new Error("Le compte n'a pas pu être créé, merci de réessayer.");
 });
 
 /* -------------------------------------------------------------------------- */
@@ -59,10 +81,9 @@ export const loginUser = asyncHandler(async (req:Request, res:Response) => {
 export const getUser = asyncHandler(async (req:requestWithUser, res:Response) => {
     /* ---------------------------- RETURN USER INFOS --------------------------- */
     res.status(200).json({
-        _id: req.user._id,
-        mail: req.user.mail,
-        username: req.user.username,
-        right: req.user.right
+        _id: req.user?._id,
+        mail: req.user?.mail,
+        username: req.user?.username,
     });
 });
 
@@ -72,7 +93,8 @@ export const getUser = asyncHandler(async (req:requestWithUser, res:Response) =>
 export const updateUser = asyncHandler(async (req:requestWithUser, res:Response) => {
     /* ------------------------------ INPUTS CHECK ------------------------------ */
     const { username, mail, password, confirmPassword } = req.body;
-    const user = await usersModel.findOne(req.user);
+    const user = await usersModel.findOne({ _id: req.user?._id });
+
     // necessary datas are presents
     if (!confirmPassword || !user) throw {
         message: "At least one missing field",
@@ -83,6 +105,8 @@ export const updateUser = asyncHandler(async (req:requestWithUser, res:Response)
         message: "Incorrect credentials",
         status: 400
     };
+    // check datas validity
+    await checkUser({ mail, username, password });
     /* ------------------------------- UPDATE DATA ------------------------------ */
     const updatedUser = await usersModel.findByIdAndUpdate(user._id, {
         mail,
@@ -103,7 +127,7 @@ export const updateUser = asyncHandler(async (req:requestWithUser, res:Response)
 export const deleteUser = asyncHandler(async (req:requestWithUser, res:Response) => {
     /* ------------------------------ INPUTS CHECK ------------------------------ */
     const { confirmPassword } = req.body;
-    const user = await usersModel.findOne({_id: req.user._id});
+    const user = await usersModel.findOne({_id: req.user?._id});
     // necessary datas are presents
     if (!confirmPassword || !user) throw {
         message: "At least one missing field",
@@ -117,7 +141,7 @@ export const deleteUser = asyncHandler(async (req:requestWithUser, res:Response)
     /* ------------------------ DELETE SELF USER ACCOUNT ------------------------ */
     const query = await usersModel.deleteOne({_id: user._id });
     if (!query.acknowledged) throw new Error(query as any);
-    res.status(200).json({ deleted: req.user.mail });
+    res.status(200).json({ deleted: req.user?.mail });
 });
 
 // generate token

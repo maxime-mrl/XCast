@@ -56,6 +56,7 @@ export const useAppStore = createSelectors(create<AppStore>()(
     }), {
         name: "app-settings",
         partialize: (state) => ({
+            // always only persisted (no need to sync since it's dependent on window size so device)
             forecastWidth: state.forecastWidth,
             zoom: state.zoom
         }),

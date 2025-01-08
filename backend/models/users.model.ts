@@ -1,6 +1,22 @@
 import mongoose, { Document } from "mongoose";
-import userCheck from "../middleware/modelsMiddleware/userCheck.middleware";
-import errorsHandler from "../middleware/modelsMiddleware/errorsHandler.middleware";
+import errorsHandler from "@middleware/modelsMiddleware/errorsHandler.middleware";
+
+const userPreferencesSchema = new mongoose.Schema({
+    forecastSettings: new mongoose.Schema({
+        model: { type: String },
+        selected: { type: String },
+        level: { type: Number },
+        maxHeight: { type: Number },
+        position: { type: (Object || false) }
+    }),
+    units: {
+        type: Map,
+        of: new mongoose.Schema({
+            selected: { type: String, required: true }
+        }),
+        default: new Map()
+    }
+});
 
 const userSchema = new mongoose.Schema({
     mail: {
@@ -20,17 +36,29 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    settings: {
+        type: userPreferencesSchema,
+        required: true,
+    },
 }, { timestamps: true });
 
-// check to make sure user format are good
-// userSchema.pre(/update|save/i, userCheck); // for now broken so to test just no check till I find a solution
 // customize error thrown by mongoose
 userSchema.post(/update|save/i, errorsHandler);
 
 export interface User extends Document {
     mail: string,
     username: string,
-    password: string
+    password: string,
+    settings: {
+        forecastSettings: {
+            model?: string,
+            selected?: string,
+            level?: number,
+            maxHeight?: number,
+            position?: Object | false
+        },
+        units?: Map<string, { selected: string }>
+    }
 }
 
 export default mongoose.model("Users", userSchema);

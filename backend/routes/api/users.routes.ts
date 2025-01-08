@@ -1,6 +1,6 @@
 const router = require("express").Router();
-import { registerUser, loginUser, getUser, deleteUser, updateUser } from "../../controllers/users.controller";
-import { protect } from "../../middleware/auth.midleware";
+import { registerUser, loginUser, getUser, deleteUser, updateUser } from "@controllers/users.controller";
+import { protect } from "@middleware/auth.midleware";
 
 router.get("/infos", protect, getUser);
 router.post("/register", registerUser);

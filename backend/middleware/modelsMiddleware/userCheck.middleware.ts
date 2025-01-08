@@ -1,16 +1,11 @@
 import { User } from "@models/users.model";
-import { Query } from "mongoose";
 import bcrypt from "bcryptjs";
 
 const minPasslength = 6;
 
-
-// dosen't work as is
-// don't know why before in js I was just using this but this dosen't seems to work here
-export default async (next:() => void, options: User) => {
-    console.log(options);
-    const user = (options && "_update" in options ? options._update : this) as Partial<User>; // get the user infos to check them (when updating it will be this._update else this)
-    const that = this as any as Query<User,User> // don't think this is how it should be used but hey typescript is happy
+// Not really a middleware, will be called by controllers when needed
+// check if user data are valid before saving them to db (if incrorect throw an error)
+export const checkUser = async (user: Partial<User>) => {
     /* -------------------------- check password length ------------------------- */
     if (user.password) {
         if (user.password.length < minPasslength) throw { // done before the db validation because hash change length
@@ -32,6 +27,33 @@ export default async (next:() => void, options: User) => {
         message: `Merci d'entrer un mail valide.`,
         status: 400
     };
-    /* ----------------- everythings is good => save user to db ----------------- */
-    next();
 };
+
+export const checkandParseSettings = (rawSettings: string) => {
+    const settings = JSON.parse(rawSettings);
+    /* ------------------------ check forecast settings ------------------------ */
+    if (settings.forecastSettings) {
+        const { model, selected, level, maxHeight, position } = settings.forecastSettings;
+        if (
+            (model && typeof model !== "string") ||
+            (selected && typeof selected !== "string") ||
+            (level && typeof level !== "number") ||
+            (maxHeight && typeof maxHeight !== "number") ||
+            (position && typeof position !== "object")
+        ) throw {
+            message: "données invalides.",
+            status: 400
+        };
+    }
+    /* --------------------------- check units settings ------------------------- */
+    if (settings.units) {
+        settings.units = new Map(Object.entries(settings.units));
+        settings.units.forEach((value:{ selected:string }) => {
+            if (value && typeof value.selected !== "string") throw {
+                message: "données invalides.",
+                status: 400
+            };
+        });
+    }
+    return settings as Partial<User["settings"]>;
+}
