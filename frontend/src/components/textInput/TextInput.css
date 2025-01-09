@@ -7,24 +7,26 @@
 }
 
 /* ---------------------------------- INPUT --------------------------------- */
-
 .text-input {
+    --border-color: var(--text);
     padding: 0.3em;
     outline: none;
-    border: var(--main-border-text);
-    border-radius: var(--radius);
-    transition: border var(--transition-duration) ease-out;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-s);
+    box-shadow: 2px 2px 0px var(--border-color);
+    transition: var(--transitions) ease-out;
 }
 
 .text-input:hover {
-    border: 2px solid var(--text);
+    transform: scale(1.005);
+    box-shadow: 3px 3px 1px var(--border-color);
 }
 
-.text-input:focus { border-color: var(--accent); }
+.text-input:focus { --border-color: var(--accent); }
 
 .text-input::placeholder {
-    color: var(--text-35);
-    transition: color var(--transition-duration) ease-out;
+    color: var(--text-80);
+    transition: color var(--transitions) ease-out;
 }
 
 .text-input:hover::placeholder,
@@ -32,22 +34,20 @@
     color: var(--text-50);
 }
 
-.fail .text-input:not(:focus) { border-color: var(--fail); }
+.fail .text-input:not(:focus) { --border-color: var(--fail); }
 
-.success .text-input:not(:focus) { border-color: var(--success); }
+.success .text-input:not(:focus) { --border-color: var(--success); }
 
 /* ---------------------------------- LABEL --------------------------------- */
-
 .text-label {
-    font-size: 0.9em;
-    transition: color var(--transition-duration) ease-out;
+    transition: color var(--transitions) ease-out;
 }
 
-/* just decided to go nuts w/ css selector */
 .success .text-label { color: var(--success); }
 .fail .text-label { color: var(--fail); }
 
 .text-label .error { display: none; }
 
+/* just decided to go nuts w/ css selector */
 .fail .text-input:not(:focus) ~ .text-label .regular { display: none; }
 .fail .text-input:not(:focus) ~ .text-label .error { display: block; }

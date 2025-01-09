@@ -9,6 +9,7 @@ import './Register.css';
 export default function Register() {
   const isOpen = useAppStore.use.isRegisterOpen();
   const setIsOpen = useAppStore.use.setIsRegisterOpen();
+  const setIsLoginOpen = useAppStore.use.setIsLoginOpen();
   const register = useUserStore.use.register();
 
   const [{ username, mail, password, confirm_password }, setFormData] = useState<{ [key: string]: [string, boolean]; }>({
@@ -96,7 +97,7 @@ export default function Register() {
         />
         <button type="submit" className="btn">S'inscrire</button>
         <div className="login-redirect">
-          Déjà un compte?
+          Déjà un compte? <button className='link' onClick={() => setIsLoginOpen(true)}>Se connecter</button>
         </div>
     </form>
     </ModalContainer>

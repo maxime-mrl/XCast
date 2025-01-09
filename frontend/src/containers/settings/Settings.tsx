@@ -7,7 +7,7 @@ import { useAppStore } from "@store/useAppStore";
 import { StepSlider } from "@components";
 import './Settings.css';
 import ModalContainer from "src/components/modalContainer/ModalContainer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserStore } from "@store/useUserStore";
 
 export default function Settings() {
@@ -27,6 +27,21 @@ export default function Settings() {
   const logout = useUserStore.use.logout();
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  useEffect(() => {
+    if (isOpen) document.addEventListener("click", checkIsClickOutside);
+    return () => {
+      document.removeEventListener("click", checkIsClickOutside);
+    }
+    function checkIsClickOutside(e:MouseEvent) {
+      const target = e.target as HTMLElement;
+      // modals and loader are on top so if click is on them do nothing
+      for (const doNothingElem of document.querySelectorAll(".modal-container, .loader, .settingsContainer, #settings-btn")) {
+        if (doNothingElem.contains(target)) return;
+      }
+      // close settings modal
+      if (isOpen) toggleSettings();
+    }
+  }, [isOpen, toggleSettings])
 
   // get available units in a nice array
   const units: (UnitsConfig & { name: string })[] = [];
@@ -126,21 +141,22 @@ export default function Settings() {
             <label htmlFor="settings-sync">Activer la synchronisation (nécessite un compte):</label>
             <input type="checkbox" id="settings-sync" name="settings-sync" checked={sync} onChange={toggleSync}/>
           </span>
-          <button className="btn margin-center" onClick={() => setConfirmModalOpen(true)}>Réinitialiser l'App <FontAwesomeIcon icon={faWarning} /></button>
+          <button className="btn margin-center btn-danger" onClick={() => setConfirmModalOpen(true)}>Réinitialiser l'App <FontAwesomeIcon icon={faWarning} /></button>
           <ModalContainer isOpen={confirmModalOpen} setIsOpen={setConfirmModalOpen}>
-            <p>Êtes-vous sûr de vouloir réinitialiser l'application ?</p>
+            <p className="text-center">Êtes-vous sûr de vouloir réinitialiser l'application ?</p>
+            <p className="text-center">Vous perdrez toutes vos données et vos paramètres, ainsi que vos données synchronisées</p>
             <div className="gap-1 margin-center">
-              <button className="btn" onClick={resetSettings}>Oui</button>
+              <button className="btn btn-danger" onClick={resetSettings}>Oui</button>
               <button className="btn" onClick={() => setConfirmModalOpen(false)}>Non</button>
             </div>
           </ModalContainer>
         </article>
         <article className="account text-center">
-          <h2 className="h3 title-divider"><FontAwesomeIcon icon={faUser} /> Compte</h2>
+          <h2 className="h3 title-divider"><FontAwesomeIcon icon={faUser} />Compte</h2>
           {user
           ? <>
             <p>Content de vous voir {user.username}</p>
-            <button className="btn margin-center" onClick={logout}>Se déconnecter</button>
+            <button className="btn btn-danger margin-center" onClick={logout}>Se déconnecter</button>
           </>
           : <>
             <p>Pas encore de compte?</p>

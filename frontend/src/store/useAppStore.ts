@@ -40,7 +40,7 @@ type AppStore = {
 
 export const useAppStore = createSelectors(create<AppStore>()(
     persist((set, get) => ({
-        isSettingsOpen: true,
+        isSettingsOpen: false,
         width: 0,
         height: 0,
         isMobile: true,
@@ -50,8 +50,14 @@ export const useAppStore = createSelectors(create<AppStore>()(
         isRegisterOpen: false,
         isLoginOpen: false,
         
-        setIsRegisterOpen: (isOpen) => set({ isRegisterOpen: isOpen }),
-        setIsLoginOpen: (isOpen) => set({ isLoginOpen: isOpen }),
+        setIsRegisterOpen: (isOpen) => {
+            if (isOpen) get().setIsLoginOpen(false); // make sure both modals are not oppened at the same time
+            set({ isRegisterOpen: isOpen })
+        },
+        setIsLoginOpen: (isOpen) => {
+            if (isOpen) get().setIsRegisterOpen(false);
+            set({ isLoginOpen: isOpen })
+        },
         toggleSync: () => {
             // check if user is logged in (user store)
             // if not logged in, open register panel

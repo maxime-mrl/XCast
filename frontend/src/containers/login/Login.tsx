@@ -9,6 +9,7 @@ import './Login.css';
 export default function Login() {
   const isOpen = useAppStore.use.isLoginOpen();
   const setIsOpen = useAppStore.use.setIsLoginOpen();
+  const setIsRegisterOpen = useAppStore.use.setIsRegisterOpen();
   const login = useUserStore.use.login();
 
   const [{ mail, password }, setFormData] = useState<{ [key: string]: [string, boolean]; }>({
@@ -32,8 +33,8 @@ export default function Login() {
 
   return (
     <ModalContainer isOpen={isOpen} setIsOpen={setIsOpen}>
-    <form onSubmit={submitForm} className="register-form">
-        <h2 className="h2">S'inscrire</h2>
+    <form onSubmit={submitForm} className="login-form">
+        <h2 className="h2">Se connecter</h2>
         <TextInput 
             label={{
                 regular: "E-mail:",
@@ -65,7 +66,7 @@ export default function Login() {
         />
         <button type="submit" className="btn">Se connecter</button>
         <div className="login-redirect">
-          Pas encore de compte?
+          Pas encore de compte? <button className='link' onClick={() => setIsRegisterOpen(true)}>S'inscrire</button>
         </div>
     </form>
     </ModalContainer>
