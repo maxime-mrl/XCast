@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faWarning, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faUser, faWarning, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import { useForecastStore } from "@store/useForecastStore";
 import { UnitsConfig, useUnitStore } from "@store/useUnitsStore";
@@ -8,6 +8,7 @@ import { StepSlider } from "@components";
 import './Settings.css';
 import ModalContainer from "src/components/modalContainer/ModalContainer";
 import { useState } from "react";
+import { useUserStore } from "@store/useUserStore";
 
 export default function Settings() {
   // get stored data
@@ -20,6 +21,10 @@ export default function Settings() {
   const sync = useAppStore.use.sync();
   const toggleSync = useAppStore.use.toggleSync();
   const unitsStore = useUnitStore();
+  const user = useUserStore.use.user();
+  const setRegisterOpen = useAppStore.use.setIsRegisterOpen();
+  const setLoginOpen = useAppStore.use.setIsLoginOpen();
+  const logout = useUserStore.use.logout();
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
@@ -129,6 +134,20 @@ export default function Settings() {
               <button className="btn" onClick={() => setConfirmModalOpen(false)}>Non</button>
             </div>
           </ModalContainer>
+        </article>
+        <article className="account text-center">
+          <h2 className="h3 title-divider"><FontAwesomeIcon icon={faUser} /> Compte</h2>
+          {user
+          ? <>
+            <p>Content de vous voir {user.username}</p>
+            <button className="btn margin-center" onClick={logout}>Se déconnecter</button>
+          </>
+          : <>
+            <p>Pas encore de compte?</p>
+            <button className="btn margin-center" onClick={() => setRegisterOpen(true)}>S'inscrire</button>
+            <button className="btn margin-center" onClick={() => setLoginOpen(true)}>Se connecter</button>
+          </>
+          }
         </article>
         <article className="about text-center">
           <a href="/about" target="_blank" className="link link-icon margin-center" rel="noreferrer">A propos de XCcast</a>

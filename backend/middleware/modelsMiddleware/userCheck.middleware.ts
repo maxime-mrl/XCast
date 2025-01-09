@@ -18,7 +18,7 @@ export const checkUser = async (user: Partial<User>) => {
     }
     /* ------------------------- check username validity ------------------------ */
     // when updating every data aren't required so check before its existence
-    if (user.username && !/^[-a-z0-9]+$/i.test(user.username)) throw { // don't check length because arleady handled by model - this way is easier to change
+    if (user.username && !/^[-_a-z0-9]+$/i.test(user.username)) throw { // don't check length because arleady handled by model - this way is easier to change
         message: `Merci d'entrer un nom d'utilisateur valide (lettres, chiffres et -).`,
         status: 400
     };
@@ -27,10 +27,11 @@ export const checkUser = async (user: Partial<User>) => {
         message: `Merci d'entrer un mail valide.`,
         status: 400
     };
+    return user as Partial<User>;
 };
 
-export const checkandParseSettings = (rawSettings: string) => {
-    const settings = JSON.parse(rawSettings);
+export const checkAndParseSettings = (settings: Partial<User["settings"]>) => {
+    // const settings = JSON.parse(rawSettings);
     /* ------------------------ check forecast settings ------------------------ */
     if (settings.forecastSettings) {
         const { model, selected, level, maxHeight, position } = settings.forecastSettings;
@@ -55,5 +56,10 @@ export const checkandParseSettings = (rawSettings: string) => {
             };
         });
     }
+    /* --------------------------- check sync settings -------------------------- */
+    if (settings.sync && typeof settings.sync !== "boolean") throw {
+        message: "données invalides.",
+        status: 400
+    };
     return settings as Partial<User["settings"]>;
 }

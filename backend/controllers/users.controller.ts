@@ -6,8 +6,8 @@ import { requestWithUser } from "@customTypes";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import usersModel, { User } from "@models/users.model";
-import { checkUser, checkandParseSettings } from "@middleware/modelsMiddleware/userCheck.middleware";
+import usersModel from "@models/users.model";
+import { checkUser, checkAndParseSettings } from "@middleware/modelsMiddleware/userCheck.middleware";
 
     // const userDefaultPreferences = {
     //     forecastSettings: {
@@ -21,7 +21,8 @@ import { checkUser, checkandParseSettings } from "@middleware/modelsMiddleware/u
     //         ["temperature", { selected: "celsius" }],
     //         ["wind", { selected: "kmh" }],
     //         ["pressure", { selected: "hpa" }]
-    //     ])
+    //     ]),
+    //     sync: true
     // };
 
 /* -------------------------------------------------------------------------- */
@@ -30,18 +31,19 @@ import { checkUser, checkandParseSettings } from "@middleware/modelsMiddleware/u
 export const registerUser = asyncHandler(async (req:Request, res:Response) => {
     /* ------------------------------ INPUTS CHECK ------------------------------ */
     const { username, mail, password, settings:rawSettings } = req.body;
+    console.log(req.body);
     // check everything is here and valid
     if (!username || !mail || !password || !rawSettings) throw {
         message: "Il manque au moins un champ",
         status: 400
     };
-    await checkUser({ mail, username, password });
+    const userInput = await checkUser({ mail, username, password });
     // transform received units object to Map
     // if (settings.units) settings.units = new Map(Object.entries(settings.units));
     // check settings validity
-    const settings = checkandParseSettings(rawSettings);
+    const settings = checkAndParseSettings(rawSettings);
     /* ------------------------------- CREATE USER ------------------------------ */
-    const user = await usersModel.create({ mail, username, password, settings });
+    const user = await usersModel.create({ ...userInput, settings });
     /* -------------------------------- RESPONSE -------------------------------- */
     if (user) res.status(201).json({
         _id: user._id,
@@ -59,7 +61,7 @@ export const loginUser = asyncHandler(async (req:Request, res:Response) => {
     const { mail, password } = req.body;
     // check everything is here
     if (!mail || !password) throw {
-        message: "At least one missing field",
+        message: "Il manque au moins un champ",
         status: 400
     };
     /* --------------------------- MAIL AND PASS CHECK -------------------------- */
@@ -70,7 +72,7 @@ export const loginUser = asyncHandler(async (req:Request, res:Response) => {
         token: generateToken(user._id)
     });
     else throw {
-        message: "Incorrect credentials",
+        message: "Identifiants incorrects",
         status: 200
     };
 });

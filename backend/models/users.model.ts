@@ -15,7 +15,8 @@ const userPreferencesSchema = new mongoose.Schema({
             selected: { type: String, required: true }
         }),
         default: new Map()
-    }
+    },
+    sync: { type: Boolean, default: false }
 });
 
 const userSchema = new mongoose.Schema({
@@ -50,14 +51,15 @@ export interface User extends Document {
     username: string,
     password: string,
     settings: {
-        forecastSettings: {
+        forecastSettings?: {
             model?: string,
             selected?: string,
             level?: number,
             maxHeight?: number,
             position?: Object | false
         },
-        units?: Map<string, { selected: string }>
+        units: Map<string, { selected: string }>,
+        sync: boolean
     }
 }
 
