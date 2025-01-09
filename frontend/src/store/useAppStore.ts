@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { createSelectors } from "./createSelector";
+import { createSelectors } from "@utils/createSelector";
 import { useEffect } from "react";
 import { useUserStore } from "./useUserStore";
+import customStorage from "@utils/storage";
 
 const mobileWidth = 750;
 const resizeThrottle = 300;
@@ -39,7 +40,7 @@ type AppStore = {
 
 export const useAppStore = createSelectors(create<AppStore>()(
     persist((set, get) => ({
-        isSettingsOpen: false,
+        isSettingsOpen: true,
         width: 0,
         height: 0,
         isMobile: true,
@@ -75,8 +76,10 @@ export const useAppStore = createSelectors(create<AppStore>()(
         partialize: (state) => ({
             // always only persisted (no need to sync since it's dependent on window size so device)
             forecastWidth: state.forecastWidth,
-            zoom: state.zoom
+            zoom: state.zoom,
+            sync: state.sync
         }),
+        storage: customStorage,
     })
 ));
 

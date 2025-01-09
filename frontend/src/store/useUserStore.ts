@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { createSelectors } from "./createSelector";
+import { createSelectors } from "@utils/createSelector";
 import RequestServices from "@utils/requestService";
 const userServices = new RequestServices("api/user");
 
@@ -62,9 +62,10 @@ export const useUserStore = createSelectors(create<UserStore>()(
         updatePreferences: (newPreferences) => {},
         getPreferences: async () => {},
     }), {
-        name: "userStore",
+        name: "user-store",
         partialize: (state) => ({
             user: state.user,
         }),
+
     })
 ));

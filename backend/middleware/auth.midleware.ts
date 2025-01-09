@@ -20,7 +20,7 @@ export const protect = asyncHandler(async (req: requestWithUser, _, next: NextFu
         const user = await userModel.findById(decoded.id).select("-password");
         if (!user) throw tokenError;
         // add user to request
-        req.user = user;
+        req.user = user.toObject() as requestWithUser["user"];
         next();
     } catch(err: any) {
         // if error try to parse it to the token Error

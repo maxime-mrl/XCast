@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import RequestServices from "@utils/requestService";
-import { createSelectors } from "./createSelector";
+import { createSelectors } from "@utils/createSelector";
 import { LatLng } from "leaflet";
 import { persist } from "zustand/middleware";
+import customStorage from "@utils/storage";
 const forecastService = new RequestServices("api/forecast");
 
 type forecastCapabilitiesData = {
@@ -177,10 +178,10 @@ export const useForecastStore = createSelectors(create<ForecastStore>()(
         partialize: (state) => ({
             userSettings: {
                 ...state.userSettings,
-                time: null, // don't sync the time ?
             },
             position: state.position
         }),
+        storage: customStorage,
     })
 ));
 

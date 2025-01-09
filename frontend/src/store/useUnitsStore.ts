@@ -1,7 +1,8 @@
 import { create } from "zustand";
-import { createSelectors } from "./createSelector";
+import { createSelectors } from "@utils/createSelector";
 import chroma from "chroma-js";
 import { persist } from "zustand/middleware";
+import customStorage from "@utils/storage";
 
 const colorScale = [
     "#F1F7F9", // 1 - white 
@@ -94,6 +95,7 @@ export const useUnitStore = createSelectors(create<UnitsStore>()(
             })
             return newState;
         },
+        storage: customStorage,
     })
 ));
 

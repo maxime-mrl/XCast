@@ -86,7 +86,13 @@ export const getUser = asyncHandler(async (req:requestWithUser, res:Response) =>
         _id: req.user?._id,
         mail: req.user?.mail,
         username: req.user?.username,
+        settings: req.user?.settings
     });
+});
+
+export const getUserSettings = asyncHandler(async (req:requestWithUser, res:Response) => {
+    /* -------------------------- RETURN USER SETTINGS -------------------------- */
+    res.status(200).json(req.user?.settings);
 });
 
 /* -------------------------------------------------------------------------- */
@@ -121,6 +127,26 @@ export const updateUser = asyncHandler(async (req:requestWithUser, res:Response)
         username: updatedUser.username,
         token: generateToken(updatedUser._id),
     });
+});
+
+export const updateUserSettings = asyncHandler(async (req:requestWithUser, res:Response) => {
+    /* ------------------------------ INPUTS CHECK ------------------------------ */
+    const rawSettings = req.body;
+    if (!rawSettings) {
+        res.status(200).json({ status: 400 });
+        return;
+    }
+    // check settings validity
+    const settings = checkAndParseSettings(rawSettings);
+    console.log({ settings: {...req.user?.settings, ...settings} })
+    console.log({
+        ...req.user?.settings, // make sure to properly merge settings
+        ...settings
+    });
+    /* ------------------------------- UPDATE DATA ------------------------------ */
+    const updatedUser = await usersModel.findByIdAndUpdate(req.user?._id, { settings: {...req.user?.settings, ...settings} });
+    if (!updatedUser) throw new Error("Erreur serveur, vos données n'ont pas été synchronisées.");
+    res.status(200).json({ status: 200 });
 });
 
 /* -------------------------------------------------------------------------- */

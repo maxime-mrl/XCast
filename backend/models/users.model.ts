@@ -8,16 +8,16 @@ const userPreferencesSchema = new mongoose.Schema({
         level: { type: Number },
         maxHeight: { type: Number },
         position: { type: (Object || false) }
-    }),
+    }, { _id: false }),
     units: {
         type: Map,
         of: new mongoose.Schema({
             selected: { type: String, required: true }
-        }),
+        }, { _id: false }),
         default: new Map()
     },
     sync: { type: Boolean, default: false }
-});
+}, { _id: false });
 
 const userSchema = new mongoose.Schema({
     mail: {
