@@ -3,7 +3,7 @@ import RequestServices from "@utils/requestService";
 import { createSelectors } from "@utils/createSelector";
 import { LatLng } from "leaflet";
 import { persist } from "zustand/middleware";
-import customStorage from "@utils/storage";
+import { customStorage } from "@utils/storage";
 const forecastService = new RequestServices("api/forecast");
 
 type forecastCapabilitiesData = {

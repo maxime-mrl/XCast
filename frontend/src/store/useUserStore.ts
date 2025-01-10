@@ -48,7 +48,6 @@ export const useUserStore = createSelectors(create<UserStore>()(
                 console.log(user);
                 set({ user, status: "success", message: `Content de vous revoir ${user.username}` });
             } catch (err) {
-                console.log(err);
                 set({
                     status: "error",
                     message: userServices.parseError(err)

@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import { createSelectors } from "@utils/createSelector";
 import { useEffect } from "react";
 import { useUserStore } from "./useUserStore";
-import customStorage from "@utils/storage";
+import { customStorage } from "@utils/storage";
 
 const mobileWidth = 750;
 const resizeThrottle = 300;

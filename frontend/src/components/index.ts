@@ -5,6 +5,7 @@ const Sounding = loadable(() => import('./sounding/Sounding'));
 const Meteogram = loadable(() => import('./meteogram/Meteogram'));
 const StepSlider = loadable(() => import('./StepSlider/StepSlider'));
 const Loader = loadable(() => import('./loader/Loader'));
+const Notifications = loadable(() => import('./notifications/Notifications'));
 const ModalContainer = loadable(() => import('./modalContainer/ModalContainer'));
 
 export {
@@ -14,5 +15,6 @@ export {
     Meteogram,
     StepSlider,
     Loader,
+    Notifications,
     ModalContainer
 }

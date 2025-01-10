@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { createSelectors } from "@utils/createSelector";
 import chroma from "chroma-js";
 import { persist } from "zustand/middleware";
-import customStorage from "@utils/storage";
+import { customStorage } from "@utils/storage";
 
 const colorScale = [
     "#F1F7F9", // 1 - white 
@@ -64,7 +64,7 @@ export const useUnitStore = createSelectors(create<UnitsStore>()(
             "°C": (base:number) => Math.round(base),
             "°F": (base:number) => Math.round(base * 1.8 + 32)
         }),
-        names
+        names,
     }), {
         name: "units-settings",
         partialize: (state) => {

@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import Loader from "./components/loader/Loader";
 import { useUserStore } from "@store/useUserStore";
 import { Login, Register } from "@containers";
+import { Notifications } from "@components";
 
 export default function App() {
   // initialize window size (and get the ismobile while here c:)
@@ -22,6 +23,7 @@ export default function App() {
   return (
     <div className={isMobile ? "mobile" : "desktop"}>
     <Loader />
+    <Notifications />
     {!user &&
     <>
       <Register />

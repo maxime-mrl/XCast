@@ -31,7 +31,6 @@ import { checkUser, checkAndParseSettings } from "@middleware/modelsMiddleware/u
 export const registerUser = asyncHandler(async (req:Request, res:Response) => {
     /* ------------------------------ INPUTS CHECK ------------------------------ */
     const { username, mail, password, settings:rawSettings } = req.body;
-    console.log(req.body);
     // check everything is here and valid
     if (!username || !mail || !password || !rawSettings) throw {
         message: "Il manque au moins un champ",
@@ -92,7 +91,10 @@ export const getUser = asyncHandler(async (req:requestWithUser, res:Response) =>
 
 export const getUserSettings = asyncHandler(async (req:requestWithUser, res:Response) => {
     /* -------------------------- RETURN USER SETTINGS -------------------------- */
-    res.status(200).json(req.user?.settings);
+    console.log(req.user?.settings)
+
+    const units = req.user?.settings?.units ? Object.fromEntries(req.user?.settings?.units.entries()) : {};
+    res.status(200).json({ ...req.user?.settings, units });
 });
 
 /* -------------------------------------------------------------------------- */
@@ -138,11 +140,6 @@ export const updateUserSettings = asyncHandler(async (req:requestWithUser, res:R
     }
     // check settings validity
     const settings = checkAndParseSettings(rawSettings);
-    console.log({ settings: {...req.user?.settings, ...settings} })
-    console.log({
-        ...req.user?.settings, // make sure to properly merge settings
-        ...settings
-    });
     /* ------------------------------- UPDATE DATA ------------------------------ */
     const updatedUser = await usersModel.findByIdAndUpdate(req.user?._id, { settings: {...req.user?.settings, ...settings} });
     if (!updatedUser) throw new Error("Erreur serveur, vos données n'ont pas été synchronisées.");
