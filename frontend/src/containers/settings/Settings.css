@@ -56,8 +56,8 @@
 }
 
 .settingsContainer .select-data.active {
-    cursor: pointer;
     font-weight: bold;
+    color: var(--accent);
 }
 
 .settingsContainer .select-data.active::before {

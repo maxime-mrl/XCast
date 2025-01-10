@@ -56,7 +56,7 @@ img {
  --text-40: #150f0866; /* ok */
  --text-80: #150f08cc; /* ok */
 
- --accent: #FFB60A;
+ --accent: #0946a2;
  --fail: #c64140; /* ok */
  --success: #217347;
 
@@ -161,6 +161,10 @@ html, body {
 
 .btn-danger {
   --btn-color: var(--fail);
+}
+
+.btn-accent {
+  --btn-color: var(--accent);
 }
 
 .burger-btn {

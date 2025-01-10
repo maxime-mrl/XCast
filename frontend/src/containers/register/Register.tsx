@@ -95,7 +95,7 @@ export default function Register() {
             valueState={confirm_password[0]}
             updateForm={handleUpdate}
         />
-        <button type="submit" className="btn">S'inscrire</button>
+        <button type="submit" className="btn btn-accent">S'inscrire</button>
         <div className="login-redirect">
           Déjà un compte? <button className='link' onClick={() => setIsLoginOpen(true)}>Se connecter</button>
         </div>

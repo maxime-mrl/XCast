@@ -17,6 +17,15 @@
     z-index: 10000;
 }
 
+.mobile .time-selector {
+    position: fixed;
+    height: 10vh;
+    border-right-style: none;
+    border-left-style: none;
+    border-radius: 0;
+    width: 100%;
+}
+
 .time-selector .selector {
     width: 13em;
     display: flex;

@@ -64,7 +64,7 @@ export default function Login() {
             valueState={password[0]}
             updateForm={handleUpdate}
         />
-        <button type="submit" className="btn">Se connecter</button>
+        <button type="submit" className="btn btn-accent">Se connecter</button>
         <div className="login-redirect">
           Pas encore de compte? <button className='link' onClick={() => setIsRegisterOpen(true)}>S'inscrire</button>
         </div>
