@@ -1,19 +1,7 @@
-import { useAppStore } from "@store/useAppStore";
 import { useUserStore } from "@store/useUserStore";
 import { PersistStorage } from "zustand/middleware";
 import RequestServices from "./requestService";
-
-type dbUserSettings = {
-    forecastSettings?: {
-        model?: string,
-        selected?: string,
-        level?: number,
-        maxHeight?: number,
-        position?: Object | false
-    },
-    units: Map<string, { selected: string }>,
-    sync: boolean
-}
+import { dbUserSettings } from "types/customTypes";
 
 type localStorage = {
     state: { [key:string]: any },
@@ -52,11 +40,10 @@ const dbHandler = new DbData();
 export const customStorage:PersistStorage<unknown> = {
     async getItem(name) {
         console.log(`Hydrating ${name}`);
-        const { state:{ user } } = JSON.parse(localStorage.getItem("user-store") || "") as localStorage;
-        const { state:settings } = JSON.parse(localStorage.getItem("app-settings") || "") as localStorage;
+        const { state:{ user, sync } } = JSON.parse(localStorage.getItem("user-store") || "") as localStorage;
         const localData = JSON.parse(localStorage.getItem(name) || 'null') as localStorage;
         // if no sync or user, use only localStorage, exept for app so we check if remote want to sync
-        if (!user || (!settings.sync && !/app/.test(name))) return localData;
+        if (!user || (!sync && !/app/.test(name))) return localData;
 
         // else merge db with localStorage
         const dbData = await dbHandler.get(user.token);
@@ -71,27 +58,38 @@ export const customStorage:PersistStorage<unknown> = {
                 userSettings: {  ...state.userSettings, ...otherDbSetting },
             };
         }
-        if (/app/.test(name)) state = { ...state, sync: dbData.sync }
         return {
             state,
             version
         };
     },
     async setItem(name, storageValue) {
-        // save to localStorage either ways
+        console.log("setting ", name);
+        const state = storageValue.state as localStorage["state"];
+        // check if we have null values
+        if (isObjectHasNull(state)) return;
+        // check if there is a change
+        const localData = JSON.parse(localStorage.getItem(name) || 'null') as localStorage;
+        if (JSON.stringify(localData) === JSON.stringify(storageValue)) return
+        // save to localStorage
         localStorage.setItem(name, JSON.stringify(storageValue));
-        const sync = useAppStore.getState().sync;
-        const user = useUserStore.getState().user;
+        const { user, sync } = useUserStore.getState();
         // save to db only if we want to (having sync and user)
         if (!user || (!sync && !/app/.test(name))) return;
         if (!storageValue.state) return;
-        const state = storageValue.state as localStorage["state"];
         // sabe to db the concerned data
         if (/units/.test(name)) await dbHandler.set({ units: state }, user.token);
         if (/forecast/.test(name)) await dbHandler.set({ forecastSettings: { position: state.position, ...state.userSettings } }, user.token);
-        if (/app/.test(name)) await dbHandler.set({ sync: state.sync }, user.token);
     },
     async removeItem(name) {
         localStorage.removeItem(name);
     }
+}
+
+function isObjectHasNull(obj:object):boolean {
+    return Object.values(obj).some(val => {
+        if (val === null || val === undefined) return true;
+        if (typeof val === "object") return isObjectHasNull(val);
+        return false;
+    });   
 }

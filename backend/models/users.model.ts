@@ -41,6 +41,7 @@ const userSchema = new mongoose.Schema({
         type: userPreferencesSchema,
         required: true,
     },
+    socketIds: [String],
 }, { timestamps: true });
 
 // customize error thrown by mongoose
@@ -60,7 +61,8 @@ export interface User extends Document {
         },
         units: Map<string, { selected: string }>,
         sync: boolean
-    }
+    },
+    socketIds: string[]
 }
 
 export default mongoose.model("Users", userSchema);

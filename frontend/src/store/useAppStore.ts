@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createSelectors } from "@utils/createSelector";
 import { useEffect } from "react";
-import { useUserStore } from "./useUserStore";
 import { customStorage } from "@utils/storage";
 
 const mobileWidth = 750;
@@ -12,12 +11,6 @@ type AppStore = {
     // settings panel
     isSettingsOpen: boolean,
     toggleSettings: () => void,
-
-    // acounts panel
-    isRegisterOpen: boolean,
-    isLoginOpen: boolean,
-    setIsRegisterOpen: (isOpen: boolean) => void,
-    setIsLoginOpen: (isOpen: boolean) => void,
 
     // handling window size and ismobile
     width: number,
@@ -29,9 +22,6 @@ type AppStore = {
     zoom: number,
     updateZoom: (zoom: number) => void,
 
-    // sync preferences
-    sync: boolean,
-    toggleSync: () => void,
 
     // handling of custom forecast width
     forecastWidth: number,
@@ -46,25 +36,6 @@ export const useAppStore = createSelectors(create<AppStore>()(
         isMobile: true,
         forecastWidth: 0.5,
         zoom: 7,
-        sync: false,
-        isRegisterOpen: false,
-        isLoginOpen: false,
-        
-        setIsRegisterOpen: (isOpen) => {
-            if (isOpen) get().setIsLoginOpen(false); // make sure both modals are not oppened at the same time
-            set({ isRegisterOpen: isOpen })
-        },
-        setIsLoginOpen: (isOpen) => {
-            if (isOpen) get().setIsRegisterOpen(false);
-            set({ isLoginOpen: isOpen })
-        },
-        toggleSync: () => {
-            // check if user is logged in (user store)
-            // if not logged in, open register panel
-            if (!useUserStore.getState().user) get().setIsRegisterOpen(true);
-            // else toggle sync
-            else set((prev) => ({ sync: !prev.sync }));
-        },
         updateZoom: (zoom) => set({ zoom }),
         toggleSettings: () => set((prev) => ({ isSettingsOpen: !prev.isSettingsOpen })),
         handleResize: throttle(() => {
@@ -83,7 +54,6 @@ export const useAppStore = createSelectors(create<AppStore>()(
             // always only persisted (no need to sync since it's dependent on window size so device)
             forecastWidth: state.forecastWidth,
             zoom: state.zoom,
-            sync: state.sync
         }),
         storage: customStorage,
     })

@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import ModalContainer from 'src/components/modalContainer/ModalContainer';
-import { useAppStore } from '@store/useAppStore';
 import updateForm from '@utils/updateForms';
 import TextInput from 'src/components/textInput/TextInput';
 import { useUserStore } from '@store/useUserStore';
 import './Register.css';
 
 export default function Register() {
-  const isOpen = useAppStore.use.isRegisterOpen();
-  const setIsOpen = useAppStore.use.setIsRegisterOpen();
-  const setIsLoginOpen = useAppStore.use.setIsLoginOpen();
-  const register = useUserStore.use.register();
+  const { isRegisterOpen:isOpen, setIsRegisterOpen:setIsOpen, setIsLoginOpen, register } = useUserStore();
 
   const [{ username, mail, password, confirm_password }, setFormData] = useState<{ [key: string]: [string, boolean]; }>({
     username: ["", false],

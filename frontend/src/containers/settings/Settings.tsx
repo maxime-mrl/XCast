@@ -9,22 +9,18 @@ import './Settings.css';
 import ModalContainer from "src/components/modalContainer/ModalContainer";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@store/useUserStore";
+import { mapDataTypes } from "types/customTypes";
 
 export default function Settings() {
   // get stored data
   const forecastCapabilities = useForecastStore.use.forecastCapabilities();
   const userSettings = useForecastStore.use.userSettings();
   const updateSettings = useForecastStore.use.updateSettings();
-  const unitsName = useUnitStore.use.names();
   const isOpen = useAppStore.use.isSettingsOpen();
   const toggleSettings = useAppStore.use.toggleSettings();
-  const sync = useAppStore.use.sync();
-  const toggleSync = useAppStore.use.toggleSync();
+  const { sync, toggleSync, user, setIsLoginOpen, setIsRegisterOpen, logout } = useUserStore();
   const unitsStore = useUnitStore();
-  const user = useUserStore.use.user();
-  const setRegisterOpen = useAppStore.use.setIsRegisterOpen();
-  const setLoginOpen = useAppStore.use.setIsLoginOpen();
-  const logout = useUserStore.use.logout();
+  const unitsName = unitsStore.names;
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   useEffect(() => {
@@ -160,8 +156,8 @@ export default function Settings() {
           </>
           : <>
             <p>Pas encore de compte?</p>
-            <button className="btn margin-center" onClick={() => setRegisterOpen(true)}>S'inscrire</button>
-            <button className="btn margin-center" onClick={() => setLoginOpen(true)}>Se connecter</button>
+            <button className="btn margin-center" onClick={() => setIsRegisterOpen(true)}>S'inscrire</button>
+            <button className="btn margin-center" onClick={() => setIsLoginOpen(true)}>Se connecter</button>
           </>
           }
         </article>

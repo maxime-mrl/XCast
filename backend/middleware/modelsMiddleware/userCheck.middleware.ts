@@ -30,7 +30,8 @@ export const checkUser = async (user: Partial<User>) => {
     return user as Partial<User>;
 };
 
-export const checkAndParseSettings = (settings: Partial<User["settings"]>) => {
+export const checkAndParseSettings = (rawSettings: Partial<User["settings"]>) => {
+    const settings = {...rawSettings}
     // const settings = JSON.parse(rawSettings);
     /* ------------------------ check forecast settings ------------------------ */
     if (settings.forecastSettings) {
@@ -56,10 +57,5 @@ export const checkAndParseSettings = (settings: Partial<User["settings"]>) => {
             };
         });
     }
-    /* --------------------------- check sync settings -------------------------- */
-    if (settings.sync && typeof settings.sync !== "boolean") throw {
-        message: "données invalides.",
-        status: 400
-    };
     return settings as Partial<User["settings"]>;
 }

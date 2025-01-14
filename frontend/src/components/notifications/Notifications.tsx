@@ -17,7 +17,6 @@ export default function Notifications() {
     let message = "";
     let status = "error";
 
-    console.log(userMessage)
     if (userMessage && userStatus) {
       message = userMessage;
       status = userStatus;

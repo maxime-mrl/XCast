@@ -11,13 +11,22 @@ type user = {
 };
 
 type UserStore = {
+    // user data
     user: user | null,
     register: (user: { mail: string, username:string, password:string }) => void,
     login: (user: { mail: string, password:string }) => void,
     logout: () => void,
     update: (user: string) => void,
-    updatePreferences: (newPreferences:any) => void,
-    getPreferences: () => Promise<void>,
+    // sync preferences
+    sync: boolean,
+    toggleSync: () => void,
+    
+    // acounts panel
+    isRegisterOpen: boolean,
+    isLoginOpen: boolean,
+    setIsRegisterOpen: (isOpen: boolean) => void,
+    setIsLoginOpen: (isOpen: boolean) => void,
+
     status: string,
     message: string | null
 };
@@ -27,6 +36,18 @@ export const useUserStore = createSelectors(create<UserStore>()(
         user: null,
         status: "",
         message: null,
+        sync: false,
+        isRegisterOpen: false,
+        isLoginOpen: false,
+        
+        setIsRegisterOpen: (isOpen) => {
+            if (isOpen) get().setIsLoginOpen(false); // make sure both modals are not oppened at the same time
+            set({ isRegisterOpen: isOpen })
+        },
+        setIsLoginOpen: (isOpen) => {
+            if (isOpen) get().setIsRegisterOpen(false);
+            set({ isLoginOpen: isOpen })
+        },
         register: async (newUser) => {
             set({ status: "loading" });
             const userToSave = { ...newUser, settings: { sync: false } };
@@ -42,7 +63,6 @@ export const useUserStore = createSelectors(create<UserStore>()(
         },
         login: async (loginUser) => {
             set({ status: "loading" });
-            console.log("login");
             try {
                 const user = await userServices.post<user>("/login", loginUser);
                 console.log(user);
@@ -58,13 +78,18 @@ export const useUserStore = createSelectors(create<UserStore>()(
             set({ user: null, status: "success", message: "A bientôt" });
         },
         update: async (user) => {},
-        updatePreferences: (newPreferences) => {},
-        getPreferences: async () => {},
+        toggleSync: () => {
+            // check if user is logged in (user store)
+            // if not logged in, open register panel
+            if (!get().user) get().setIsRegisterOpen(true);
+            // else toggle sync
+            else set((prev) => ({ sync: !prev.sync }));
+        },
     }), {
         name: "user-store",
         partialize: (state) => ({
             user: state.user,
+            sync: state.sync,
         }),
-
     })
 ));

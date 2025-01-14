@@ -4,6 +4,7 @@ import { createSelectors } from "@utils/createSelector";
 import { LatLng } from "leaflet";
 import { persist } from "zustand/middleware";
 import { customStorage } from "@utils/storage";
+import { mapDataTypes } from "types/customTypes";
 const forecastService = new RequestServices("api/forecast");
 
 type forecastCapabilitiesData = {
@@ -38,7 +39,7 @@ export type forecastData = {
     }[]
 };
 
-interface ForecastStore {
+export interface ForecastStore {
     // forecast capabilities (available models time and measurements)
     forecastCapabilities: null | {
         availableModels: string[],

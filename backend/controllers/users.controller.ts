@@ -6,25 +6,9 @@ import { requestWithUser } from "@customTypes";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import usersModel from "@models/users.model";
+import { io } from "@index";
+import usersModel, { User } from "@models/users.model";
 import { checkUser, checkAndParseSettings } from "@middleware/modelsMiddleware/userCheck.middleware";
-
-    // const userDefaultPreferences = {
-    //     forecastSettings: {
-    //         model: "gfs",
-    //         selected: "all",
-    //         level: 2000,
-    //         maxHeight: 500,
-    //         position: false
-    //     },
-    //     units: new Map([
-    //         ["temperature", { selected: "celsius" }],
-    //         ["wind", { selected: "kmh" }],
-    //         ["pressure", { selected: "hpa" }]
-    //     ]),
-    //     sync: true
-    // };
-
 /* -------------------------------------------------------------------------- */
 /*                             CREATE NEW ACCOUNT                             */
 /* -------------------------------------------------------------------------- */
@@ -91,9 +75,7 @@ export const getUser = asyncHandler(async (req:requestWithUser, res:Response) =>
 
 export const getUserSettings = asyncHandler(async (req:requestWithUser, res:Response) => {
     /* -------------------------- RETURN USER SETTINGS -------------------------- */
-    console.log(req.user?.settings)
-
-    const units = req.user?.settings?.units ? Object.fromEntries(req.user?.settings?.units.entries()) : {};
+    const units = req.user?.settings?.units ? parseUnits(req.user.settings.units) : {};
     res.status(200).json({ ...req.user?.settings, units });
 });
 
@@ -144,6 +126,18 @@ export const updateUserSettings = asyncHandler(async (req:requestWithUser, res:R
     const updatedUser = await usersModel.findByIdAndUpdate(req.user?._id, { settings: {...req.user?.settings, ...settings} });
     if (!updatedUser) throw new Error("Erreur serveur, vos données n'ont pas été synchronisées.");
     res.status(200).json({ status: 200 });
+    /* -------------------------- EMIT SOCKET.IO EVENTS ------------------------- */
+    // check if socketId is valid
+    if (updatedUser.socketIds.length === 0) return;
+    updatedUser.socketIds.forEach(async socketId => {
+        // check socketId is valid and if not remove it from user
+        if (!io.sockets.sockets.has(socketId)) {
+            await usersModel.updateOne({ _id: updatedUser._id }, { $pull: { socketIds: socketId } });
+        } else {
+            // send updated settings to user
+            io.to(socketId).emit("sync", rawSettings);
+        }
+    });
 });
 
 /* -------------------------------------------------------------------------- */
@@ -171,3 +165,9 @@ export const deleteUser = asyncHandler(async (req:requestWithUser, res:Response)
 
 // generate token
 const generateToken = (id:Types.ObjectId) => jwt.sign({id}, process.env.JWT_SECRET || "", { expiresIn: "30d" });
+const parseUnits = (units:User["settings"]["units"]) => {
+    // console.log(units);
+    const parsed = Object.fromEntries(units.entries());
+    // console.log(parsed);
+    return parsed;
+};

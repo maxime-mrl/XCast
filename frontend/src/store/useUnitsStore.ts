@@ -3,6 +3,7 @@ import { createSelectors } from "@utils/createSelector";
 import chroma from "chroma-js";
 import { persist } from "zustand/middleware";
 import { customStorage } from "@utils/storage";
+import { mapDataTypes } from "types/customTypes";
 
 const colorScale = [
     "#F1F7F9", // 1 - white 
@@ -80,24 +81,42 @@ export const useUnitStore = createSelectors(create<UnitsStore>()(
         merge: (persistedState, defaultState:UnitsStore) => {
             if (!persistedState || typeof persistedState !== "object") return defaultState;
             const state = persistedState as Partial<UnitsStore>;
-            const newState = {...defaultState};
+            return mergeUnits({...defaultState}, state);
             // Ensure missing sub-objects are restored from defaults
-            const keys = Object.keys(defaultState) as (keyof typeof defaultState)[];
-            keys.forEach((key) => {
-                if (key === "names") return; // names are not synced
-                // if is an object, make a deep merge
-                if (typeof newState[key] === "object" && key in state && typeof state[key] === "object") {
-                    newState[key] = {
-                        ...newState[key],
-                        ...state[key]
-                    }
-                }
-            })
-            return newState;
+            // const keys = Object.keys(defaultState) as (keyof typeof defaultState)[];
+            // keys.forEach((key) => {
+            //     if (key === "names") return; // names are not synced
+            //     // if is an object, make a deep merge
+            //     if (typeof newState[key] === "object" && key in state && typeof state[key] === "object") {
+            //         newState[key] = {
+            //             ...newState[key],
+            //             ...state[key]
+            //         }
+            //     }
+            // })
+            // return newState;
         },
         storage: customStorage,
     })
 ));
+
+export function mergeUnits(prev:UnitsStore, data?:Partial<UnitsStore>) {
+    if (!data) return prev;
+    const newState = {...prev};
+    // Ensure missing sub-objects are restored from defaults
+    const keys = Object.keys(prev) as (keyof typeof prev)[];
+    keys.forEach((key) => {
+        if (key === "names") return; // names are not synced
+        // if is an object, make a deep merge
+        if (typeof newState[key] === "object" && key in data && typeof data[key] === "object") {
+            newState[key] = {
+                ...newState[key],
+                ...data[key]
+            }
+        }
+    })
+    return newState;
+}
 
 
 // Reusable function to create unit
