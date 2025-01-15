@@ -57,7 +57,7 @@ export default class Canvas {
         this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
         // listen for resize
-        this.resizeObserver = new ResizeObserver(throttle(this.resize, 1000));
+        this.resizeObserver = new ResizeObserver(throttle(this.resize, 100));
         this.resizeObserver.observe(this.canvas)
         this.resizeObserver.observe(this.container)
 
