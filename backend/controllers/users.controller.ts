@@ -6,8 +6,8 @@ import { requestWithUser } from "@customTypes";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { io } from "@index";
-import usersModel, { User } from "@models/users.model";
+import { io } from "@/";
+import usersModel from "@models/users.model";
 import { checkUser, checkAndParseSettings } from "@middleware/modelsMiddleware/userCheck.middleware";
 /* -------------------------------------------------------------------------- */
 /*                             CREATE NEW ACCOUNT                             */
@@ -21,8 +21,6 @@ export const registerUser = asyncHandler(async (req:Request, res:Response) => {
         status: 400
     };
     const userInput = await checkUser({ mail, username, password });
-    // transform received units object to Map
-    // if (settings.units) settings.units = new Map(Object.entries(settings.units));
     // check settings validity
     const settings = checkAndParseSettings(rawSettings);
     /* ------------------------------- CREATE USER ------------------------------ */
@@ -75,7 +73,7 @@ export const getUser = asyncHandler(async (req:requestWithUser, res:Response) =>
 
 export const getUserSettings = asyncHandler(async (req:requestWithUser, res:Response) => {
     /* -------------------------- RETURN USER SETTINGS -------------------------- */
-    const units = req.user?.settings?.units ? parseUnits(req.user.settings.units) : {};
+    const units = req.user?.settings?.units ? Object.fromEntries(req.user.settings.units.entries()) : {};
     res.status(200).json({ ...req.user?.settings, units });
 });
 
@@ -127,16 +125,13 @@ export const updateUserSettings = asyncHandler(async (req:requestWithUser, res:R
     if (!updatedUser) throw new Error("Erreur serveur, vos données n'ont pas été synchronisées.");
     res.status(200).json({ status: 200 });
     /* -------------------------- EMIT SOCKET.IO EVENTS ------------------------- */
-    // check if socketId is valid
+    // check if we have some socketIds
     if (updatedUser.socketIds.length === 0) return;
     updatedUser.socketIds.forEach(async socketId => {
         // check socketId is valid and if not remove it from user
-        if (!io.sockets.sockets.has(socketId)) {
-            await usersModel.updateOne({ _id: updatedUser._id }, { $pull: { socketIds: socketId } });
-        } else {
-            // send updated settings to user
-            io.to(socketId).emit("sync", rawSettings);
-        }
+        if (!io.sockets.sockets.has(socketId)) await usersModel.updateOne({ _id: updatedUser._id }, { $pull: { socketIds: socketId } });
+        // if valid, send updated settings to user
+        else io.to(socketId).emit("sync", rawSettings);
     });
 });
 
@@ -164,10 +159,4 @@ export const deleteUser = asyncHandler(async (req:requestWithUser, res:Response)
 });
 
 // generate token
-const generateToken = (id:Types.ObjectId) => jwt.sign({id}, process.env.JWT_SECRET || "", { expiresIn: "30d" });
-const parseUnits = (units:User["settings"]["units"]) => {
-    // console.log(units);
-    const parsed = Object.fromEntries(units.entries());
-    // console.log(parsed);
-    return parsed;
-};
+const generateToken = (id: Types.ObjectId) => jwt.sign({id}, process.env.JWT_SECRET || "", { expiresIn: "30d" });

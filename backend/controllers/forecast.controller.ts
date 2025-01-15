@@ -10,7 +10,11 @@ const dataOrder = [
     "rain",
     "hum",
     "th",
-]
+];
+
+// for now I don't have real datas, so i'm using fake data
+// this backend is just made to be able to test the frontend and will need to be modified for when we have real data
+// getCapabilities should be mostly fine, getForecast will need alot of changes
 
 /* -------------------------------------------------------------------------- */
 /*                       GET AVAILABLE MODELS AND HOURS                       */
@@ -71,31 +75,7 @@ export function getForecast(req:Request, res:Response) { // req.quey = { lat: nu
     const { model, time } = req.query;
     console.log({lat, lng, model, time}) // should be used to get the correct forecast but for now it'll be soontm
     // get the forecast
-    const selectedForecast = JSON.parse(fs.readFileSync(path.join(rootPath, "public", "data", "arome_fake_data.json")).toString())
-    // const data = JSON.parse(fs.readFileSync(path.join(rootPath, "public", "data", "arome__0025__IP1__19H24H__2024-11-12T03_00_00Z.split150.json")).toString());
-    // const selectedForecast: {
-    //     [key:string]:any
-    // }[] = [];
-    // data.forecast.forEach((time:{[key:string]:any}) => {
-    //     // console.log(time.forecastTime)
-    //     const forecast:{ [key:string]:any } = {};
-    //     const z = time.data.z.values
-    //     // console.log(z)
-    //     for (const [ level ] of Object.entries(z)) { // select point 0 should add logic to get the real GPS point later
-    //         const mlvl = Math.trunc(z[level][0]) / 10; // convert hPa lvl to meter
-    //         for (const [ key ] of Object.entries(time.data)) {
-    //             if (key !== "z") {
-    //                 if (!forecast[key])forecast[key] = {};
-    //                 forecast[key][mlvl] = time.data[key].values[level][0];
-    //             }
-    //         }
-    //     }
-    //     selectedForecast.push({
-    //         forecastTime: time.forecastTime,
-    //         forecast
-    //     })
-    // });
-    // console.log("selectedForecast")
+    const selectedForecast = JSON.parse(fs.readFileSync(path.join(rootPath, "public", "data", "arome_fake_data.json")).toString());
     
     res.status(200).json(selectedForecast);
 }

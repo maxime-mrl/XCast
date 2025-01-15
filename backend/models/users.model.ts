@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
         type: userPreferencesSchema,
         required: true,
     },
-    socketIds: [String],
+    socketIds: [ String ],
 }, { timestamps: true });
 
 // customize error thrown by mongoose

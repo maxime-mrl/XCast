@@ -1,5 +1,4 @@
-import dotenv from 'dotenv'; 
-dotenv.config();
+import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import { Server } from 'socket.io';
@@ -9,34 +8,28 @@ import router from "@routes";
 import errorsMiddleware from '@middleware/errors.middleware';
 import usersModel from '@models/users.model';
 
+const corsOptions = {
+    credentials: true,
+    origin: '*'
+};
+
 const port = process.env.PORT;
 const app = express();
 const server = createServer(app);
-export const io = new Server(server, {
-    cors: {
-        credentials: true,
-        origin: '*'
-    }
-});
 
+// socket.io config
+export const io = new Server(server, { cors: corsOptions });
 io.on('connection', (socket) => {
-    socket.on("register", async (user) => {
-        console.log('New user');
-        await usersModel.updateOne({ _id: user._id }, { $addToSet: { socketIds: socket.id } });
-    });
-    socket.on("disconnect", async () => {
-        console.log('User left');
-        await usersModel.updateOne({ socketIds: socket.id }, { $pull: { socketIds: socket.id } });
-    });
+    // add user socket id to db
+    socket.on("register", async (user) => await usersModel.updateOne({ _id: user._id }, { $addToSet: { socketIds: socket.id } }));
+    // remove user socket id from db when disconnected
+    socket.on("disconnect", async () => await usersModel.updateOne({ socketIds: socket.id }, { $pull: { socketIds: socket.id } }));
 });
 
 // express config
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors({
-    credentials: true,
-    origin: '*'
-}));
+app.use(cors(corsOptions));
 app.use("/", router);
 // handle errors
 app.use(errorsMiddleware);
