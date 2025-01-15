@@ -29,12 +29,10 @@ export function getCapabilities(_req:Request, res:Response) {
         // get dataset (assume dataset is the same for each hours as it should) and sort it based on predefined order
         const datasets = fs.readdirSync(path.join(rootPath, "public", "map", model, availableTimes[0])).sort((a,b) => dataOrder.indexOf(a) - dataOrder.indexOf(b));
         // get levels and file name for each dataset
-        const parsedDataset: {
-            [key: string]: {
-                names: string[],
-                levels: number[]
-            }
-        } = {};
+        const parsedDataset: Record<string, {
+            names: string[],
+            levels: number[]
+        }> = {};
         datasets.forEach(dataset => {
             const files = fs.readdirSync(path.join(rootPath, "public", "map", model, availableTimes[0], String(dataset))); // get all geotif
             const levels: number[] = []

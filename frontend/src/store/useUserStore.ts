@@ -13,15 +13,18 @@ type user = {
 type UserStore = {
     // user data
     user: user | null,
+
+    // user actions
     register: (user: { mail: string, username:string, password:string }) => void,
     login: (user: { mail: string, password:string }) => void,
     logout: () => void,
     update: (user: string) => void,
+    
     // sync preferences
     sync: boolean,
     toggleSync: () => void,
     
-    // acounts panel
+    // acount panel
     isRegisterOpen: boolean,
     isLoginOpen: boolean,
     setIsRegisterOpen: (isOpen: boolean) => void,
@@ -42,11 +45,11 @@ export const useUserStore = createSelectors(create<UserStore>()(
         
         setIsRegisterOpen: (isOpen) => {
             if (isOpen) get().setIsLoginOpen(false); // make sure both modals are not oppened at the same time
-            set({ isRegisterOpen: isOpen })
+            set({ isRegisterOpen: isOpen });
         },
         setIsLoginOpen: (isOpen) => {
-            if (isOpen) get().setIsRegisterOpen(false);
-            set({ isLoginOpen: isOpen })
+            if (isOpen) get().setIsRegisterOpen(false); // make sure both modals are not oppened at the same time
+            set({ isLoginOpen: isOpen });
         },
         register: async (newUser) => {
             set({ status: "loading" });
@@ -65,7 +68,6 @@ export const useUserStore = createSelectors(create<UserStore>()(
             set({ status: "loading" });
             try {
                 const user = await userServices.post<user>("/login", loginUser);
-                console.log(user);
                 set({ user, status: "success", message: `Content de vous revoir ${user.username}` });
             } catch (err) {
                 set({

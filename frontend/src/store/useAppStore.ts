@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createSelectors } from "@utils/createSelector";
 import { useEffect } from "react";
-import { customStorage } from "@utils/storage";
+import throttle from "@utils/throttle";
 
 const mobileWidth = 750;
 const resizeThrottle = 300;
@@ -22,7 +22,6 @@ type AppStore = {
     zoom: number,
     updateZoom: (zoom: number) => void,
 
-
     // handling of custom forecast width
     forecastWidth: number,
     updateForecastWidth: (event: MouseEvent) => void
@@ -38,6 +37,7 @@ export const useAppStore = createSelectors(create<AppStore>()(
         zoom: 7,
         updateZoom: (zoom) => set({ zoom }),
         toggleSettings: () => set((prev) => ({ isSettingsOpen: !prev.isSettingsOpen })),
+        updateForecastWidth: (e) => set({ forecastWidth: e.clientX / get().width }),
         handleResize: throttle(() => {
             set(() => ({
                 width: window.innerWidth,
@@ -45,32 +45,15 @@ export const useAppStore = createSelectors(create<AppStore>()(
                 isMobile: window.innerWidth < mobileWidth
             }));
         }, resizeThrottle),
-        updateForecastWidth: (e) => {
-            set({ forecastWidth: e.clientX / get().width });
-        }
     }), {
         name: "app-settings",
         partialize: (state) => ({
-            // always only persisted (no need to sync since it's dependent on window size so device)
+            // app is only local (sync between devices would be weird since it's dependant of screen size)
             forecastWidth: state.forecastWidth,
             zoom: state.zoom,
         }),
-        storage: customStorage,
     })
 ));
-
-// throttle to a certain timeoiut any function
-function throttle(fn: () => void, time: number) {
-    let timeout: null | NodeJS.Timeout = null;
-    return () => {
-        if (timeout) return;
-        const later = () => {
-            fn();
-            timeout = null;
-        }
-        timeout = setTimeout(later, time);
-    }
-}
 
 // Initialize the resize listener
 export function useWindowSizeInitializer() {

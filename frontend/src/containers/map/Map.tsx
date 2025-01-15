@@ -23,7 +23,7 @@ export default function Map() {
 
   useEffect(() => {
     // check that zustand is well initialized
-    const dataset = mapCapabilities?.data[userSettings.model].dataset[userSettings.selected].names;
+    const dataset = userSettings.selected ? mapCapabilities?.data[userSettings.model].dataset[userSettings.selected].names : null;
     if (!userSettings.time || userSettings.model === "" || userSettings.selected === "" || !dataset) return;
     // make sur wind direction is at the ends (so it's rendered last)
     const dirIndex = dataset.findIndex(file => /dir/.test(file));

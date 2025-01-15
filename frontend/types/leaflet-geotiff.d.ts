@@ -1,5 +1,6 @@
 import "leaflet";
 
+// leaflet-geotiff don't have any types declaration, didin't feel like making a full one, so i just added the methods i more or less needed
 declare module "leaflet" {
   class LeafletGeotiff extends Layer {
     constructor(url: string, options?: LeafletGeotiffOptions);
@@ -43,12 +44,14 @@ declare module "leaflet" {
 
     colorScale?: string;
   }
-
+  
   interface LeafletGeotiffRendererOptions {
     displayMin?: number;
     displayMax?: number;
     colorScale?: string;
     noDataValue?: number;
+
+    [key: string]: any; // allow custom renderers to receive any other options
   }
 
   interface PlottyOptions {

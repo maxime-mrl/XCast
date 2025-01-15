@@ -51,7 +51,7 @@ export default function Settings() {
     ? (Object.keys(forecastCapabilities.data[userSettings.model].dataset) as mapDataTypes[])
     : [];
   // get available levels for selected data
-  const levels = forecastCapabilities?.data[userSettings.model].dataset[userSettings.selected].levels || [];
+  const levels = userSettings.selected ? forecastCapabilities?.data[userSettings.model].dataset[userSettings.selected].levels || [] : [];
 
   function resetSettings() {
     localStorage.clear();

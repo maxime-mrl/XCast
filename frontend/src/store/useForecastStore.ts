@@ -7,17 +7,13 @@ import { customStorage } from "@utils/storage";
 import { mapDataTypes } from "types/customTypes";
 const forecastService = new RequestServices("api/forecast");
 
-type forecastCapabilitiesData = {
-    [key: string]: { // models
-        availableTimes: string[], // array of iso dates
-        dataset: {
-            [key: string]: { // measurements available
-                names: string[], // geotiff name(s) (for wind to geotifs so [ wspd, wdir ])
-                levels: number[] // available altitude
-            }
-        }
-    }
-};
+type forecastCapabilitiesData = Record<string, { // models
+    availableTimes: string[], // array of iso dates
+    dataset: Record<mapDataTypes, { // measurements available
+        names: string[], // geotiff name(s) (for wind to geotifs so [ wspd, wdir ])
+        levels: number[] // available altitude
+    }>
+}>;
 
 export type forecastData = {
     level: number, // actual model elevation
@@ -185,5 +181,3 @@ export const useForecastStore = createSelectors(create<ForecastStore>()(
         storage: customStorage,
     })
 ));
-
-

@@ -1,4 +1,5 @@
 import { Color, Scale } from "chroma-js";
+import throttle from "./throttle";
 
 export type chart = {
     min: number,
@@ -56,7 +57,7 @@ export default class Canvas {
         this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
         // listen for resize
-        this.resizeObserver = new ResizeObserver(this.throttle(this.resize, 100));
+        this.resizeObserver = new ResizeObserver(throttle(this.resize, 1000));
         this.resizeObserver.observe(this.canvas)
         this.resizeObserver.observe(this.container)
 
@@ -67,19 +68,6 @@ export default class Canvas {
 
 
     /* --------------- handle resizing of canvas to fill container -------------- */
-    // throttle function adapted from hackernoon.com/optimizing-performance-with-throttling-in-javascript
-    private throttle = (fn: () => void, time: number) => {
-        let timeout: null | NodeJS.Timeout = null;
-        return () => {
-            if (timeout) return;
-            const later = () => {
-                fn();
-                timeout = null;
-            }
-            timeout = setTimeout(later, time);
-        }
-    }
-
     private resize = () => {
         this.size = {
             width: Math.max(this.container.clientWidth, this.xChart.minWidth || 0), // allow scroll if not enough space

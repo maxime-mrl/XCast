@@ -1,5 +1,5 @@
 
-export default function updateForm(e: React.ChangeEvent<HTMLInputElement>, setFormData: React.Dispatch<React.SetStateAction<{ [key: string]: [string, boolean]; }>>) {
+export default function updateForm(e: React.ChangeEvent<HTMLInputElement>, setFormData: React.Dispatch<React.SetStateAction<Record<string, [string, boolean]>>>) {
     let isValidated = false;
     const value = e.target.value;
     const validateQuery = e.target.getAttribute("data-validate");

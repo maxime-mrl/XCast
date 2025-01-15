@@ -1,12 +1,12 @@
+import { dbUserSettings } from "types/customTypes";
 import { useUserStore } from "@store/useUserStore";
 import { PersistStorage } from "zustand/middleware";
 import RequestServices from "./requestService";
-import { dbUserSettings } from "types/customTypes";
 
 type localStorage = {
-    state: { [key:string]: any },
+    state: Record<string, any>,
     version?: number
-}
+};
 
 class DbData {
     private service: RequestServices;
@@ -22,7 +22,7 @@ class DbData {
     }
     
     async get(token: string) {
-        // either no cach or cach expired
+        // either no cache or cache expired
         if (!this.cache || !this.cacheTime || this.cacheTime < Date.now() - this.cacheTimeout) {
             this.cacheTime = Date.now();
             this.cache = this.service.get<dbUserSettings>("", undefined, token);
@@ -33,16 +33,16 @@ class DbData {
     async set(data:object, token:string) {
         await this.service.put("", data, token);
     }
-}
+};
 
 const dbHandler = new DbData();
 
 export const customStorage:PersistStorage<unknown> = {
     async getItem(name) {
-        console.log(`Hydrating ${name}`);
-        const { state:{ user, sync } } = JSON.parse(localStorage.getItem("user-store") || "") as localStorage;
-        const localData = JSON.parse(localStorage.getItem(name) || 'null') as localStorage;
-        // if no sync or user, use only localStorage, exept for app so we check if remote want to sync
+        // get stored data
+        const { state:{ user, sync } } = JSON.parse(localStorage.getItem("user-store") || "") as localStorage; // sync settings
+        const localData = JSON.parse(localStorage.getItem(name) || "") as localStorage; // actual data
+        // if no sync or user, use only localStorage
         if (!user || (!sync && !/app/.test(name))) return localData;
 
         // else merge db with localStorage
@@ -64,7 +64,6 @@ export const customStorage:PersistStorage<unknown> = {
         };
     },
     async setItem(name, storageValue) {
-        console.log("setting ", name);
         const state = storageValue.state as localStorage["state"];
         // check if we have null values
         if (isObjectHasNull(state)) return;
@@ -77,15 +76,16 @@ export const customStorage:PersistStorage<unknown> = {
         // save to db only if we want to (having sync and user)
         if (!user || (!sync && !/app/.test(name))) return;
         if (!storageValue.state) return;
-        // sabe to db the concerned data
+        // save to db the concerned data
         if (/units/.test(name)) await dbHandler.set({ units: state }, user.token);
         if (/forecast/.test(name)) await dbHandler.set({ forecastSettings: { position: state.position, ...state.userSettings } }, user.token);
     },
-    async removeItem(name) {
+    async removeItem(name) { // not sure if when it's used but at least it's here
         localStorage.removeItem(name);
     }
 }
 
+// check if object has null values inside (support nested objects)
 function isObjectHasNull(obj:object):boolean {
     return Object.values(obj).some(val => {
         if (val === null || val === undefined) return true;

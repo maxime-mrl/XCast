@@ -7,17 +7,20 @@ import { mergeUnits, useUnitStore } from "@store/useUnitsStore";
 const socket = io(process.env.REACT_APP_API_URL);
 let socketRegistered = false;
 
+// connect user to backend
 export function registerSocket(userState?: object) {
     const { user } = useUserStore.getState() || userState;
-    console.log("registering socket for", user);
     if (!socketRegistered && user) {
         socket.emit("register", user);
         socketRegistered = true;
     }
 }
 
+// reset socket if disconnected
+socket.on("disconnect", () => socketRegistered = false);
+
+// listen for sync from backend
 socket.on('sync', (data:Partial<dbUserSettings>) => {
-    console.log(data);
     if (data.forecastSettings) {
         const { position, ...syncSettings } = data.forecastSettings || { position: undefined, otherDbSetting: { } };
         useForecastStore.setState((prev) => ({
@@ -25,8 +28,5 @@ socket.on('sync', (data:Partial<dbUserSettings>) => {
             userSettings: { ...prev.userSettings, ...syncSettings }
         }));
     }
-    if (data.units) {
-        console.log(useUnitStore.getState());
-        useUnitStore.setState((prev) => mergeUnits(prev, data.units));
-    }
+    if (data.units) useUnitStore.setState((prev) => mergeUnits(prev, data.units));
 });

@@ -35,7 +35,7 @@ const Renderer = L.LeafletGeotiffRenderer.extend({
   
         const imageData = this.parent.transform(rasterImageData, args);
         ctx.putImageData(imageData, args.xStart, args.yStart); // add image
-      }
-}) as any; // can't figure out a type that work so it's any yay
+          }
+    }) as typeof L.LeafletGeotiffRenderer;
 
 export default Renderer;
