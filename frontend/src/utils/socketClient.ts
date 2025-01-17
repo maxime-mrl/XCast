@@ -4,7 +4,8 @@ import { useForecastStore } from "@store/useForecastStore";
 import { dbUserSettings } from "types/customTypes";
 import { mergeUnits, useUnitStore } from "@store/useUnitsStore";
 
-const socket = io(process.env.REACT_APP_API_URL);
+// const socket = io(process.env.REACT_APP_API_URL);
+const socket = io(`http://${window.location.hostname}`); // for local dev
 let socketRegistered = false;
 
 // connect user to backend

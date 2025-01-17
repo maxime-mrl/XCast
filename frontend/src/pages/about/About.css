@@ -59,3 +59,11 @@ footer {
     display: block;
     margin: 0 auto;
 }
+
+.legal p {
+    margin: 0.5em 0;
+}
+
+.legal ul {
+    list-style: inside circle;
+}

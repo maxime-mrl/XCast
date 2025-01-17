@@ -1,8 +1,8 @@
-# XCcast - paragliding weather app 🌤️
+# XCast - paragliding weather app 🌤️
 
 ## What is it?
 
-XCcast is a weather app that aims to allow detailed multi-model weather comparison for thermals, and altitude winds.
+XCast is a weather app that aims to allow detailed multi-model weather comparison for thermals, and altitude winds.
 
 ## Why?
 
@@ -14,7 +14,7 @@ Currently the big weather sources for paragliding (at least in Europe) are the e
 
 ## Table of Contents
 
-- [XCcast - paragliding weather app 🌤️](#xccast---paragliding-weather-app-️)
+- [XCast - paragliding weather app 🌤️](#xcast---paragliding-weather-app-️)
   - [What is it?](#what-is-it)
   - [Why?](#why)
   - [Table of Contents](#table-of-contents)
@@ -25,7 +25,7 @@ Currently the big weather sources for paragliding (at least in Europe) are the e
 
 ## technologies
 
-XCcast is made with MERN stack and also uses:
+XCast is made with MERN stack and also uses:
 - Socket.io for real-time communication ⚡
 - Leaflet and leaflet-geotiff to display wonderful maps 🗺️
 - zustand for state management 🧠

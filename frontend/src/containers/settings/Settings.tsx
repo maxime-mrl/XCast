@@ -67,7 +67,7 @@ export default function Settings() {
       </button>
       <section className={`settingsContainer${isOpen ? " active" : ""}`}>
         <h1 className="settings-title h2 bold">
-          <img src="/images/logo-512.png" alt="Logo XCCast" className="text-img" />
+          <img src="/images/logo-512.png" alt="Logo XCast" className="text-img" />
           XCast
         </h1>
         <article className="datas">
@@ -162,7 +162,7 @@ export default function Settings() {
           }
         </article>
         <article className="about text-center">
-          <a href="/about" target="_blank" className="link link-icon margin-center" rel="noreferrer">A propos de XCcast</a>
+          <a href="/about" target="_blank" className="link link-icon margin-center" rel="noreferrer">A propos de XCast</a>
         </article>
       </section>
     </>

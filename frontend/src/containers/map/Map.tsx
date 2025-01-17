@@ -33,7 +33,8 @@ export default function Map() {
     }
     
     // Construct base URL
-    const newBaseUrl = `${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/${userSettings.selected}`;
+    // const newBaseUrl = `http://${process.env.REACT_APP_API_URL}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/${userSettings.selected}`;
+    const newBaseUrl = `http://${window.location.hostname}/map/${userSettings.model}/${userSettings.time.replace(":", "_")}/${userSettings.selected}`; // for local dev
     // set state if there're updated
     setBaseUrl(prev => (prev !== newBaseUrl ? newBaseUrl : prev));
     setGeotiffs((prev) => (JSON.stringify(prev) !== JSON.stringify(dataset) ? dataset : prev));
