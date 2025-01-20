@@ -6,19 +6,16 @@ import { mergeUnits, useUnitStore } from "@store/useUnitsStore";
 
 // const socket = io(process.env.REACT_APP_API_URL);
 const socket = io(`http://${window.location.hostname}`); // for local dev
-let socketRegistered = false;
+
+// removed check if arleady connected: doesn't cause any problem to send multiple register
+// and so we make sure that the user is connected
+// also we don't need to reset the isConnect state on disconnect
 
 // connect user to backend
 export function registerSocket(userState?: object) {
     const { user } = useUserStore.getState() || userState;
-    if (!socketRegistered && user) {
-        socket.emit("register", user);
-        socketRegistered = true;
-    }
+    socket.emit("register", user);
 }
-
-// reset socket if disconnected
-socket.on("disconnect", () => socketRegistered = false);
 
 // listen for sync from backend
 socket.on('sync', (data:Partial<dbUserSettings>) => {

@@ -20,10 +20,7 @@ export default function Forecast() {
   const forecastWidth = useAppStore.use.forecastWidth();
 
   // refs for events listeners
-  const handleMouseDown = useRef<null | (() => void)>();
-  const handleMouseUp = useRef<null | (() => void)>();
-  const handleMouseMove = useRef<null | ((e:MouseEvent) => void)>();
-  const resizerRef = useRef<null | HTMLElement>();
+  const controllerRef = useRef<AbortController|null>(null);
 
   // update forecast when position changes
   useEffect(() => {
@@ -33,30 +30,24 @@ export default function Forecast() {
 
   // as far as i can tell one of the only way to properly do this is with a callbackref
   // + it works (yay)
-  // - cleanup is teadious as you will see
+  // - cleanup is teadious as you will see -- fixed with abortcontroller -> see youtube.com/watch?v=2sdXSczmvNc
   // for now it's only needed here since i don't listen anything -- for meteogramm and sounding there is other things that change after init so it work
   // see github.com/facebook/react/issues/15176
   const resizerRefHandler = useCallback((resizer: HTMLDivElement | null) => {
-
     // handle cleanup
-    if (resizerRef.current && handleMouseDown.current && handleMouseUp.current && handleMouseMove.current) {
-      resizerRef.current.removeEventListener("mousedown", handleMouseDown.current);
-      document.removeEventListener("mouseup", handleMouseUp.current);
-      document.removeEventListener("mousemove", handleMouseMove.current);
-    }
+    if (controllerRef.current) controllerRef.current.abort();
+    // set refs
+    controllerRef.current = new AbortController();
+    const { signal } = controllerRef.current;
 
     // check that dom is here
     if (!resizer) return;
+    // init resizing
     let isResizing = false;
-    // set the refs (for cleanup later)
-    handleMouseDown.current = () => isResizing = true;
-    handleMouseUp.current = () => isResizing = false;
-    handleMouseMove.current = (e) => isResizing && updateForecastWidth(e);
-    resizerRef.current = resizer;
     // listen for events
-    resizerRef.current.addEventListener("mousedown", handleMouseDown.current);
-    document.addEventListener("mouseup", handleMouseUp.current);
-    document.addEventListener("mousemove", handleMouseMove.current);
+    resizer.addEventListener("mousedown", () => isResizing = true, { signal });
+    document.addEventListener("mouseup", () => isResizing = false, { signal });
+    document.addEventListener("mousemove", (e) => isResizing && updateForecastWidth(e), { signal });
   }, [updateForecastWidth]);
 
   return (

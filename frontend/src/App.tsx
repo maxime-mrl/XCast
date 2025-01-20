@@ -21,17 +21,13 @@ export default function App() {
   // initialize forecast capabilities
   const initForecastCapabilities = useForecastStore.use.getCapabilities();
   useEffect(() => { initForecastCapabilities() }, [initForecastCapabilities]);
+  
   // initialize socket
   useEffect(() => {
     if (user && sync) {
       registerSocket(user);
     }
   }, [ user, sync ]);
-  // useUserStore.subscribe((state) => {
-  //   if (state.user && state.sync) {
-  //       registerSocket(state.user);
-  //   }
-  // });
   
   return (
     <div className={isMobile ? "mobile" : "desktop"}>
