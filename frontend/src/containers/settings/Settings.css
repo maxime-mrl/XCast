@@ -1,90 +1,91 @@
 /* ----------------------------- burger position ---------------------------- */
 #settings-btn {
-    right: 1em;
-    transition: var(--transitions);
+  right: 1em;
+  transition: var(--transitions);
 }
 
 .active#settings-btn {
-    right: 0;
+  right: 0;
 }
 
 /* -------------------------------- container ------------------------------- */
 .settingsContainer {
-    height: 100vh;
-    height: 100dvh;
-    right: 0;
-    padding: 3em 0 2em;
-    overflow-x: hidden;
-    background-color: var(--bg);
-    opacity: 0;
-    width: 0;
-    visibility: hidden;
-    transition: var(--transitions);
+  height: 100vh;
+  height: 100dvh;
+  right: 0;
+  padding: 3em 0 2em;
+  overflow-x: hidden;
+  background-color: var(--bg);
+  opacity: 0;
+  width: 0;
+  visibility: hidden;
+  transition: var(--transitions);
 }
 
 .settingsContainer.active {
-    visibility: visible;
-    opacity: 1;
-    width: 15em;
-    width: min(15em, 75%);
+  visibility: visible;
+  opacity: 1;
+  width: 15em;
+  width: min(15em, 75%);
 }
 
-.settingsContainer > article {
-    display: grid;
-    gap: 1em;
-    margin-top: 1.5em;
-    padding: 1.5em 1em 0;
-    border-top: 0.5px solid var(--text);
+.settingsContainer>article {
+  display: grid;
+  gap: 1em;
+  margin-top: 1.5em;
+  padding: 1.5em 1em 0;
+  border-top: 0.5px solid var(--text);
 }
 
 /* ------------------------- custom buttons selector ------------------------ */
 .settingsContainer .select-data {
-    text-align: left;
-    cursor: pointer;
+  text-align: left;
+  cursor: pointer;
 }
 
 .settingsContainer .select-data::before {
-    content: "";
-    display: inline-block;
-    font-size: 0.8em;
-	width: 0;
-	height: 0;
-    padding-right: 0.5em;
-	border-top: 0.5em solid transparent;
-	border-left: 0.9em solid var(--text);
-	border-bottom: 0.5em solid transparent;
+  content: "";
+  display: inline-block;
+  font-size: 0.8em;
+  width: 0;
+  height: 0;
+  padding-right: 0.5em;
+  border-top: 0.5em solid transparent;
+  border-left: 0.9em solid var(--text);
+  border-bottom: 0.5em solid transparent;
 }
 
 .settingsContainer .select-data.active {
-    font-weight: bold;
-    color: var(--accent);
+  font-weight: bold;
+  color: var(--accent);
 }
 
 .settingsContainer .select-data.active::before {
-	border-left: 0.9em solid var(--accent);
+  border-left: 0.9em solid var(--accent);
 }
 
 /* --------------------------------- titles --------------------------------- */
 .settingsContainer .title-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.8em;
-    width: 100%;
-    text-align: center;
-    overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8em;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
 }
 
-.title-divider::before, .title-divider::after {
-    content: "";
-    height: 1px;
-    width: 1em;
-    background-color: var(--text);
+.title-divider::before,
+.title-divider::after {
+  content: "";
+  height: 1px;
+  width: 1em;
+  background-color: var(--text);
 }
 
 .settings-title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
 }

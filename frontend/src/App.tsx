@@ -1,6 +1,11 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 
-import { About, Home } from "@pages"
+import { About, Home } from "@pages";
 
 import "./App.css";
 import { useAppStore, useWindowSizeInitializer } from "@store/useAppStore";
@@ -20,33 +25,34 @@ export default function App() {
   const sync = useUserStore.use.sync();
   // initialize forecast capabilities
   const initForecastCapabilities = useForecastStore.use.getCapabilities();
-  useEffect(() => { initForecastCapabilities() }, [initForecastCapabilities]);
-  
+  useEffect(() => {
+    initForecastCapabilities();
+  }, [initForecastCapabilities]);
+
   // initialize socket
   useEffect(() => {
     if (user && sync) {
       registerSocket(user);
     }
-  }, [ user, sync ]);
-  
+  }, [user, sync]);
+
   return (
     <div className={isMobile ? "mobile" : "desktop"}>
-    <Loader />
-    <Notifications />
-    {!user &&
-    <>
-      <Register />
-      <Login />
-    </>
-    }
-    <Router>
+      <Loader />
+      <Notifications />
+      {!user && (
+        <>
+          <Register />
+          <Login />
+        </>
+      )}
+      <Router>
         <Routes>
-          <Route path="/" element={ <Home /> } />
-          <Route path="/about" element={ <About /> } />
-          <Route path="*" element={ <Navigate to="/" /> } />
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-    </Router>
+      </Router>
     </div>
   );
 }
-

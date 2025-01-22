@@ -6,12 +6,11 @@ import { toast, ToastContainer } from "react-toastify";
 export default function Notifications() {
   const userStatus = useUserStore.use.status();
   const forecastStatus = useForecastStore.use.status();
-  
+
   const userMessage = useUserStore.use.message();
   const forecastMessage = useForecastStore.use.message();
-  
+
   const resetUser = useUserStore.use.logout();
-  
 
   useEffect(() => {
     let message = "";
@@ -30,8 +29,7 @@ export default function Notifications() {
       else toast.error(message);
     }
     if (/token/.test(message)) resetUser();
-  }, [userStatus, userMessage, forecastStatus, forecastMessage, resetUser])
-  return (
-    <ToastContainer />
-  );
+  }, [userStatus, userMessage, forecastStatus, forecastMessage, resetUser]);
+  
+  return <ToastContainer />;
 }

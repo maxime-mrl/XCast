@@ -1,49 +1,48 @@
 #modal-btn {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 101;
-    font-size: 2em;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 101;
+  font-size: 2em;
 }
 
 .modal-container {
-    position: fixed;
-    z-index: 100;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    height: 100dvh;
-    backdrop-filter: blur(8px);
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  backdrop-filter: blur(8px);
 }
 
 .modal-container::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: var(--bg);
-    opacity: 0.05;
-    z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  opacity: 0.05;
+  z-index: -1;
 }
 
 .modal-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-height: 100%;
-    width: fit-content;
-    height: fit-content;
-    padding: 2em;
-    backdrop-filter: blur(2px);
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    background: var(--bg-60);
-    border-radius: var(--radius-m);
-    box-shadow: 10px 10px 15px var(--text-40);
-    border: 2.5px solid var(--bg-80);
-    backdrop-filter: blur(2px);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: 100%;
+  width: fit-content;
+  height: fit-content;
+  padding: 2em;
+  backdrop-filter: blur(2px);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  background: var(--bg-60);
+  border-radius: var(--radius-m);
+  box-shadow: 10px 10px 15px var(--text-40);
+  border: 2.5px solid var(--bg-80);
+  backdrop-filter: blur(2px);
 }
-

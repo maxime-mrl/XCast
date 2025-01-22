@@ -2,42 +2,49 @@
 /* (all the z-index crap) */
 
 .leaflet-map-pane canvas {
-    z-index: 1 !important;
+  z-index: 1 !important;
 }
 
-.leaflet-tile-pane, .leaflet-map-pane svg, .leaflet-pane,
-.leaflet-overlay-pane, .leaflet-shadow-pane, .leaflet-marker-pane,
-.leaflet-tooltip-pane, .leaflet-popup-pane, .leaflet-zoom-box {
-    z-index: 2 !important;
+.leaflet-tile-pane,
+.leaflet-map-pane svg,
+.leaflet-pane,
+.leaflet-overlay-pane,
+.leaflet-shadow-pane,
+.leaflet-marker-pane,
+.leaflet-tooltip-pane,
+.leaflet-popup-pane,
+.leaflet-zoom-box {
+  z-index: 2 !important;
 }
 
 .map {
-    flex-grow: 1;
-    height: 100%;
-    position: relative;
+  flex-grow: 1;
+  height: 100%;
+  position: relative;
 }
 
 .leaflet-container {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .point-marker .marker-circle {
-    width: 100%;
-    height: 100%;
-    background-color: var(--bg);
-    box-shadow: 2px 1px 5px #1e1e1e66;
-    opacity: 0.95;
-    filter: blur(1px);
-    border-radius: 50%;
-    animation: 500ms ease-in-out infinite alternate marker;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg);
+  box-shadow: 2px 1px 5px #1e1e1e66;
+  opacity: 0.95;
+  filter: blur(1px);
+  border-radius: 50%;
+  animation: 500ms ease-in-out infinite alternate marker;
 }
 
 @keyframes marker {
-    from {
-        transform: scale(1);
-    }
-    from {
-        transform: scale(1.1);
-    }
+  from {
+    transform: scale(1);
+  }
+
+  from {
+    transform: scale(1.1);
+  }
 }

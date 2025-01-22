@@ -13,18 +13,22 @@ const socket = io(`http://${window.location.hostname}`); // for local dev
 
 // connect user to backend
 export function registerSocket(userState?: object) {
-    const { user } = useUserStore.getState() || userState;
-    socket.emit("register", user);
+  const { user } = useUserStore.getState() || userState;
+  socket.emit("register", user);
 }
 
 // listen for sync from backend
-socket.on('sync', (data:Partial<dbUserSettings>) => {
-    if (data.forecastSettings) {
-        const { position, ...syncSettings } = data.forecastSettings || { position: undefined, otherDbSetting: { } };
-        useForecastStore.setState((prev) => ({
-            ...prev, position,
-            userSettings: { ...prev.userSettings, ...syncSettings }
-        }));
-    }
-    if (data.units) useUnitStore.setState((prev) => mergeUnits(prev, data.units));
+socket.on("sync", (data: Partial<dbUserSettings>) => {
+  if (data.forecastSettings) {
+    const { position, ...syncSettings } = data.forecastSettings || {
+      position: undefined,
+      otherDbSetting: {},
+    };
+    useForecastStore.setState((prev) => ({
+      ...prev,
+      position,
+      userSettings: { ...prev.userSettings, ...syncSettings },
+    }));
+  }
+  if (data.units) useUnitStore.setState((prev) => mergeUnits(prev, data.units));
 });

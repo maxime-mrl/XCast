@@ -6,7 +6,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Meteogram, Sounding } from "@components";
 import { useForecastStore } from "@store/useForecastStore";
 import { useAppStore } from "@store/useAppStore";
-import './Forecast.css';
+import "./Forecast.css";
 
 export default function Forecast() {
   // get stored data
@@ -20,7 +20,7 @@ export default function Forecast() {
   const forecastWidth = useAppStore.use.forecastWidth();
 
   // refs for events listeners
-  const controllerRef = useRef<AbortController|null>(null);
+  const controllerRef = useRef<AbortController | null>(null);
 
   // update forecast when position changes
   useEffect(() => {
@@ -33,45 +33,66 @@ export default function Forecast() {
   // - cleanup is teadious as you will see -- fixed with abortcontroller -> see youtube.com/watch?v=2sdXSczmvNc
   // for now it's only needed here since i don't listen anything -- for meteogramm and sounding there is other things that change after init so it work
   // see github.com/facebook/react/issues/15176
-  const resizerRefHandler = useCallback((resizer: HTMLDivElement | null) => {
-    // handle cleanup
-    if (controllerRef.current) controllerRef.current.abort();
-    // set refs
-    controllerRef.current = new AbortController();
-    const { signal } = controllerRef.current;
+  const resizerRefHandler = useCallback(
+    (resizer: HTMLDivElement | null) => {
+      // handle cleanup
+      if (controllerRef.current) controllerRef.current.abort();
+      // set refs
+      controllerRef.current = new AbortController();
+      const { signal } = controllerRef.current;
 
-    // check that dom is here
-    if (!resizer) return;
-    // init resizing
-    let isResizing = false;
-    // listen for events
-    resizer.addEventListener("mousedown", () => isResizing = true, { signal });
-    document.addEventListener("mouseup", () => isResizing = false, { signal });
-    document.addEventListener("mousemove", (e) => isResizing && updateForecastWidth(e), { signal });
-  }, [updateForecastWidth]);
+      // check that dom is here
+      if (!resizer) return;
+      // init resizing
+      let isResizing = false;
+      // listen for events
+      resizer.addEventListener("mousedown", () => (isResizing = true), {
+        signal,
+      });
+      document.addEventListener("mouseup", () => (isResizing = false), {
+        signal,
+      });
+      document.addEventListener(
+        "mousemove",
+        (e) => isResizing && updateForecastWidth(e),
+        { signal }
+      );
+    },
+    [updateForecastWidth]
+  );
 
   return (
-    <div className={`forecast-container ${position ? "active" : ""}`} style={{width: forecastWidth*100+"%"}}>
+    <div
+      className={`forecast-container ${position ? "active" : ""}`}
+      style={{ width: forecastWidth * 100 + "%" }}
+    >
       {/* display sounding or meteogram */}
-      {position && position.lng && position.lat &&
-      <>
-        {url.hash.substring(1) === "sounding"
-          ? <Sounding />
-          : <Meteogram />
-        }
-      </> 
-      }
+      {position && position.lng && position.lat && (
+        <>
+          {url.hash.substring(1) === "sounding" ? <Sounding /> : <Meteogram />}
+        </>
+      )}
       {/* resizing */}
       <div className="resizer" ref={resizerRefHandler}></div>
       {/* navigation */}
       <nav className="forecast-nav">
         <div className="main-nav">
-          <button onClick={() => window.location.hash = "meteogram"} className="nav-btn link">Météogramme</button>
+          <button
+            onClick={() => (window.location.hash = "meteogram")}
+            className="nav-btn link"
+          >
+            Météogramme
+          </button>
           {/* 
             button instead of link becauses the anchor ids don't exist so it would be an invalid line
             -- setting anchor allow to get back to the same point when reloading but it's enteirly managed in js 
           */}
-          <button onClick={() => window.location.hash = "sounding"} className="nav-btn link">Emagramme</button>
+          <button
+            onClick={() => (window.location.hash = "sounding")}
+            className="nav-btn link"
+          >
+            Emagramme
+          </button>
         </div>
         <div className="separator"></div>
         <div className="actions">
@@ -83,7 +104,9 @@ export default function Forecast() {
                 name="height-select"
                 id="height-select"
                 value={userSettings.maxHeight}
-                onChange={(e) => updateSettings({ maxHeight: parseInt(e.target.value) })}
+                onChange={(e) =>
+                  updateSettings({ maxHeight: parseInt(e.target.value) })
+                }
               >
                 <option value="2000">2000m</option>
                 <option value="3000">3000m</option>
@@ -94,11 +117,15 @@ export default function Forecast() {
             </span>
           </span>
           {/* close forecast */}
-          <button onClick={() => setPosition(false)} className="close-forecast nav-btn" aria-label="Fermer">
+          <button
+            onClick={() => setPosition(false)}
+            className="close-forecast nav-btn"
+            aria-label="Fermer"
+          >
             <FontAwesomeIcon icon={faXmark} />
           </button>
         </div>
       </nav>
     </div>
-  )
+  );
 }
