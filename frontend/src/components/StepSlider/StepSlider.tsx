@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import './StepSlider.css';
 
-export default function StepSlider({ steps, min, max, unit, value, handleUpdate }: {
+export default function StepSlider({ name, steps, min, max, unit, value, handleUpdate }: {
+  name: string,
   steps: number[],
   min: number,
   max: number,
@@ -22,6 +23,8 @@ export default function StepSlider({ steps, min, max, unit, value, handleUpdate 
       <p>{min}{unit}</p>
       <div className='slider'>
         <input
+          name={name}
+          id={name}
           className='step-range'
           type="range"
           min={0}

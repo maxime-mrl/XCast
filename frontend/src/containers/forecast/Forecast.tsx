@@ -66,8 +66,12 @@ export default function Forecast() {
       {/* navigation */}
       <nav className="forecast-nav">
         <div className="main-nav">
-          <a href="#meteogram" className="nav-btn link">Météogramme</a>
-          <a href="#sounding" className="nav-btn link">Emagramme</a>
+          <button onClick={() => window.location.hash = "meteogram"} className="nav-btn link">Météogramme</button>
+          {/* 
+            button instead of link becauses the anchor ids don't exist so it would be an invalid line
+            -- setting anchor allow to get back to the same point when reloading but it's enteirly managed in js 
+          */}
+          <button onClick={() => window.location.hash = "sounding"} className="nav-btn link">Emagramme</button>
         </div>
         <div className="separator"></div>
         <div className="actions">
@@ -90,7 +94,7 @@ export default function Forecast() {
             </span>
           </span>
           {/* close forecast */}
-          <button onClick={() => setPosition(false)} className="close-forecast nav-btn">
+          <button onClick={() => setPosition(false)} className="close-forecast nav-btn" aria-label="Fermer">
             <FontAwesomeIcon icon={faXmark} />
           </button>
         </div>

@@ -40,7 +40,7 @@ export default function Register() {
                 error: "Nom d'utilisateur invalide, charactères autorisés: a-z, 0-9, - et _"
             }}
             input={{
-                name: "username",
+                name: "register_username",
                 placeholder: "Ton nom d'utilisateur",
                 autoComplete: "username",
             }}
@@ -54,7 +54,7 @@ export default function Register() {
                 error: "E-mail invalide"
             }}
             input={{
-                name: "mail",
+                name: "register_mail",
                 placeholder: "Ton e-mail",
                 autoComplete: "email",
                 type: "email"
@@ -69,7 +69,7 @@ export default function Register() {
                 error: "Ton mot de passe doit faire au moins 6 caractères"
             }}
             input={{
-                name: "password",
+                name: "register_password",
                 placeholder: "Ton mot de passe",
                 type: "password"
             }}
@@ -83,7 +83,7 @@ export default function Register() {
                 error: "Ton mot de passe ne correspond pas"
             }}
             input={{
-                name: "confirm_password",
+                name: "register_confirm_password",
                 placeholder: "Ton mot de passe",
                 type: "password"
             }}

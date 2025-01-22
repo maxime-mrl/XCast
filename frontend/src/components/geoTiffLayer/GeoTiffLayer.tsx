@@ -51,7 +51,8 @@ export default function GeoTiffLayer(
   if (renderer === "rgb" && activeUnit) return (
     <div className="map-legend">
       {activeUnit.scale.colors.map((color, i) => (
-        <div style={{backgroundColor: color}} key={i}>
+        <div key={i}>
+          <div className="bg" style={{backgroundColor: color}}></div>
           <i>
             {activeUnit.units[activeUnit.selected](activeUnit.scale.levels[i])}
           </i>

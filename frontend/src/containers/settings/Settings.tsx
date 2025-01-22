@@ -62,7 +62,7 @@ export default function Settings() {
 
   return (
     <>
-      <button onClick={toggleSettings} className={`burger-btn${isOpen ? " active" : ""}`} id='settings-btn' style={{display: confirmModalOpen ? "none" : "block"}}>
+      <button onClick={toggleSettings} className={`burger-btn${isOpen ? " active" : ""}`} id='settings-btn' style={{display: confirmModalOpen ? "none" : "block"}} aria-label="Paramètres">
         <FontAwesomeIcon icon={isOpen ? faXmark : faBars} />
       </button>
       <section className={`settingsContainer${isOpen ? " active" : ""}`}>
@@ -85,9 +85,12 @@ export default function Settings() {
           }
         </article>
         <article className="levels">
-          <h2 className="h3 title-divider">Altitude</h2>
+          <h2 className="h3 title-divider">
+            <label htmlFor="level">Altitude</label>
+          </h2>
           <p>Sélectionné: {userSettings.level}m</p>
           <StepSlider
+            name="level"
             steps={levels.sort((a,b) => a - b)}
             min={Math.min(...levels)}
             max={Math.max(...levels)}

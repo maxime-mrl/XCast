@@ -12,7 +12,7 @@ export default function ModalContainer({ children, isOpen, setIsOpen }: { childr
 
   return (
     <div className='modal-container' style={{ display: isOpen ? 'flex' : 'none' }} onClick={handleModalClick}>
-      <button onClick={() => setIsOpen(false)} className={`burger-btn`} id='modal-btn'>
+      <button onClick={() => setIsOpen(false)} className={`burger-btn`} id='modal-btn' aria-label='Fermer'>
         <FontAwesomeIcon icon={faXmark} />
       </button>
       <div className="modal-content">

@@ -32,12 +32,12 @@ export default function TimeSelector() {
       </div>
       <div className="selector">
         <div className="prev">
-          <button onClick={() => updateTime({days:-1})}><FontAwesomeIcon icon={faAnglesLeft}/></button>
-          <button onClick={() => updateTime({hours:-1})}><FontAwesomeIcon icon={faAngleLeft}/></button>
+          <button aria-label="Revenir d'un jour" onClick={() => updateTime({days:-1})}><FontAwesomeIcon icon={faAnglesLeft}/></button>
+          <button aria-label="Revenir d'une heure" onClick={() => updateTime({hours:-1})}><FontAwesomeIcon icon={faAngleLeft}/></button>
         </div>
         <div className='next'>
-          <button onClick={() => updateTime({hours:1})}><FontAwesomeIcon icon={faAngleRight}/></button>
-          <button onClick={() => updateTime({days:1})}><FontAwesomeIcon icon={faAnglesRight}/></button>
+          <button aria-label="Avancer d'une heure" onClick={() => updateTime({hours:1})}><FontAwesomeIcon icon={faAngleRight}/></button>
+          <button aria-label="Avancer d'un jour" onClick={() => updateTime({days:1})}><FontAwesomeIcon icon={faAnglesRight}/></button>
         </div>
       </div>
     </div>

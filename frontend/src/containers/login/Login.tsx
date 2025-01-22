@@ -37,7 +37,7 @@ export default function Login() {
                 error: "E-mail invalide"
             }}
             input={{
-                name: "mail",
+                name: "login_mail",
                 placeholder: "Ton e-mail",
                 autoComplete: "email",
                 type: "email"
@@ -52,7 +52,7 @@ export default function Login() {
                 error: "Ton mot de passe doit faire au moins 6 caractères"
             }}
             input={{
-                name: "password",
+                name: "login_password",
                 placeholder: "Ton mot de passe",
                 type: "password"
             }}
