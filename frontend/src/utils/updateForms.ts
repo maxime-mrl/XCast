@@ -2,6 +2,7 @@
 export default function updateForm(e: React.ChangeEvent<HTMLInputElement>, setFormData: React.Dispatch<React.SetStateAction<Record<string, [string, boolean]>>>) {
     let isValidated = false;
     const value = e.target.value;
+    console.log(e.target.name)
     const validateQuery = e.target.getAttribute("data-validate");
     // if no validation query, save state and return
     if (!validateQuery) return setFormData(prevState => ({ ...prevState, [e.target.name]: [value, true] }));
@@ -27,6 +28,6 @@ export default function updateForm(e: React.ChangeEvent<HTMLInputElement>, setFo
     /* ------------------------------ save to state ----------------------------- */
     setFormData(prevState => ({
         ...prevState,
-        [e.target.name]: [e.target.value, isValidated]
+        [e.target.name]: [value, isValidated]
     }));
   }

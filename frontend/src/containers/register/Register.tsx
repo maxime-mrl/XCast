@@ -8,11 +8,11 @@ import './Register.css';
 export default function Register() {
   const { isRegisterOpen:isOpen, setIsRegisterOpen:setIsOpen, setIsLoginOpen, register } = useUserStore();
 
-  const [{ username, mail, password, confirm_password }, setFormData] = useState<{ [key: string]: [string, boolean]; }>({
-    username: ["", false],
-    mail: ["", false],
-    password: ["", false],
-    confirm_password: ["", false],
+  const [{ register_username:username, register_mail:mail, register_password:password, register_confirm_password:confirm_password }, setFormData] = useState<{ [key: string]: [string, boolean]; }>({
+    register_username: ["", false],
+    register_mail: ["", false],
+    register_password: ["", false],
+    register_confirm_password: ["", false],
   });
 
   const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) => updateForm(e, setFormData); 
@@ -20,7 +20,6 @@ export default function Register() {
   function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!username[1] || !mail[1] || !password[1] || !confirm_password[1]) {
-        // toast.error("Please fill and validate all inputs!");
         return;
     }
     register({

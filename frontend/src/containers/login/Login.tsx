@@ -8,9 +8,9 @@ import './Login.css';
 export default function Login() {
   const { isLoginOpen:isOpen, setIsLoginOpen:setIsOpen, setIsRegisterOpen, login } = useUserStore();
 
-  const [{ mail, password }, setFormData] = useState<{ [key: string]: [string, boolean]; }>({
-    mail: ["", false],
-    password: ["", false],
+  const [{ login_mail:mail, login_password:password }, setFormData] = useState<{ [key: string]: [string, boolean]; }>({
+    login_mail: ["", false],
+    login_password: ["", false],
   });
 
   const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) => updateForm(e, setFormData); 
@@ -18,8 +18,7 @@ export default function Login() {
   function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!mail[1] || !password[1]) {
-        // toast.error("Please fill and validate all inputs!");
-        return;
+      return;
     }
     login({
       mail: mail[0],
