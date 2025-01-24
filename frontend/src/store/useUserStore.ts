@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createSelectors } from "@utils/createSelector";
 import RequestServices from "@utils/requestService";
+
 const userServices = new RequestServices("api/user");
 
 type user = {

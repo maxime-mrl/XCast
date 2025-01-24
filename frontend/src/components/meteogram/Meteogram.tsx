@@ -4,6 +4,7 @@ import { Color, Scale } from 'chroma-js';
 import { forecastData, useForecastStore } from '@store/useForecastStore';
 import Canvas, { chart, generateYchart } from '@utils/canvasTools';
 import { useUnitStore } from '@store/useUnitsStore';
+
 import './Meteogram.css';
 
 const yIncrements = [ 100, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6500, 8000, 10000 ];

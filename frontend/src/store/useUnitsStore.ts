@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { createSelectors } from "@utils/createSelector";
-import chroma from "chroma-js";
 import { persist } from "zustand/middleware";
+import chroma from "chroma-js";
+import { createSelectors } from "@utils/createSelector";
 import { customStorage } from "@utils/storage";
 import { mapDataTypes } from "types/customTypes";
 

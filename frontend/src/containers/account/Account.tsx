@@ -1,9 +1,11 @@
-import { useUserStore } from "@store/useUserStore";
 import { useState } from "react";
+import { toast } from "react-toastify";
+
+import { useUserStore } from "@store/useUserStore";
 import updateForm from "@utils/updateForms";
 import { ModalContainer, TextInput } from "@components";
+
 import "./Account.css";
-import { toast } from "react-toastify";
 
 export default function Account() {
   const {
@@ -42,9 +44,8 @@ export default function Account() {
     <>
       <ModalContainer isOpen={isOpen} setIsOpen={setIsOpen}>
         <h2 className="h1 full-width text-center">Bonjour {user.username}</h2>
-        <h3 className="h2 full-width text-center">Gerer votre compte:</h3>
         <form onSubmit={submitForm} className="account-form">
-          <h2 className="h2">Modifier le compte</h2>
+          <h3 className="h2">Modifier le compte</h3>
           <TextInput
             label={{
               regular: "Nouveau nom d'utilisateur:",
@@ -104,14 +105,14 @@ export default function Account() {
             updateForm={handleUpdate}
           />
           <div className="btns">
-            <button type="submit" className="btn btn-accent">
-              Modifier le compte
-            </button>
             <button className="btn btn-danger" onClick={logout}>
               Se déconnecter
             </button>
             <button className="btn btn-danger" onClick={deleteAccount}>
               Supprimer le compte
+            </button>
+            <button type="submit" className="btn btn-accent">
+              Modifier le compte
             </button>
           </div>
         </form>

@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./About.css";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+
+import "./About.css";
 
 export default function About() {
   return (

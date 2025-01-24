@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
@@ -9,10 +10,10 @@ import {
 import { useForecastStore } from "@store/useForecastStore";
 import { UnitsConfig, useUnitStore } from "@store/useUnitsStore";
 import { useAppStore } from "@store/useAppStore";
-import { ModalContainer, StepSlider } from "@components";
-import { useEffect, useState } from "react";
 import { useUserStore } from "@store/useUserStore";
+import { ModalContainer, StepSlider } from "@components";
 import { mapDataTypes } from "types/customTypes";
+
 import "./Settings.css";
 
 export default function Settings() {

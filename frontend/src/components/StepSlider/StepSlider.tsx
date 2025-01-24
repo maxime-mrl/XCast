@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import "./StepSlider.css";
 
 export default function StepSlider({

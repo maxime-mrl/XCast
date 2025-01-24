@@ -8,8 +8,9 @@ import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
 import { GeotiffLayer, TimeSelector } from "@components";
 import { useForecastStore } from "@store/useForecastStore";
-import "./Map.css";
 import { useAppStore } from "@store/useAppStore";
+
+import "./Map.css";
 
 export default function Map() {
   const [baseUrl, setBaseUrl] = useState("");

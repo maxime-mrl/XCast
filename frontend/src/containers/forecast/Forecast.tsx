@@ -6,6 +6,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Meteogram, Sounding } from "@components";
 import { useForecastStore } from "@store/useForecastStore";
 import { useAppStore } from "@store/useAppStore";
+
 import "./Forecast.css";
 
 export default function Forecast() {

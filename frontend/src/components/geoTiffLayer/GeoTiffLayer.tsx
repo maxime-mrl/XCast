@@ -7,8 +7,9 @@ import "leaflet-geotiff-2/dist/leaflet-geotiff-vector-arrows";
 
 import Renderer from "@utils/geotiffRenderer";
 import { useUnitStore } from "@store/useUnitsStore";
-import "./GeoTiffLayer.css";
 import { mapDataTypes } from "types/customTypes";
+
+import "./GeoTiffLayer.css";
 
 export default function GeoTiffLayer({
   url,

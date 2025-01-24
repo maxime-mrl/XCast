@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -5,17 +6,17 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import { About, Home } from "@pages";
-
-import "./App.css";
 import { useAppStore, useWindowSizeInitializer } from "@store/useAppStore";
 import { useForecastStore } from "@store/useForecastStore";
-import { useEffect } from "react";
-import Loader from "./components/loader/Loader";
 import { useUserStore } from "@store/useUserStore";
-import { Account, Login, Register } from "@containers";
-import { Notifications } from "@components";
 import { registerSocket } from "@utils/socketClient";
+
+import { About, Home } from "@pages";
+import { Account, Login, Register } from "@containers";
+import { Loader, Notifications } from "@components";
+
+
+import "./App.css";
 
 export default function App() {
   // initialize window size (and get the ismobile while here c:)

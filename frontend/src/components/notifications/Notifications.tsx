@@ -1,7 +1,8 @@
-import { useForecastStore } from "@store/useForecastStore";
-import { useUserStore } from "@store/useUserStore";
 import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
+
+import { useForecastStore } from "@store/useForecastStore";
+import { useUserStore } from "@store/useUserStore";
 
 export default function Notifications() {
   const userStatus = useUserStore.use.status();

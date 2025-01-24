@@ -1,7 +1,7 @@
+import { useEffect } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createSelectors } from "@utils/createSelector";
-import { useEffect } from "react";
 import throttle from "@utils/throttle";
 
 const mobileWidth = 750;

@@ -1,10 +1,11 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { LatLng } from "leaflet";
 import RequestServices from "@utils/requestService";
 import { createSelectors } from "@utils/createSelector";
-import { LatLng } from "leaflet";
-import { persist } from "zustand/middleware";
 import { customStorage } from "@utils/storage";
 import { mapDataTypes } from "types/customTypes";
+
 const forecastService = new RequestServices("api/forecast");
 
 type forecastCapabilitiesData = Record<

@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useForecastStore } from "@store/useForecastStore";
+
 import "./TimeSelector.css";
 
 const days = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];

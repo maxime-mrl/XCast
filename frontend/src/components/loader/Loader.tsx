@@ -1,5 +1,6 @@
 import { useForecastStore } from "@store/useForecastStore";
 import { useUserStore } from "@store/useUserStore";
+
 import "./Loader.css";
 
 export default function Loader() {
