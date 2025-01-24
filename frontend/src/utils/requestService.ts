@@ -57,11 +57,12 @@ export default class RequestServices {
     return data as T;
   };
 
-  delete = async <T>(endpoint: string, token?: string) => {
+  delete = async <T>(endpoint: string, reqData: object, token?: string) => {
     const data = await RequestServices.fetchRequest<T>(
       this.API_URL + endpoint,
       {
         method: "DELETE",
+        data: reqData,
         token,
       }
     );

@@ -1,13 +1,15 @@
-import { useEffect, useRef } from 'react';
-import { Color, Scale } from 'chroma-js';
+import { useEffect, useRef } from "react";
+import { Color, Scale } from "chroma-js";
 
-import { forecastData, useForecastStore } from '@store/useForecastStore';
-import Canvas, { chart, generateYchart } from '@utils/canvasTools';
-import { useUnitStore } from '@store/useUnitsStore';
+import { forecastData, useForecastStore } from "@store/useForecastStore";
+import Canvas, { chart, generateYchart } from "@utils/canvasTools";
+import { useUnitStore } from "@store/useUnitsStore";
 
-import './Meteogram.css';
+import "./Meteogram.css";
 
-const yIncrements = [ 100, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6500, 8000, 10000 ];
+const yIncrements = [
+  100, 500, 1000, 1500, 2000, 3000, 4000, 5000, 6500, 8000, 10000,
+];
 const minChartWidth = 650;
 const heightOffset = 25;
 
@@ -16,7 +18,7 @@ export default function MetoGram() {
   // get stored data
   const forecast = useForecastStore.use.forecast();
   const { scale, units, selected } = useUnitStore.use.wind();
-  const { time:forecastTime, maxHeight } = useForecastStore.use.userSettings();
+  const { time: forecastTime, maxHeight } = useForecastStore.use.userSettings();
 
   useEffect(() => {
     // check everything is here
@@ -30,7 +32,7 @@ export default function MetoGram() {
       min: forecast.level,
       max: maxHeight,
       increments: yIncrements,
-    })
+    });
 
     const canvas = new Canvas(meteogram, timeRange.chart, yChart);
     canvas.addRenderer(drawChart);
@@ -39,29 +41,27 @@ export default function MetoGram() {
       forecast,
       hour: timeRange.hour,
       selected,
-      units
+      units,
     });
-    
+
     // cleanup canvas
     return () => {
       canvas.clear();
     };
   }, [forecast, scale, forecastTime, maxHeight, selected, units]);
 
-  return (
-    <div className='meteogram' ref={containerRef}></div>
-  )
+  return <div className="meteogram" ref={containerRef}></div>;
 }
 
 /* ------------- get the time range to display (array of times) ------------- */
-function getTimeRange(forecast:forecastData, time:string) {
-  const hourIndex = forecast.data.findIndex(data => data.time === time); // actual selected time forecast
+function getTimeRange(forecast: forecastData, time: string) {
+  const hourIndex = forecast.data.findIndex((data) => data.time === time); // actual selected time forecast
   if (hourIndex === -1) return null; // if no time return
   // get all hours of the same day
   const selectedDay = new Date(time).getDay();
   const hours = forecast.data
-    .filter(data => new Date(data.time).getDay() === selectedDay)
-    .map(data => new Date(data.time).getHours());
+    .filter((data) => new Date(data.time).getDay() === selectedDay)
+    .map((data) => new Date(data.time).getHours());
 
   // aim to display 16h of forecast (a bit more than a flying day)
   let startTime = Math.max(hourIndex - 8, 0);
@@ -86,58 +86,102 @@ function getTimeRange(forecast:forecastData, time:string) {
 }
 
 /* ----------------------------- draw the chart ----------------------------- */
-function drawChart(canvas:Canvas) {
-  canvas.yChart.displayed.forEach(value => { // y axis (height)
+function drawChart(canvas: Canvas) {
+  canvas.yChart.displayed.forEach((value) => {
+    // y axis (height)
     const coord = canvas.getCoord(0, value + heightOffset);
-    canvas.drawText(canvas.xChart.chartMargin/2, coord.y, String(Math.round(value)), {font:"15px system-ui"});
+    canvas.drawText(
+      canvas.xChart.chartMargin / 2,
+      coord.y,
+      String(Math.round(value)),
+      { font: "15px system-ui" }
+    );
   });
 
-  canvas.xChart.displayed.forEach(value => { // x axis (time)
+  canvas.xChart.displayed.forEach((value) => {
+    // x axis (time)
     const coord = canvas.getCoord(value, 0);
-    canvas.drawLine(value + 0.5, canvas.yChart.max, value + 0.5, canvas.yChart.min);
-    canvas.drawText(coord.x, canvas.size.height - canvas.yChart.chartMargin/2, String(value));
-  })
+    canvas.drawLine(
+      value + 0.5,
+      canvas.yChart.max,
+      value + 0.5,
+      canvas.yChart.min
+    );
+    canvas.drawText(
+      coord.x,
+      canvas.size.height - canvas.yChart.chartMargin / 2,
+      String(value)
+    );
+  });
 }
 
 /* ----------- draw meteogram (wind and thermal at every heights) ----------- */
 function drawMeteogram(
   { xChart, drawRectangle, drawWindArrow, drawText, canvas }: Canvas,
-  {colorScale, forecast, hour, selected, units}: {
-    colorScale: Scale<Color>,
-    forecast:forecastData,
-    hour:number,
-    selected:string,
-    units: { [key: string]: (base: number) => number }
+  {
+    colorScale,
+    forecast,
+    hour,
+    selected,
+    units,
+  }: {
+    colorScale: Scale<Color>;
+    forecast: forecastData;
+    hour: number;
+    selected: string;
+    units: { [key: string]: (base: number) => number };
   }
 ) {
-  const textSize = canvas.width/50;
+  const textSize = canvas.width / 50;
   const arrrowSize = Math.max(14, textSize); // wind arrow size
   // ground layer
-  drawRectangle({ top: forecast.level, }, "#959695a0");
+  drawRectangle({ top: forecast.level }, "#959695a0");
   // selected time
-  drawRectangle({ left:hour-0.5, right:hour+0.5 }, "#bbeebb80");
+  drawRectangle({ left: hour - 0.5, right: hour + 0.5 }, "#bbeebb80");
 
   // draw for every hours
   forecast.data.forEach((forecastHour) => {
     const time = new Date(forecastHour.time).getHours(); // simulate time cause i don't have the full forecast for now
     if (time <= xChart.min || time >= xChart.max) return;
-    
+
     // boundary layer
-    drawRectangle({ top: forecastHour.bl, left: time-0.5, right: time+0.5, bottom: forecast.level }, "#FFc300A2");
+    drawRectangle(
+      {
+        top: forecastHour.bl,
+        left: time - 0.5,
+        right: time + 0.5,
+        bottom: forecast.level,
+      },
+      "#FFc300A2"
+    );
     // wind and cloud fraction
     forecastHour.z.forEach((z, i) => {
       // slight z offset to avoid overlapping
       z = z + heightOffset;
       // cld_frac (cloud)
-      drawRectangle({ top: forecastHour.z[i+1], bottom: z, left: time-0.4, right: time+0.4 }, `rgba(80, 80, 80, ${forecastHour.cld_frac[i]/100})`);
+      drawRectangle(
+        {
+          top: forecastHour.z[i + 1],
+          bottom: z,
+          left: time - 0.4,
+          right: time + 0.4,
+        },
+        `rgba(80, 80, 80, ${forecastHour.cld_frac[i] / 100})`
+      );
       // wspd arrows
       drawWindArrow(
-        time +0.2, z, arrrowSize,
-        forecastHour.wdir[i], forecastHour.wspd[i],
-        { colorScale, center:true }
+        time + 0.2,
+        z,
+        arrrowSize,
+        forecastHour.wdir[i],
+        forecastHour.wspd[i],
+        { colorScale, center: true }
       );
       // wspd text
-      drawText(time - 0.2, z, String(units[selected](forecastHour.wspd[i])), { pointCoordinates:true, font:`${textSize}px system-ui` });
+      drawText(time - 0.2, z, String(units[selected](forecastHour.wspd[i])), {
+        pointCoordinates: true,
+        font: `${textSize}px system-ui`,
+      });
     });
-  })
+  });
 }

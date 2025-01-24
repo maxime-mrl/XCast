@@ -23,8 +23,14 @@ export default function Settings() {
   const updateSettings = useForecastStore.use.updateSettings();
   const isOpen = useAppStore.use.isSettingsOpen();
   const toggleSettings = useAppStore.use.toggleSettings();
-  const { sync, toggleSync, user, setIsLoginOpen, setIsRegisterOpen, setIsAccountOpen } =
-    useUserStore();
+  const {
+    sync,
+    toggleSync,
+    user,
+    setIsLoginOpen,
+    setIsRegisterOpen,
+    setIsAccountOpen,
+  } = useUserStore();
   const unitsStore = useUnitStore();
   const unitsName = unitsStore.names;
 
@@ -218,7 +224,10 @@ export default function Settings() {
           {user ? (
             <>
               <p>Content de vous voir {user.username}</p>
-              <button className="btn margin-center" onClick={() => setIsAccountOpen(true)}>
+              <button
+                className="btn margin-center"
+                onClick={() => setIsAccountOpen(true)}
+              >
                 Gérer mon compte
               </button>
             </>

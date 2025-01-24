@@ -11,19 +11,23 @@ type user = {
   token: string;
 };
 
+type userInfos = {
+  mail: string;
+  username: string;
+  password: string;
+  confirmPassword?: string;
+};
+
 type UserStore = {
   // user data
   user: user | null;
 
   // user actions
-  register: (user: {
-    mail: string;
-    username: string;
-    password: string;
-  }) => void;
-  login: (user: { mail: string; password: string }) => void;
+  register: (user: userInfos) => void;
+  login: (user: Partial<userInfos>) => void;
+  updateAccount: (user: Partial<userInfos>) => void;
+  deleteAccount: (confirmPassword: string) => void;
   logout: () => void;
-  update: (user: string) => void;
 
   // sync preferences
   sync: boolean;
@@ -66,11 +70,14 @@ export const useUserStore = createSelectors(
           if (isOpen) get().closeAll();
           set({ isAccountOpen: isOpen });
         },
-        closeAll: () => set({ // make sure only one panel is open
-          isRegisterOpen: false,
-          isLoginOpen: false,
-          isAccountOpen: false,
-        }),
+        closeAll: () =>
+          set({
+            // make sure only one panel is open
+            isRegisterOpen: false,
+            isLoginOpen: false,
+            isAccountOpen: false,
+          }),
+
         register: async (newUser) => {
           set({ status: "loading" });
           const userToSave = { ...newUser, settings: { sync: false } };
@@ -104,10 +111,50 @@ export const useUserStore = createSelectors(
             });
           }
         },
+        updateAccount: async (user) => {
+          set({ status: "loading" });
+          try {
+            const updatedUser = await userServices.put<user>(
+              "/update",
+              user,
+              get().user?.token
+            );
+            set({
+              user: updatedUser,
+              status: "success",
+              message: "Vos informations ont bien été mises à jour",
+            });
+          } catch (err) {
+            set({
+              status: "error",
+              message: userServices.parseError(err),
+            });
+          }
+        },
+        deleteAccount: async (confirmPassword) => {
+          set({ status: "loading" });
+          try {
+            await userServices.delete(
+              "/delete",
+              { confirmPassword },
+              get().user?.token
+            );
+            set({
+              user: null,
+              status: "success",
+              message: "Votre compte a bien été supprimé",
+            });
+          } catch (err) {
+            set({
+              status: "error",
+              message: userServices.parseError(err),
+            });
+          }
+        },
         logout: () => {
           set({ user: null, status: "success", message: "A bientôt" });
         },
-        update: async (user) => {},
+
         toggleSync: () => {
           // check if user is logged in (user store)
           // if not logged in, open register panel

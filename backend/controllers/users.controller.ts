@@ -12,6 +12,7 @@ import {
   checkUser,
   checkAndParseSettings,
 } from "@middleware/modelsMiddleware/userCheck.middleware";
+
 /* -------------------------------------------------------------------------- */
 /*                             CREATE NEW ACCOUNT                             */
 /* -------------------------------------------------------------------------- */
@@ -69,20 +70,8 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
 });
 
 /* -------------------------------------------------------------------------- */
-/*                               GET USER INFOS                               */
+/*                             GET USER SETTINGS                              */
 /* -------------------------------------------------------------------------- */
-export const getUser = asyncHandler(
-  async (req: requestWithUser, res: Response) => {
-    /* ---------------------------- RETURN USER INFOS --------------------------- */
-    res.status(200).json({
-      _id: req.user?._id,
-      mail: req.user?.mail,
-      username: req.user?.username,
-      settings: req.user?.settings,
-    });
-  }
-);
-
 export const getUserSettings = asyncHandler(
   async (req: requestWithUser, res: Response) => {
     /* -------------------------- RETURN USER SETTINGS -------------------------- */
@@ -96,6 +85,7 @@ export const getUserSettings = asyncHandler(
 /* -------------------------------------------------------------------------- */
 /*                             UPDATE USER ACCOUNT                            */
 /* -------------------------------------------------------------------------- */
+// whole user update
 export const updateUser = asyncHandler(
   async (req: requestWithUser, res: Response) => {
     /* ------------------------------ INPUTS CHECK ------------------------------ */
@@ -136,6 +126,7 @@ export const updateUser = asyncHandler(
   }
 );
 
+// settings update
 export const updateUserSettings = asyncHandler(
   async (req: requestWithUser, res: Response) => {
     /* ------------------------------ INPUTS CHECK ------------------------------ */

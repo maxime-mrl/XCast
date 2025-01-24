@@ -31,6 +31,6 @@ export default function Notifications() {
     }
     if (/token/.test(message)) resetUser();
   }, [userStatus, userMessage, forecastStatus, forecastMessage, resetUser]);
-  
+
   return <ToastContainer />;
 }

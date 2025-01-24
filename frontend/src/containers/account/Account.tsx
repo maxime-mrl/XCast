@@ -12,29 +12,45 @@ export default function Account() {
     user,
     isAccountOpen: isOpen,
     setIsAccountOpen: setIsOpen,
-    logout
+    logout,
+    deleteAccount,
+    updateAccount,
   } = useUserStore();
-  
+
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [{ new_username, new_mail, new_password, confirm_password }, setFormData] = useState<{ [key: string]: [string, boolean] }>({
+  const [
+    { new_username, new_mail, new_password, confirm_password },
+    setFormData,
+  ] = useState<{ [key: string]: [string, boolean] }>({
     new_username: ["", false],
     new_mail: ["", false],
     new_password: ["", false],
     confirm_password: ["", false],
-});
+  });
   const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) =>
     updateForm(e, setFormData);
-  
+
   function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!new_username[1] || !new_mail[1] || !new_password[1] || !confirm_password[1]) {
+    if (
+      (!new_username[1] && !new_mail[1] && !new_password[1]) ||
+      !confirm_password[1]
+    ) {
       return;
     }
-    alert("ok");
+    updateAccount({
+      username: new_username[0] ? new_username[0] : undefined,
+      mail: new_mail[0] ? new_mail[0] : undefined,
+      password: new_password[0] ? new_password[0] : undefined,
+      confirmPassword: confirm_password[0],
+    });
   }
 
-  function deleteAccount() {
-    if (!confirm_password[1]) return toast.error("Veuillez entrer votre mot de passe pour supprimer le compte");
+  function confirmDelete() {
+    if (!confirm_password[1])
+      return toast.error(
+        "Veuillez entrer votre mot de passe pour supprimer le compte"
+      );
     setConfirmModalOpen(true);
   }
 
@@ -108,7 +124,7 @@ export default function Account() {
             <button className="btn btn-danger" onClick={logout}>
               Se déconnecter
             </button>
-            <button className="btn btn-danger" onClick={deleteAccount}>
+            <button className="btn btn-danger" onClick={confirmDelete}>
               Supprimer le compte
             </button>
             <button type="submit" className="btn btn-accent">
@@ -117,10 +133,7 @@ export default function Account() {
           </div>
         </form>
       </ModalContainer>
-      <ModalContainer
-        isOpen={confirmModalOpen}
-        setIsOpen={setConfirmModalOpen}
-      >
+      <ModalContainer isOpen={confirmModalOpen} setIsOpen={setConfirmModalOpen}>
         <p className="text-center">
           Êtes-vous sûr de vouloir supprimer votre compte ?
         </p>
@@ -128,13 +141,13 @@ export default function Account() {
           Cette action est irréversible, toutes vos données seront perdues.
         </p>
         <div className="gap-1 margin-center">
-          <button className="btn btn-danger" onClick={() => {}}>
+          <button
+            className="btn btn-danger"
+            onClick={() => deleteAccount(confirm_password[0])}
+          >
             Oui
           </button>
-          <button
-            className="btn"
-            onClick={() => setConfirmModalOpen(false)}
-          >
+          <button className="btn" onClick={() => setConfirmModalOpen(false)}>
             Non
           </button>
         </div>
