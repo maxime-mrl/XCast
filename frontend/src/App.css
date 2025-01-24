@@ -126,6 +126,10 @@ html, body {
   padding-right: 1.5ch;
 }
 
+.full-width {
+  width: 100%;
+}
+
 /* --------------------------------- titles --------------------------------- */
 .h1 {
   font-size: var(--h1-size);

@@ -13,7 +13,7 @@ import { useForecastStore } from "@store/useForecastStore";
 import { useEffect } from "react";
 import Loader from "./components/loader/Loader";
 import { useUserStore } from "@store/useUserStore";
-import { Login, Register } from "@containers";
+import { Account, Login, Register } from "@containers";
 import { Notifications } from "@components";
 import { registerSocket } from "@utils/socketClient";
 
@@ -40,11 +40,13 @@ export default function App() {
     <div className={isMobile ? "mobile" : "desktop"}>
       <Loader />
       <Notifications />
-      {!user && (
+      {!user ? (
         <>
           <Register />
           <Login />
         </>
+      ) : (
+        <Account />
       )}
       <Router>
         <Routes>

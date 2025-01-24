@@ -1,0 +1,21 @@
+.account-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 95vw;
+  max-width: 35em;
+  gap: 1.2em;
+  padding: 1em;
+}
+
+.account-form .btns {
+  display: flex;
+  gap: 1em;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.btns button {
+  flex-grow: 1;
+  flex-shrink: 1;
+}

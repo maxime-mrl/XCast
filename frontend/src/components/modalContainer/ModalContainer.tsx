@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./ModalContainer.css";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import "./ModalContainer.css";
 
 export default function ModalContainer({
   children,

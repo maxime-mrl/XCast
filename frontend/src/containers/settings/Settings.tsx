@@ -9,12 +9,11 @@ import {
 import { useForecastStore } from "@store/useForecastStore";
 import { UnitsConfig, useUnitStore } from "@store/useUnitsStore";
 import { useAppStore } from "@store/useAppStore";
-import { StepSlider } from "@components";
-import "./Settings.css";
-import ModalContainer from "src/components/modalContainer/ModalContainer";
+import { ModalContainer, StepSlider } from "@components";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@store/useUserStore";
 import { mapDataTypes } from "types/customTypes";
+import "./Settings.css";
 
 export default function Settings() {
   // get stored data
@@ -23,7 +22,7 @@ export default function Settings() {
   const updateSettings = useForecastStore.use.updateSettings();
   const isOpen = useAppStore.use.isSettingsOpen();
   const toggleSettings = useAppStore.use.toggleSettings();
-  const { sync, toggleSync, user, setIsLoginOpen, setIsRegisterOpen, logout } =
+  const { sync, toggleSync, user, setIsLoginOpen, setIsRegisterOpen, setIsAccountOpen } =
     useUserStore();
   const unitsStore = useUnitStore();
   const unitsName = unitsStore.names;
@@ -218,8 +217,8 @@ export default function Settings() {
           {user ? (
             <>
               <p>Content de vous voir {user.username}</p>
-              <button className="btn btn-danger margin-center" onClick={logout}>
-                Se déconnecter
+              <button className="btn margin-center" onClick={() => setIsAccountOpen(true)}>
+                Gérer mon compte
               </button>
             </>
           ) : (

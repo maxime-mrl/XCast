@@ -1,8 +1,7 @@
 import { useState } from "react";
-import ModalContainer from "src/components/modalContainer/ModalContainer";
 import updateForm from "@utils/updateForms";
-import TextInput from "src/components/textInput/TextInput";
 import { useUserStore } from "@store/useUserStore";
+import { ModalContainer, TextInput } from "@components";
 import "./Register.css";
 
 export default function Register() {

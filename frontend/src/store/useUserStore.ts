@@ -31,8 +31,11 @@ type UserStore = {
   // acount panel
   isRegisterOpen: boolean;
   isLoginOpen: boolean;
+  isAccountOpen: boolean;
   setIsRegisterOpen: (isOpen: boolean) => void;
   setIsLoginOpen: (isOpen: boolean) => void;
+  setIsAccountOpen: (isOpen: boolean) => void;
+  closeAll: () => void;
 
   status: string;
   message: string | null;
@@ -48,15 +51,25 @@ export const useUserStore = createSelectors(
         sync: false,
         isRegisterOpen: false,
         isLoginOpen: false,
+        isAccountOpen: false,
 
         setIsRegisterOpen: (isOpen) => {
-          if (isOpen) get().setIsLoginOpen(false); // make sure both modals are not oppened at the same time
+          if (isOpen) get().closeAll();
           set({ isRegisterOpen: isOpen });
         },
         setIsLoginOpen: (isOpen) => {
-          if (isOpen) get().setIsRegisterOpen(false); // make sure both modals are not oppened at the same time
+          if (isOpen) get().closeAll();
           set({ isLoginOpen: isOpen });
         },
+        setIsAccountOpen: (isOpen) => {
+          if (isOpen) get().closeAll();
+          set({ isAccountOpen: isOpen });
+        },
+        closeAll: () => set({ // make sure only one panel is open
+          isRegisterOpen: false,
+          isLoginOpen: false,
+          isAccountOpen: false,
+        }),
         register: async (newUser) => {
           set({ status: "loading" });
           const userToSave = { ...newUser, settings: { sync: false } };

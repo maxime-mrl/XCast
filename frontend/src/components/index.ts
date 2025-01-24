@@ -7,6 +7,7 @@ const StepSlider = loadable(() => import("./StepSlider/StepSlider"));
 const Loader = loadable(() => import("./loader/Loader"));
 const Notifications = loadable(() => import("./notifications/Notifications"));
 const ModalContainer = loadable(() => import("./modalContainer/ModalContainer"));
+const TextInput = loadable(() => import("./textInput/TextInput"));
 
 export {
   GeotiffLayer,
@@ -17,4 +18,5 @@ export {
   Loader,
   Notifications,
   ModalContainer,
+  TextInput,
 };
