@@ -1,5 +1,5 @@
 import { useState } from "react";
-import updateForm from "@utils/updateForms";
+import { checkEntries, formState, updateForm } from "@utils/updateForms";
 import { useUserStore } from "@store/useUserStore";
 import { ModalContainer, TextInput } from "@components";
 
@@ -14,7 +14,7 @@ export default function Login() {
   } = useUserStore();
 
   const [{ login_mail: mail, login_password: password }, setFormData] =
-    useState<{ [key: string]: [string, boolean] }>({
+    useState<formState>({
       login_mail: ["", false],
       login_password: ["", false],
     });
@@ -24,9 +24,7 @@ export default function Login() {
 
   function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!mail[1] || !password[1]) {
-      return;
-    }
+    if (!checkEntries({ required: { mail, password } })) return;
     login({
       mail: mail[0],
       password: password[0],

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 import { useUserStore } from "@store/useUserStore";
-import updateForm from "@utils/updateForms";
+import { checkEntries, formState, updateForm } from "@utils/updateForms";
 import { ModalContainer, TextInput } from "@components";
 
 import "./Account.css";
@@ -21,7 +21,7 @@ export default function Account() {
   const [
     { new_username, new_mail, new_password, confirm_password },
     setFormData,
-  ] = useState<{ [key: string]: [string, boolean] }>({
+  ] = useState<formState>({
     new_username: ["", false],
     new_mail: ["", false],
     new_password: ["", false],
@@ -33,11 +33,12 @@ export default function Account() {
   function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (
-      (!new_username[1] && !new_mail[1] && !new_password[1]) ||
-      !confirm_password[1]
-    ) {
+      !checkEntries({
+        required: { confirm_password },
+        optionnal: { new_username, new_mail, new_password },
+      })
+    )
       return;
-    }
     updateAccount({
       username: new_username[0] ? new_username[0] : undefined,
       mail: new_mail[0] ? new_mail[0] : undefined,

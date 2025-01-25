@@ -1,8 +1,11 @@
-export default function updateForm(
+import { toast } from "react-toastify";
+
+export type formState = Record<string, [string, boolean]>; // form state type
+
+// update form data and validate it
+export function updateForm(
   e: React.ChangeEvent<HTMLInputElement>,
-  setFormData: React.Dispatch<
-    React.SetStateAction<Record<string, [string, boolean]>>
-  >
+  setFormData: React.Dispatch<React.SetStateAction<formState>>
 ) {
   let isValidated = false;
   const value = e.target.value;
@@ -49,4 +52,27 @@ export default function updateForm(
     ...prevState,
     [e.target.name]: [value, isValidated],
   }));
+}
+
+// check if all fields are filled the way they should be
+export function checkEntries(form: {
+  optionnal?: Record<string, [string, boolean]>; // optional fields
+  required: Record<string, [string, boolean]>; // required fields
+}) {
+  const errMessage = "Veuillez remplir et valider tous les champs obligatoires";
+  for (const field in form.required) {
+    // all required fields must be validated
+    if (!form.required[field][1]) {
+      toast.error(errMessage);
+      return false;
+    }
+  }
+  for (const field in form.optionnal) {
+    // if optional field is filled, it must be validated
+    if (!form.optionnal[field][1] && form.optionnal[field][0].length > 0) {
+      toast.error(errMessage);
+      return false;
+    }
+  }
+  return true;
 }

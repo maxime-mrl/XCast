@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import updateForm from "@utils/updateForms";
+import { checkEntries, formState, updateForm } from "@utils/updateForms";
 import { useUserStore } from "@store/useUserStore";
 import { ModalContainer, TextInput } from "@components";
 
@@ -22,7 +22,7 @@ export default function Register() {
       register_confirm_password: confirm_password,
     },
     setFormData,
-  ] = useState<{ [key: string]: [string, boolean] }>({
+  ] = useState<formState>({
     register_username: ["", false],
     register_mail: ["", false],
     register_password: ["", false],
@@ -34,9 +34,12 @@ export default function Register() {
 
   function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!username[1] || !mail[1] || !password[1] || !confirm_password[1]) {
+    if (
+      !checkEntries({
+        required: { username, mail, password, confirm_password },
+      })
+    )
       return;
-    }
     register({
       username: username[0],
       mail: mail[0],
