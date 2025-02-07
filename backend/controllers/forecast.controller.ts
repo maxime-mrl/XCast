@@ -92,7 +92,7 @@ export function getForecast(req: Request, res: Response) {
   const lat = parseFloat(req.query.lat);
   const lng = parseFloat(req.query.lng);
   const { model, time } = req.query;
-  console.log({ lat, lng, model, time }); // should be used to get the correct forecast but for now it'll be soontm
+  console.log({ lat, lng, model, time }); // should be used to get the correct forecast location
   // get the forecast
   const selectedForecast = JSON.parse(
     fs

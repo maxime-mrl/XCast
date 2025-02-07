@@ -18,6 +18,8 @@ const app = express();
 const server = createServer(app);
 
 // socket.io config
+// each connection will be added to the db in an array of socket ids
+// when an update is needed, the server will send the update to all the socket ids in the array
 export const io = new Server(server, { cors: corsOptions });
 io.on("connection", (socket) => {
   // add user socket id to db

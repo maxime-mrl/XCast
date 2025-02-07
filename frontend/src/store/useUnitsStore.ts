@@ -23,12 +23,12 @@ type UnitsStore = Record<mapDataTypes, UnitsConfig> & { // one unitconfig per un
 }; // names in french
 
 const colorScale = [
-  "#F1F7F9", // 1 - white
+  "#FCF9F5", // 1 - white
   "#A9CEDA", // 2 - light blue
   "#78C091", // 3 - green
   "#F6BD60", // 4 - yellow/orange
   "#E7940D", // 5 - orange
-  "#CE5427", // 6 - orange/red
+  "#C64140", // 6 - orange/red
   "#520001", // 7 - darkred
   "#290000", // 8 - almost black
 ];
