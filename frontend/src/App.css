@@ -49,8 +49,8 @@ img {
 :root {
   /* colors */
  --bg: #fcf9f5; /* ok */
- --bg-60: #fbf8f399; /* ok */
- --bg-80: #fbf8f3cc; /* ok */
+ --bg-60: #fcf9f599; /* ok */
+ --bg-80: #fcf9f5cc; /* ok */
 
  --text: #150f08; /* ok */
  --text-40: #150f0866; /* ok */
@@ -69,6 +69,14 @@ img {
  --h1-size: 1.8rem;
  --h2-size: 1.5rem;
  --h3-size: 1.3rem;
+
+ /* Toastify customization */
+  --toastify-color-light: var(--bg);
+  --toastify-color-success: var(--success);
+  --toastify-color-error: var(--fail);
+  --toastify-text-color-light: var(--text);
+
+  --toastify-color-transparent: var(--bg-40);
 }
 
 /* -------------------------------------------------------------------------- */
