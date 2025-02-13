@@ -21,6 +21,19 @@ class DbData {
     this.cacheTimeout = 10 * 1000;
   }
 
+  parseError = (err:any) => {
+    let message = "";
+    if (typeof err !== "string") {
+      message = this.service.parseError(err);
+    } else {
+      message = err;
+    };
+    console.error(message);
+    if (/token|signature/i.test(message)) {
+      useUserStore.setState({ message: "Token invalide, reconnectez-vous.", status: "error" });
+    }
+  };
+
   async get(token: string) {
     // either no cache or cache expired
     if (
@@ -35,7 +48,11 @@ class DbData {
   }
 
   async set(data: object, token: string) {
-    await this.service.put("", data, token);
+    try {
+      await this.service.put("", data, token);
+    } catch (err:any) {
+      this.parseError(err);
+    }
   }
 }
 
@@ -54,26 +71,31 @@ export const customStorage: PersistStorage<unknown> = {
     if (!user || (!sync && !/app/.test(name))) return localData;
 
     // else merge db with localStorage
-    const dbData = await dbHandler.get(user.token);
-    // destructurate localStorage value
-    let { state, version } = localData || { state: undefined, version: 0 };
-    // merge concerned data
-    if (/units/.test(name)) state = { ...state, ...dbData.units };
-    if (/forecast/.test(name)) {
-      const { position, ...otherDbSetting } = dbData.forecastSettings || {
-        position: undefined,
-        otherDbSetting: {},
+    try {
+      const dbData = await dbHandler.get(user.token);
+      // destructurate localStorage value
+      let { state, version } = localData || { state: undefined, version: 0 };
+      // merge concerned data
+      if (/units/.test(name)) state = { ...state, ...dbData.units };
+      if (/forecast/.test(name)) {
+        const { position, ...otherDbSetting } = dbData.forecastSettings || {
+          position: undefined,
+          otherDbSetting: {},
+        };
+        state = {
+          ...state,
+          position,
+          userSettings: { ...state.userSettings, ...otherDbSetting },
+        };
+      }
+      return {
+        state,
+        version,
       };
-      state = {
-        ...state,
-        position,
-        userSettings: { ...state.userSettings, ...otherDbSetting },
-      };
+    } catch (err:any) {
+      dbHandler.parseError(err);
+      return localData;
     }
-    return {
-      state,
-      version,
-    };
   },
   async setItem(name, storageValue) {
     const state = storageValue.state as localStorage["state"];

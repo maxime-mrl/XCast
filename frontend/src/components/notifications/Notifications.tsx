@@ -31,7 +31,7 @@ export default function Notifications() {
       if (status !== "error") toast.success(message);
       else toast.error(message);
     }
-    if (/token/.test(message)) resetUser(); // while we are here reset account state if token error
+    if (/token/i.test(message)) resetUser(true); // while we are here reset account state if token error
   }, [userStatus, userMessage, forecastStatus, forecastMessage, resetUser]);
 
   return <ToastContainer />; // necessary to toastify

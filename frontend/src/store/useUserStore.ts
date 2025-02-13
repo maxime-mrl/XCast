@@ -27,7 +27,7 @@ type UserStore = {
   login: (user: Partial<userInfos>) => void;
   updateAccount: (user: Partial<userInfos>) => void;
   deleteAccount: (confirmPassword: string) => void;
-  logout: () => void;
+  logout: (silent?: boolean) => void;
 
   // sync preferences
   sync: boolean;
@@ -163,9 +163,13 @@ export const useUserStore = createSelectors(
             });
           }
         },
-        logout: () => {
+        logout: (silent) => {
           // reset user state
-          set({ user: null, status: "success", message: "A bientôt" });
+          if (silent) {
+            set({ user: null });
+          } else {
+            set({ user: null, status: "success", message: "A bientôt" });
+          }
         },
 
         toggleSync: () => {

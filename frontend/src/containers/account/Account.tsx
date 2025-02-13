@@ -128,7 +128,7 @@ export default function Account() {
             updateForm={handleUpdate}
           />
           <div className="btns">
-            <button className="btn btn-danger" onClick={logout}>
+            <button className="btn btn-danger" onClick={() => logout()}>
               Se déconnecter
             </button>
             <button className="btn btn-danger" onClick={confirmDelete}>
