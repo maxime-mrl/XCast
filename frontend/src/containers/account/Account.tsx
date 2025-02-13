@@ -8,6 +8,7 @@ import { ModalContainer, TextInput } from "@components";
 import "./Account.css";
 
 export default function Account() {
+  // get user
   const {
     user,
     isAccountOpen: isOpen,
@@ -18,6 +19,7 @@ export default function Account() {
   } = useUserStore();
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  // form state
   const [
     { new_username, new_mail, new_password, confirm_password },
     setFormData,
@@ -27,6 +29,8 @@ export default function Account() {
     new_password: ["", false],
     confirm_password: ["", false],
   });
+
+  // handle form actions
   const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) =>
     updateForm(e, setFormData);
 
@@ -47,6 +51,7 @@ export default function Account() {
     });
   }
 
+  // ask a confirmation before deleting the account
   function confirmDelete() {
     if (!confirm_password[1])
       return toast.error(
@@ -59,6 +64,7 @@ export default function Account() {
 
   return (
     <>
+      {/* update account part */}
       <ModalContainer isOpen={isOpen} setIsOpen={setIsOpen}>
         <h2 className="h1 full-width text-center">Bonjour {user.username}</h2>
         <form onSubmit={submitForm} className="account-form">
@@ -134,6 +140,7 @@ export default function Account() {
           </div>
         </form>
       </ModalContainer>
+      {/* confirmation modal */}
       <ModalContainer isOpen={confirmModalOpen} setIsOpen={setConfirmModalOpen}>
         <p className="text-center">
           Êtes-vous sûr de vouloir supprimer votre compte ?

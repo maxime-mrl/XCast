@@ -5,8 +5,8 @@ export default class RequestServices {
   private API_URL: string;
 
   constructor(APIEndPoint: string) {
-    this.API_URL = `${process.env.REACT_APP_API_URL}/${APIEndPoint}`; // for local dev
-    this.API_URL = `http://${window.location.hostname}/${APIEndPoint}`;
+    // this.API_URL = `${process.env.REACT_APP_API_URL}/${APIEndPoint}`;
+    this.API_URL = `http://${window.location.hostname}/${APIEndPoint}`; // for local dev
   }
 
   /* ------------------------------ Request types ----------------------------- */

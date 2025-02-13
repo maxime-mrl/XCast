@@ -82,13 +82,16 @@ export const useUserStore = createSelectors(
           set({ status: "loading" });
           const userToSave = { ...newUser, settings: { sync: false } };
           try {
+            // post register
             const user = await userServices.post<user>("/register", userToSave);
+            // success - set user
             set({
               user,
               status: "success",
               message: `Bienvenue ${user.username}`,
             });
           } catch (err) {
+            // error - set message
             set({
               status: "error",
               message: userServices.parseError(err),
@@ -98,13 +101,16 @@ export const useUserStore = createSelectors(
         login: async (loginUser) => {
           set({ status: "loading" });
           try {
+            // post login
             const user = await userServices.post<user>("/login", loginUser);
+            // success - set user
             set({
               user,
               status: "success",
               message: `Content de vous revoir ${user.username}`,
             });
           } catch (err) {
+            // error - set message
             set({
               status: "error",
               message: userServices.parseError(err),
@@ -114,17 +120,20 @@ export const useUserStore = createSelectors(
         updateAccount: async (user) => {
           set({ status: "loading" });
           try {
+            // put update
             const updatedUser = await userServices.put<user>(
               "/update",
               user,
               get().user?.token
             );
+            // success - set user
             set({
               user: updatedUser,
               status: "success",
               message: "Vos informations ont bien été mises à jour",
             });
           } catch (err) {
+            // error - set message
             set({
               status: "error",
               message: userServices.parseError(err),
@@ -134,17 +143,20 @@ export const useUserStore = createSelectors(
         deleteAccount: async (confirmPassword) => {
           set({ status: "loading" });
           try {
+            // delete request
             await userServices.delete(
               "/delete",
               { confirmPassword },
               get().user?.token
             );
+            // success - reset user state
             set({
               user: null,
               status: "success",
               message: "Votre compte a bien été supprimé",
             });
           } catch (err) {
+            // error - set message
             set({
               status: "error",
               message: userServices.parseError(err),
@@ -152,6 +164,7 @@ export const useUserStore = createSelectors(
           }
         },
         logout: () => {
+          // reset user state
           set({ user: null, status: "success", message: "A bientôt" });
         },
 

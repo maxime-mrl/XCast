@@ -56,13 +56,15 @@ export const useUnitStore = createSelectors(
     persist(
       () => ({
         wind: createUnitConfig("wind", {
+          // conversion functions
           "km/h": (base) => Math.round(base * 3.6),
           mph: (base) => Math.round(base * 2.237),
-          "m/s": (base) => Math.round(base),
+          "m/s": (base) => Math.round(base), // base unit is m/s so no conversion
           noeuds: (base) => Math.round(base * 1.943844),
         }),
         temp: createUnitConfig("temp", {
-          "°C": (base) => Math.round(base),
+          // conversion functions
+          "°C": (base) => Math.round(base), // base unit is °C so no conversion
           "°F": (base) => Math.round(base * 1.8 + 32),
         }),
         names,
@@ -75,6 +77,7 @@ export const useUnitStore = createSelectors(
           const SelectedUnits: Partial<
             Record<mapDataTypes, { selected: string }>
           > = {};
+          // get selected unit for each type
           const keys = Object.keys(units) as mapDataTypes[];
           keys.forEach((key) => {
             const { selected } = units[key];
@@ -85,7 +88,7 @@ export const useUnitStore = createSelectors(
         merge: (persistedState, defaultState: UnitsStore) => {
           if (!persistedState || typeof persistedState !== "object")
             return defaultState;
-          return mergeUnits({ ...defaultState }, persistedState);
+          return mergeUnits(defaultState, persistedState); // custom deep merge
         },
         storage: customStorage,
       }
@@ -123,6 +126,7 @@ function createUnitConfig(
 ): UnitsConfig {
   return {
     selected: Object.keys(units)[0], // Default to the first unit
+    // conversions functions
     select: (newUnit) => {
       if (!Object.keys(units).find((value) => value === newUnit)) return;
       useUnitStore.setState((state) => ({
@@ -132,6 +136,7 @@ function createUnitConfig(
         },
       }));
     },
+    // color scale
     scale: {
       ...scales[type],
       colorScale: chroma.scale(scales[type].colors).domain(scales[type].levels),

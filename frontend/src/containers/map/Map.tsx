@@ -23,7 +23,7 @@ export default function Map() {
   const zoom = useAppStore.use.zoom();
 
   useEffect(() => {
-    // check that zustand is well initialized
+    // check that state is well initialized
     const dataset = userSettings.selected
       ? mapCapabilities?.data[userSettings.model].dataset[userSettings.selected]
           .names

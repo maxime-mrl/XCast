@@ -7,6 +7,7 @@ import { ModalContainer, TextInput } from "@components";
 import "./Register.css";
 
 export default function Register() {
+  // get user
   const {
     isRegisterOpen: isOpen,
     setIsRegisterOpen: setIsOpen,
@@ -14,6 +15,7 @@ export default function Register() {
     register,
   } = useUserStore();
 
+  // form state
   const [
     {
       register_username: username,
@@ -29,6 +31,7 @@ export default function Register() {
     register_confirm_password: ["", false],
   });
 
+  // handle form actions
   const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) =>
     updateForm(e, setFormData);
 

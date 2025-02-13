@@ -30,6 +30,7 @@ const userPreferencesSchema = new mongoose.Schema(
 
 const userSchema = new mongoose.Schema(
   {
+    // basic user stuff
     mail: {
       type: String,
       required: true,
@@ -47,10 +48,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    // settings sync
     settings: {
       type: userPreferencesSchema,
       required: true,
     },
+    // connected sockets for sync
     socketIds: [String],
   },
   { timestamps: true }

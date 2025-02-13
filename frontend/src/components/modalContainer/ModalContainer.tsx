@@ -3,6 +3,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import "./ModalContainer.css";
 
+// Modal container for modals
 export default function ModalContainer({
   children,
   isOpen,
@@ -12,6 +13,7 @@ export default function ModalContainer({
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }) {
+  // close modal when clicking outside
   function handleModalClick(e: React.MouseEvent<HTMLDivElement>) {
     if (
       e.target &&
@@ -21,7 +23,7 @@ export default function ModalContainer({
       setIsOpen(false);
     }
   }
-
+  // return children content wrapped in modal
   return (
     <div
       className="modal-container"

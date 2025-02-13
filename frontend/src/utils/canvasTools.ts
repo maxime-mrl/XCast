@@ -232,9 +232,6 @@ export default class Canvas {
     }
   ) => {
     // arrow size and color
-    // const thickness = size * Math.min(0.4,
-    //     0.03 * Math.exp(0.2 * wspd) // this seems to look good after testing
-    // );
     const thickness = size * Math.min(0.4, 0.016 * wspd + 0.05); // in the end linear may be better
     const length = size * 0.9;
     const color = options.colorScale

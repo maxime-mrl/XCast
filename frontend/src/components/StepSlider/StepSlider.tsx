@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import "./StepSlider.css";
 
+// slider with steps
 export default function StepSlider({
   name,
   steps,

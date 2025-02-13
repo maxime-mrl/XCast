@@ -52,14 +52,14 @@ app.use(errorsMiddleware);
 
 // start the server
 db.connect()
-  .then((result) => {
-    console.log(result);
+  .then((result) => { // try to connect database
+    console.log(result); // OK
     server
-      .listen(port, () => console.log(`listening on port ${port}`))
-      .on("error", (err) => {
+      .listen(port, () => console.log(`listening on port ${port}`)) // listen on port
+      .on("error", (err) => { // listenning error
         if ("code" in err && err.code === "EADDRINUSE")
           console.log("Port busy");
         else console.log(err);
       });
   })
-  .catch((err) => console.error(err));
+  .catch((err) => console.error(err)); // db connection error

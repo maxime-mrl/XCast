@@ -6,6 +6,7 @@ import { ModalContainer, TextInput } from "@components";
 import "./Login.css";
 
 export default function Login() {
+  // get user
   const {
     isLoginOpen: isOpen,
     setIsLoginOpen: setIsOpen,
@@ -13,12 +14,14 @@ export default function Login() {
     login,
   } = useUserStore();
 
+  // form state
   const [{ login_mail: mail, login_password: password }, setFormData] =
     useState<formState>({
       login_mail: ["", false],
       login_password: ["", false],
     });
 
+  // handle form actions
   const handleUpdate = (e: React.ChangeEvent<HTMLInputElement>) =>
     updateForm(e, setFormData);
 

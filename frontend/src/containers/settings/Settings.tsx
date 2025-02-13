@@ -35,6 +35,7 @@ export default function Settings() {
   const unitsName = unitsStore.names;
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  // close settings modal when click outside
   useEffect(() => {
     if (isOpen) document.addEventListener("click", checkIsClickOutside);
     return () => {
@@ -76,8 +77,6 @@ export default function Settings() {
   function resetSettings() {
     localStorage.clear();
     window.location.reload();
-    // should have a reset for user account if synced
-    // will be made latter when user account actually exists
   }
 
   return (
