@@ -4,6 +4,7 @@ import { useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet-geotiff-2";
 import "leaflet-geotiff-2/dist/leaflet-geotiff-vector-arrows";
+import "leaflet-geotiff-2/dist/leaflet-geotiff-plotty";
 
 import Renderer from "@utils/geotiffRenderer";
 import { useUnitStore } from "@store/useUnitsStore";
@@ -37,7 +38,8 @@ export default function GeoTiffLayer({
           : // custom renderer for color scales
             new Renderer({
               chromaScale: activeUnit ? activeUnit.scale.colorScale : null,
-            }),
+            })
+            ,
       // listen for errors
       onError: (er: any) => {
         console.log(`Geotiff layer error: ${er}`);

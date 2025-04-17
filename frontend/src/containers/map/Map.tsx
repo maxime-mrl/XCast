@@ -67,6 +67,10 @@ export default function Map() {
         zoom={zoom}
         scrollWheelZoom={true}
         zoomControl={false}
+        minZoom={3}
+        maxZoom={12}
+        maxBounds={[[-90, -180], [90, 180]]}
+        maxBoundsViscosity={1}
         attributionControl={false} // hide attribution so it's clean (still present in the dom and visible in about page)
       >
         <TileLayer
